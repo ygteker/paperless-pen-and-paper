@@ -15,8 +15,9 @@
     <description>backend</description>
     <properties>
         <java.version>11</java.version>
-        <kotlin.version>1.6.0</kotlin.version>
+        <kotlin.version>1.5.10</kotlin.version>
         <springdoc-openapi-ui.version>1.5.12</springdoc-openapi-ui.version>
+        <log4j2.version>2.16.0</log4j2.version>
     </properties>
     <dependencies>
 
@@ -58,6 +59,12 @@
             <version>${springdoc-openapi-ui.version}</version>
         </dependency>
 
+        <!-- oauth2 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -78,7 +85,9 @@
                     <compilerPlugins>
                         <plugin>spring</plugin>
                     </compilerPlugins>
+
                 </configuration>
+
                 <dependencies>
                     <dependency>
                         <groupId>org.jetbrains.kotlin</groupId>
