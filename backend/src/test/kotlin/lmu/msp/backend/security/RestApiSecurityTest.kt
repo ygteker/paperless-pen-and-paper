@@ -15,7 +15,7 @@ class RestApiSecurityTest(@Autowired val mockMvc: MockMvc) {
     private val publicEndpoints = arrayOf("/hello-world")
 
     //todo add all future endpoints
-    private val privateEndpoints = emptyArray<String>()
+    private val privateEndpoints = arrayOf("/hello-world/authentication")
 
     @Test
     fun publicEndpointExists() {
@@ -40,9 +40,10 @@ class RestApiSecurityTest(@Autowired val mockMvc: MockMvc) {
     @WithMockUser(username = "testUser")
     fun privateEndpointWithUserOkay() {
         privateEndpoints.forEach {
-            mockMvc.get(it).andExpect {
-                status { isOk() }
-            }
+            mockMvc.get(it)
+                .andExpect {
+                    status { isOk() }
+                }
         }
     }
 }
