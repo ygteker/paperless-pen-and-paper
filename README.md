@@ -1,5 +1,18 @@
 # gruppe5
 
+## Authentication
+We are using [Auth0](auth0.com/) to implement an OAuth2 login system.
+These parameters are used for the login system.
+
+```
+auth0_client_id=fO2ATpY1mfFrutuO9HLpiiF80qQRSJiH
+auth0_domain=dev-paperlesspenandpaper.eu.auth0.com
+auth0_scheme=android
+audience=https://dev-paperlesspenandpaper.eu.auth0.com/api/v2/
+```
+
+Every RESTful request which requires a logged-in user, must have a bearer token added to the  `Authorization` header.
+
 ---
 
 ## Backend
@@ -22,6 +35,11 @@ Access ip/domain of the webserver with the path `/hello-world`. The Webserver wi
 
 ### OpenAPI/Swagger-UI
 The api definitions can be found [here](http://msp-ws2122-5.mobile.ifi.lmu.de/api-docs).
+The request can be tested in the Swagger-UI.
+
+#### Test requests which require login
+A valid JWT token musst be added.
+The token can be obtained by validly logging in to the android app. Note that a token can expire.
 
 ---
 
