@@ -8,16 +8,20 @@
         <version>2.6.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>lmu.msp</groupId>
     <artifactId>backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>backend</name>
     <description>backend</description>
+
     <properties>
         <java.version>11</java.version>
-        <kotlin.version>1.6.0</kotlin.version>
+        <kotlin.version>1.5.10</kotlin.version>
         <springdoc-openapi-ui.version>1.5.12</springdoc-openapi-ui.version>
+        <log4j2.version>2.16.0</log4j2.version>
     </properties>
+
     <dependencies>
 
         <!-- default dependencies -->
@@ -32,12 +36,6 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <!-- rest dependencies -->
@@ -56,6 +54,30 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-kotlin</artifactId>
             <version>${springdoc-openapi-ui.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-security</artifactId>
+            <version>${springdoc-openapi-ui.version}</version>
+        </dependency>
+
+
+        <!-- oauth2 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+
+        <!-- testing dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -78,7 +100,9 @@
                     <compilerPlugins>
                         <plugin>spring</plugin>
                     </compilerPlugins>
+
                 </configuration>
+
                 <dependencies>
                     <dependency>
                         <groupId>org.jetbrains.kotlin</groupId>
