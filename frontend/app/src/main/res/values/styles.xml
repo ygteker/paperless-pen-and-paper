@@ -4,19 +4,19 @@
         <item name="android:background">@drawable/button</item>
         <item name="android:fontFamily">@font/nunito</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/space_cadet</item>
         <item name="backgroundTint">@color/silver_pink</item>
         <item name="android:elevation">4dp</item>
+        <item name="android:textSize">@dimen/text_size</item>
     </style>
 
     <style name="editTextTheme" parent="@android:style/Widget.EditText">
         <item name="android:background">@drawable/button</item>
         <item name="android:backgroundTint">@color/isabelline</item>
-        <item name="android:padding">12dp</item>
+        <item name="android:padding">@dimen/edittext_padding</item>
         <item name="android:fontFamily">@font/nunito</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">@dimen/text_size</item>
         <item name="android:textColorHint">@color/heliotrope_gray</item>
         <item name="android:textColor">@color/space_cadet</item>
     </style>
