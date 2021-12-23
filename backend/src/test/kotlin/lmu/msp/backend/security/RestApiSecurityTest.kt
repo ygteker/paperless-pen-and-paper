@@ -1,5 +1,6 @@
 package lmu.msp.backend.security
 
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -16,6 +17,11 @@ class RestApiSecurityTest(@Autowired val mockMvc: MockMvc) {
 
     //todo add all future endpoints
     private val privateEndpoints = arrayOf("/hello-world/authentication")
+
+    @Test
+    fun injectedComponentsAreNotNull() {
+        Assertions.assertThat(mockMvc).isNotNull
+    }
 
     @Test
     fun publicEndpointExists() {

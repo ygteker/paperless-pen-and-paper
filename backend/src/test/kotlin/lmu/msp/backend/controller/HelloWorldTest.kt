@@ -1,5 +1,6 @@
 package lmu.msp.backend.controller
 
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -9,6 +10,11 @@ import org.springframework.test.web.servlet.get
 
 @WebMvcTest
 class HelloWorldTest(@Autowired private val mockMvc: MockMvc) {
+
+    @Test
+    fun injectedComponentsAreNotNull() {
+        Assertions.assertThat(mockMvc).isNotNull
+    }
 
     @Test
     fun helloWorldReturnDefaultMessage() {
