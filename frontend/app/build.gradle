@@ -5,7 +5,13 @@ plugins {
 
 android {
     compileSdk 31
-
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
     defaultConfig {
         applicationId "lmu.msp.frontend"
         minSdk 26
@@ -14,6 +20,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders = [auth0Domain: "@string/com_auth0_domain", auth0Scheme: "https"]
+
     }
 
     buildTypes {
@@ -32,6 +41,8 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    dataBinding.enabled = true
 }
 
 dependencies {
@@ -46,4 +57,5 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation 'com.auth0.android:auth0:2.+'
 }
