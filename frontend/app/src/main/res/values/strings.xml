@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">frontend</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_campaign">Campaign</string>
+    <string name="title_profile">Profile</string>
 </resources>
