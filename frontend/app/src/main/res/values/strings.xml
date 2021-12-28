@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">frontend</string>
+    <string name="invite_friend">Invite Friend</string>
 </resources>
