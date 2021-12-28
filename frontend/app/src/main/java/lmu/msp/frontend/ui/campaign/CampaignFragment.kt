@@ -34,6 +34,9 @@ class CampaignFragment : Fragment() {
         campaignViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })
+
+
+
         return root
     }
 
