@@ -13,4 +13,9 @@
 
     <string name="com_auth0_client_id">lmu.msp.frontend</string>
     <string name="com_auth0_domain">YOUR_DOMAIN</string>
+
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_campaign">Campaign</string>
+    <string name="title_profile">Profile</string>
 </resources>
