@@ -24,4 +24,9 @@
         <item name="cornerRadius">12dp</item>
         <item name="android:elevation">4dp</item>
     </style>
+
+    <style name="navBarTheme" parent="@style/Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:background">@color/silver_pink</item>
+        <item name="itemIconTint">@color/space_cadet</item>
+    </style>
 </resources>
