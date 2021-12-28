@@ -39,27 +39,42 @@ class LoginActivity : AppCompatActivity() {
         auth = AuthenticationAPIClient(account)
 
         val loginButton = binding.loginButton
+        val email = binding.email.text.toString()
+        val password = binding.password.text.toString()
+        val databaseConnection: String = ""
 
         loginButton.setOnClickListener {
-            Toast.makeText(this@LoginActivity, "Login", Toast.LENGTH_SHORT).show()
-            auth
-                .login("info@auth0.com", "a secret password", "my-database-connection")
-                .start(object: Callback<Credentials, AuthenticationException> {
-                    override fun onFailure(exception: AuthenticationException) { }
+            // Toast.makeText(this@LoginActivity, "Login", Toast.LENGTH_SHORT).show()
 
-                    override fun onSuccess(credentials: Credentials) { }
-                })
+            // Login method
+            login(email, password, databaseConnection)
+
+            // loginWithBrowser()
 
         }
 
         val registerButton = binding.registerButton
 
         registerButton.setOnClickListener {
-            //TODO(start register activity)
-            Toast.makeText(this@LoginActivity, "Register", Toast.LENGTH_SHORT).show()
+            // Toast.makeText(this@LoginActivity, "Register", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun login(email: String, password: String, databaseConnection: String) {
+        auth
+            .login(email, password)
+            .setConnection(databaseConnection)
+            .start(object: Callback<Credentials, AuthenticationException> {
+                override fun onFailure(exception: AuthenticationException) {
+                    //TODO(Handle failure)
+                }
+
+                override fun onSuccess(credentials: Credentials) {
+                    //TODO(redirect to HomeActivity or ProfileActivity)
+                }
+            })
     }
 
     private fun loginWithBrowser() {
@@ -76,7 +91,6 @@ class LoginActivity : AppCompatActivity() {
                 }
             })
     }
-
 
     private fun showUserInformation(accessToken: String) {
         var client = AuthenticationAPIClient(account)

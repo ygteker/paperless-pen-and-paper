@@ -1,5 +1,6 @@
 package lmu.msp.frontend
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
@@ -33,22 +34,31 @@ class RegisterActivity: AppCompatActivity() {
         auth = AuthenticationAPIClient(account)
 
         val registerButton = binding.registerButton
+        val email = binding.email.text.toString()
+        val password = binding.password.toString()
+        val databaseConnection: String = ""
+        val connection: String = ""
 
         registerButton.setOnClickListener {
-            //TODO(handle register)
-            register()
+            register(email, password, databaseConnection, connection)
         }
 
 
     }
 
-    private fun register() {
+    private fun register(email: String, password: String, databaseConnection: String, connection: String) {
         auth
-            .signUp("info@auth0.com", "a secret password", "Username-Password-Authentication")
+            .signUp(email, password, databaseConnection, connection)
             .start(object: Callback<Credentials, AuthenticationException> {
-                override fun onFailure(exception: AuthenticationException) { }
+                override fun onFailure(exception: AuthenticationException) {
+                    //TODO(Handle failure)
+                }
 
-                override fun onSuccess(credentials: Credentials) { }
+                override fun onSuccess(credentials: Credentials) {
+                //TODO(change target activity to HomeActivity)
+                    val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+                    startActivity(intent)
+                }
             })
     }
 }
