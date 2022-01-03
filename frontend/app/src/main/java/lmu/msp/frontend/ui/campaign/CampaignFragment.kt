@@ -8,37 +8,59 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
+import lmu.msp.frontend.R
 import lmu.msp.frontend.databinding.FragmentCampaignBinding
 
 class CampaignFragment : Fragment() {
 
-    private lateinit var campaignViewModel: CampaignViewModel
-    private var _binding: FragmentCampaignBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private lateinit var newRecyclerView: RecyclerView
+    private lateinit var newArrayList: ArrayList<campaigns>
+    private lateinit var titleStrings: Array<String>
+    private lateinit var campaignIds: Array<String>
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        campaignViewModel =
-            ViewModelProvider(this).get(CampaignViewModel::class.java)
 
-        _binding = FragmentCampaignBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        titleStrings = arrayOf(
+            "Curse of Strahd",
+            "A wild sheep chase",
+            "Mines of Phandelver"
+        )
+        campaignIds = arrayOf(
+            "000001",
+            "000002",
+            "000003"
+        )
+        val view = inflater.inflate(R.layout.fragment_campaign, container, false)
 
-        val textView: TextView = binding.textCampaign
-        campaignViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
-        return root
+        newRecyclerView = view.findViewById(R.id.recyclerView)
+        val horizontalLayoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        newRecyclerView.layoutManager = horizontalLayoutManager
+        newRecyclerView.setHasFixedSize(true)
+
+        val helper = LinearSnapHelper()
+        helper.attachToRecyclerView(newRecyclerView)
+
+        newArrayList = arrayListOf<campaigns>()
+        fillCampaigns()
+
+        return view
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun fillCampaigns() {
+
+        for(i in titleStrings.indices){
+            val data = campaigns(titleStrings[i], campaignIds[i])
+            newArrayList.add(data)
+        }
+        newRecyclerView.adapter = CampaignAdapter(newArrayList)
     }
 }

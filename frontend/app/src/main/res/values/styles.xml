@@ -29,4 +29,8 @@
         <item name="android:background">@color/silver_pink</item>
         <item name="itemIconTint">@color/space_cadet</item>
     </style>
+
+    <style name="ShapeAppearanceOverlay.App.CornerSize10Percent" parent="">
+        <item name="cornerSize">10%</item>
+    </style>
 </resources>
