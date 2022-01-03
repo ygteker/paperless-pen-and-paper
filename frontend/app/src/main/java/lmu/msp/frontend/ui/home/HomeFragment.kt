@@ -8,8 +8,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import lmu.msp.frontend.R
 import lmu.msp.frontend.databinding.FragmentHomeBinding
+import lmu.msp.frontend.ui.campaign.campaigns
 
 class HomeFragment : Fragment() {
 

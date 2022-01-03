@@ -14,7 +14,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:textAlignment="center"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:text="This is the campaign fragment."/>
 
     <!-- <HorizontalScrollView
          android:id="@+id/horizontal_scroll_campaign"
@@ -174,6 +175,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/recyclerView"
+        android:layout_below="@id/text_campaign"
         >
 
     </androidx.recyclerview.widget.RecyclerView>
