@@ -16,158 +16,166 @@
         android:textAlignment="center"
         android:textSize="20sp" />
 
-    <HorizontalScrollView
-        android:id="@+id/horizontal_scroll_campaign"
+    <!-- <HorizontalScrollView
+         android:id="@+id/horizontal_scroll_campaign"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@id/text_campaign"
+         android:layout_margin="25dp"
+         android:layout_marginStart="50dp"
+         android:layout_marginEnd="50dp"
+         android:layout_marginBottom="50dp">
+
+         <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:orientation="horizontal"
+             android:background="@color/black">
+
+             <androidx.cardview.widget.CardView
+                 android:id="@+id/Card_view_campaign1"
+
+                 android:layout_width="match_parent"
+                 android:layout_height="400dp"
+                 android:layout_margin="20dp"
+                 android:elevation="10dp"
+                 app:cardCornerRadius="20dp">
+
+                 <LinearLayout
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:orientation="vertical">
+
+                     <TextView
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:layout_marginStart="8dp"
+                         android:layout_marginTop="8dp"
+                         android:layout_marginEnd="8dp"
+                         android:text="@string/title_campaign"
+                         android:textAlignment="center"
+                         android:textSize="20sp"></TextView>
+
+                     <Button
+                         android:id="@+id/button1"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:layout_weight="1"
+                         android:text="Button"
+                         style="@style/buttonTheme"/>
+                 </LinearLayout>
+             </androidx.cardview.widget.CardView>
+             <androidx.cardview.widget.CardView
+                 android:id="@+id/Card_view_campaign2"
+
+                 android:layout_width="match_parent"
+                 android:layout_height="400dp"
+                 android:layout_margin="20dp"
+                 android:elevation="10dp"
+                 app:cardCornerRadius="20dp">
+
+                 <LinearLayout
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:orientation="vertical">
+
+                     <TextView
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:layout_marginStart="8dp"
+                         android:layout_marginTop="8dp"
+                         android:layout_marginEnd="8dp"
+                         android:text="@string/title_campaign"
+                         android:textAlignment="center"
+                         android:textSize="20sp"></TextView>
+
+                     <Button
+                         android:id="@+id/button2"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:layout_weight="1"
+                         android:text="Button" />
+                 </LinearLayout>
+             </androidx.cardview.widget.CardView>
+             <androidx.cardview.widget.CardView
+                 android:id="@+id/Card_view_campaign3"
+
+                 android:layout_width="match_parent"
+                 android:layout_height="400dp"
+                 android:layout_margin="20dp"
+                 android:elevation="10dp"
+                 app:cardCornerRadius="20dp">
+
+                 <LinearLayout
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:orientation="vertical">
+
+                     <TextView
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:layout_marginStart="8dp"
+                         android:layout_marginTop="8dp"
+                         android:layout_marginEnd="8dp"
+                         android:text="@string/title_campaign"
+                         android:textAlignment="center"
+                         android:textSize="20sp"></TextView>
+
+                     <Button
+                         android:id="@+id/button3"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:layout_weight="1"
+                         android:text="Button" />
+                 </LinearLayout>
+             </androidx.cardview.widget.CardView>
+             <androidx.cardview.widget.CardView
+                 android:id="@+id/Card_view_campaign4"
+
+                 android:layout_width="match_parent"
+                 android:layout_height="400dp"
+                 android:layout_margin="20dp"
+                 android:elevation="10dp"
+                 app:cardCornerRadius="20dp">
+
+                 <LinearLayout
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:orientation="vertical">
+
+                     <TextView
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:layout_marginStart="8dp"
+                         android:layout_marginTop="8dp"
+                         android:layout_marginEnd="8dp"
+                         android:text="@string/title_campaign"
+                         android:textAlignment="center"
+                         android:textSize="20sp"></TextView>
+
+                     <Button
+                         android:id="@+id/button4"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:layout_weight="1"
+                         android:text="Button" />
+                 </LinearLayout>
+             </androidx.cardview.widget.CardView>
+
+
+
+
+         </LinearLayout>
+
+
+     </HorizontalScrollView> -->
+
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text_campaign"
-        android:layout_margin="25dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="50dp">
+        android:layout_height="match_parent"
+        android:id="@+id/recyclerView"
+        >
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@color/black">
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/Card_view_campaign1"
-
-                android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:layout_margin="20dp"
-                android:elevation="10dp"
-                app:cardCornerRadius="20dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:text="@string/title_campaign"
-                        android:textAlignment="center"
-                        android:textSize="20sp"></TextView>
-
-                    <Button
-                        android:id="@+id/button1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Button"
-                        style="@style/buttonTheme"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-            <androidx.cardview.widget.CardView
-                android:id="@+id/Card_view_campaign2"
-
-                android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:layout_margin="20dp"
-                android:elevation="10dp"
-                app:cardCornerRadius="20dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:text="@string/title_campaign"
-                        android:textAlignment="center"
-                        android:textSize="20sp"></TextView>
-
-                    <Button
-                        android:id="@+id/button2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Button" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-            <androidx.cardview.widget.CardView
-                android:id="@+id/Card_view_campaign3"
-
-                android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:layout_margin="20dp"
-                android:elevation="10dp"
-                app:cardCornerRadius="20dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:text="@string/title_campaign"
-                        android:textAlignment="center"
-                        android:textSize="20sp"></TextView>
-
-                    <Button
-                        android:id="@+id/button3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Button" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-            <androidx.cardview.widget.CardView
-                android:id="@+id/Card_view_campaign4"
-
-                android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:layout_margin="20dp"
-                android:elevation="10dp"
-                app:cardCornerRadius="20dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:text="@string/title_campaign"
-                        android:textAlignment="center"
-                        android:textSize="20sp"></TextView>
-
-                    <Button
-                        android:id="@+id/button4"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Button" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-
-
-
-        </LinearLayout>
-
-
-    </HorizontalScrollView>
+    </androidx.recyclerview.widget.RecyclerView>
 
 </RelativeLayout>

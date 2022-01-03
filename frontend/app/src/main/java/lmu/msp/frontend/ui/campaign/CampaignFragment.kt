@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import lmu.msp.frontend.databinding.FragmentCampaignBinding
 
 class CampaignFragment : Fragment() {
@@ -18,6 +19,11 @@ class CampaignFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var newRecyclerView: RecyclerView
+    private lateinit var newArrayList: ArrayList<campaigns>
+    private lateinit var titleStrings : Array<String>
+    private lateinit var campaignIds : Array<String>
 
     override fun onCreateView(
         inflater: LayoutInflater,
