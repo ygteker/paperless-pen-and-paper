@@ -18,4 +18,5 @@
     <string name="title_home">Home</string>
     <string name="title_campaign">Campaign</string>
     <string name="title_profile">Profile</string>
+    <string name="campaign">Campaign:</string>
 </resources>

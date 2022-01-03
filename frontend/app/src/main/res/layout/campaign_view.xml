@@ -23,7 +23,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="@string/title_campaign"
+                android:text="@string/campaign"
                 android:textAlignment="center"
                 android:textSize="20sp">
 
@@ -48,14 +48,22 @@
                 android:layout_height="wrap_content">
 
             </TextView>
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageViewCampaign"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/placeholder_camping"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent"
+                >
 
+            </com.google.android.material.imageview.ShapeableImageView>
             <Button
-                android:id="@+id/button1"
+                android:id="@+id/cardButton"
                 style="@style/buttonTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="Start" />
         </LinearLayout>
         >
     </com.google.android.material.card.MaterialCardView>

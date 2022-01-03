@@ -4,8 +4,11 @@ import android.view.LayoutInflater
 import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.imageview.ShapeableImageView
 import lmu.msp.frontend.R
 
 
@@ -31,6 +34,21 @@ class CampaignAdapter(private val campaignList: ArrayList<campaigns>) : Recycler
     class CampaignViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
         val titleString : TextView = itemView.findViewById(R.id.title_campaign)
         val campaignId : TextView = itemView.findViewById(R.id.id_campaign)
+        val cardButton : Button = itemView.findViewById(R.id.cardButton)
+        val imageView : ShapeableImageView = itemView.findViewById(R.id.imageViewCampaign)
+
+
+
+        init {
+            cardButton.setOnClickListener{v: View -> campaignButtonClick(titleString.text)}
+        }
+
+        private fun campaignButtonClick( titleString: CharSequence) {
+            Toast.makeText(itemView.context, "You clicked on item $titleString", Toast.LENGTH_SHORT).show()
+        }
 
     }
+
+
+
 }
