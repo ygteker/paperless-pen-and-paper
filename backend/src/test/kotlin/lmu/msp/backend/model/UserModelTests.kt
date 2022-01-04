@@ -9,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.dao.DataIntegrityViolationException
 
 @DataJpaTest
-class UserModelTests(
+internal class UserModelTests(
     @Autowired private val userRepository: UserRepository
 ) {
 
@@ -20,13 +20,13 @@ class UserModelTests(
 
     @Test
     fun autoGenerateUserIdTest() {
-        val u1 = User("u1")
-        val u2 = User("u2")
+        var u1 = User("u1")
+        var u2 = User("u2")
 
-        userRepository.save(u1)
-        userRepository.save(u2)
-        assertThat(userRepository.findById(1).get().auth0Id).isEqualTo("u1")
-        assertThat(userRepository.findById(2).get().auth0Id).isEqualTo("u2")
+        u1 = userRepository.save(u1)
+        u2 = userRepository.save(u2)
+        assertThat(u1.id).isNotEqualTo(0)
+        assertThat(u2.id).isNotEqualTo(0)
     }
 
     @Test
@@ -37,6 +37,5 @@ class UserModelTests(
         userRepository.save(u1)
         assertThrows<DataIntegrityViolationException> { userRepository.saveAndFlush(u2) }
     }
-
 
 }
