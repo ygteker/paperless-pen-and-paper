@@ -34,15 +34,11 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 //allow swagger 3
                 "/api-docs",
                 "/v3/api-docs/**",
-                "/swagger-ui/**",
-                "/h2-console/**"
+                "/swagger-ui/**"
             ).permitAll()
             .anyRequest().authenticated()
             .and().cors()
             .and().oauth2ResourceServer().jwt()
-
-        http.csrf().disable()
-        http.headers().frameOptions().disable()
     }
 
     @Bean
