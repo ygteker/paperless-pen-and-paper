@@ -32,8 +32,6 @@ internal class CampaignServiceTest(@Autowired private val campaignService: Campa
 
         val campaign = campaignRepository.save(Campaign(owner, campaignName))
         campaignId = campaign.id
-        println(campaignId)
-
     }
 
     @AfterEach
