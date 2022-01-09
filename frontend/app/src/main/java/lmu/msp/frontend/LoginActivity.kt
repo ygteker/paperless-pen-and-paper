@@ -52,7 +52,6 @@ class LoginActivity : AppCompatActivity() {
                 override fun onFailure(error: AuthenticationException) {
                     error.printStackTrace()
                 }
-
                 override fun onSuccess(result: Credentials) {
                     val accessToken = result.accessToken
                     intent = Intent(this@LoginActivity, HomeActivity::class.java)
