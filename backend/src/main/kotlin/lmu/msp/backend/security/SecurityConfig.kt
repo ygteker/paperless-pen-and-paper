@@ -35,14 +35,12 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 "/api-docs",
                 "/v3/api-docs/**",
                 "/swagger-ui/**",
+                "/h2-console",
                 "/h2-console/**"
             ).permitAll()
             .anyRequest().authenticated()
             .and().cors()
             .and().oauth2ResourceServer().jwt()
-
-        http.csrf().disable()
-        http.headers().frameOptions().disable()
     }
 
     @Bean
