@@ -3,14 +3,16 @@ package lmu.msp.backend.security
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 
 
-@WebMvcTest
-class RestApiSecurityTest(@Autowired val mockMvc: MockMvc) {
+@AutoConfigureMockMvc
+@SpringBootTest
+internal class RestApiSecurityTest(@Autowired val mockMvc: MockMvc) {
 
     //ignore swagger-ui here in the mock it's not enabled. The endpoints would return 404
     private val publicEndpoints = arrayOf("/hello-world")

@@ -10,7 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.dao.InvalidDataAccessApiUsageException
 
 @DataJpaTest
-class CampaignModelTests(
+internal class CampaignModelTests(
     @Autowired private val userRepository: UserRepository,
     @Autowired private val campaignRepository: CampaignRepository
 
@@ -36,14 +36,14 @@ class CampaignModelTests(
 
         userRepository.save(User("u1"))
 
-        val u1 =  userRepository.findUserByAuth0Id("u1")
+        val u1 = userRepository.findUserByAuth0Id("u1")!!
 
         assertThat(u1.campaignOwner).isEmpty()
 
         //create campaign
         campaignRepository.save(Campaign(u1, "c1"))
 
-        assertThat(userRepository.findUserByAuth0Id("u1").campaignOwner.first().title).isEqualTo("c1")
+        assertThat(userRepository.findUserByAuth0Id("u1")!!.campaignOwner.first().title).isEqualTo("c1")
         assertThat(campaignRepository.findAll().first().owner.auth0Id).isEqualTo("u1")
     }
 
@@ -51,7 +51,7 @@ class CampaignModelTests(
     fun deleteCampaignButNotOwnerTest() {
 
         userRepository.save(User("u1"))
-        val u1 = userRepository.findUserByAuth0Id("u1")
+        val u1 = userRepository.findUserByAuth0Id("u1")!!
         val c1 = Campaign(u1, "c1")
 
 
@@ -75,7 +75,7 @@ class CampaignModelTests(
     @Test
     fun deleteCampaignWhenUserIsDeletedTest() {
         userRepository.save(User("u1"))
-        val u1 = userRepository.findUserByAuth0Id("u1")
+        val u1 = userRepository.findUserByAuth0Id("u1")!!
         val c1 = Campaign(u1, "c1")
 
         campaignRepository.save(c1)
