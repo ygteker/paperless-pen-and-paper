@@ -23,11 +23,15 @@ class CampaignMemberController(@Autowired private val campaignService: ICampaign
         return campaignService.getMembers(auth0Id, campaignId)
     }
 
-    @Operation(summary = "removes user from the campaign. If Requesting user is still in the campaign returns Campaign obj (when owner deletes member)")
+    @Operation(summary = "removes user from the campaign. If the requesting user is still in the campaign returns Campaign obj (when owner deletes member)")
     @DeleteMapping
-    fun deleteMember(authentication: Authentication, @RequestBody campaignId: Long): Campaign {
+    fun deleteMember(
+        authentication: Authentication,
+        @RequestBody campaignId: Long,
+        @RequestBody userToRemoveId: Long
+    ): Campaign? {
         val auth0Id = getAuth0IdFromAuthentication(authentication)
-        TODO("Not yet implemented")
+        return campaignService.removeMember(auth0Id, campaignId, userToRemoveId)
     }
 
     @Operation(summary = "change member information. For now character name only. User must be a member of the campaign")
@@ -37,21 +41,26 @@ class CampaignMemberController(@Autowired private val campaignService: ICampaign
         @RequestBody campaignId: Long,
         @Size(max = 45)
         @RequestBody name: String
-    ): Boolean {
+    ): Campaign? {
         val auth0Id = getAuth0IdFromAuthentication(authentication)
-        TODO("Not yet implemented")
+        return campaignService.renameMember(auth0Id, campaignId, name)
     }
 
     @Operation(summary = "user needs to accept an invite to join a campaign as a member. Owner is not allowed to join as a member. For now invite is not needed. Only campaignId.")
     @PostMapping("/invite/accept")
-    fun acceptInvite(authentication: Authentication, @RequestBody campaignId: Long): Campaign {
+    fun acceptInvite(
+        authentication: Authentication,
+        @RequestBody campaignId: Long,
+        @Size(max = 45)
+        @RequestBody name: String
+    ): Campaign? {
         val auth0Id = getAuth0IdFromAuthentication(authentication)
-        TODO("Not yet implemented")
+        return campaignService.addMember(auth0Id, campaignId, name)
     }
 
-    @Operation(summary ="Not yet implemented")
+    @Operation(summary = "Not yet implemented")
     @GetMapping("/invite/link")
-    fun getInviteLink(authentication: Authentication,@RequestBody campaignId: Long){
+    fun getInviteLink(authentication: Authentication, @RequestBody campaignId: Long) {
         TODO("Not yet implemented")
     }
 }

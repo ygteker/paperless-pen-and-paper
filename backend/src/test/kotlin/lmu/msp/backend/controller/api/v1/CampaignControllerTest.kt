@@ -1,8 +1,10 @@
 package lmu.msp.backend.controller.api.v1
 
 import lmu.msp.backend.model.Campaign
+import lmu.msp.backend.model.CampaignMember
 import lmu.msp.backend.model.User
 import lmu.msp.backend.repository.CampaignRepository
+import lmu.msp.backend.repository.MemberRepository
 import lmu.msp.backend.repository.UserRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
@@ -14,48 +16,54 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import javax.persistence.EntityManager
 
 
 @AutoConfigureMockMvc
 @SpringBootTest
 internal class CampaignControllerTest(@Autowired private val mockMvc: MockMvc) {
 
-    private companion object {
-        private const val path = "/api/v1/campaign"
+    private val path = "/api/v1/campaign"
 
-        private lateinit var owner: User
-        private lateinit var member: User
-        private lateinit var noMember: User
-
-
-        @JvmStatic
-        @BeforeAll
-        fun init(@Autowired userRepository: UserRepository) {
-            owner = userRepository.save(User("owner"))
-            member = userRepository.save(User("member"))
-            noMember = userRepository.save(User("noMember"))
-
-
-        }
-
-        @JvmStatic
-        @AfterAll
-        fun tearDown(@Autowired userRepository: UserRepository) {
-            userRepository.deleteAll()
-        }
-
-    }
+    private lateinit var owner: User
+    private lateinit var member: User
+    private lateinit var noMember: User
 
     private var campaignId: Long = 0
 
     @BeforeEach
-    fun initCampaign(@Autowired campaignRepository: CampaignRepository) {
-        campaignId = campaignRepository.save(Campaign(owner, "title")).id
+    fun setUp(
+        @Autowired userRepository: UserRepository,
+        @Autowired campaignRepository: CampaignRepository,
+        @Autowired memberRepository: MemberRepository
+    ) {
+        owner = userRepository.save(User("owner"))
+        member = userRepository.save(User("member"))
+        noMember = userRepository.save(User("noMember"))
+
+        val campaign = campaignRepository.save(Campaign(owner, "name"))
+
+        val campaignMember = CampaignMember(campaign, member, "charName")
+        campaign.campaignMembers.add(campaignMember)
+        member.campaignMember.add(campaignMember)
+
+        memberRepository.save(campaignMember)
+
+        campaignId = campaign.id
+
     }
 
     @AfterEach
-    fun tearDown(@Autowired campaignRepository: CampaignRepository) {
+    fun tearDown(
+        @Autowired entityManager: EntityManager,
+        @Autowired campaignRepository: CampaignRepository,
+        @Autowired userRepository: UserRepository,
+        @Autowired memberRepository: MemberRepository
+    ) {
+        entityManager.clear()
+        userRepository.deleteAll()
         campaignRepository.deleteAll()
+        memberRepository.deleteAll()
     }
 
     @Test
@@ -72,7 +80,6 @@ internal class CampaignControllerTest(@Autowired private val mockMvc: MockMvc) {
         mockMvc.perform(get(path).param("campaignId", campaignId.toString()))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.id").value(campaignId))
-        TODO("campaing member not yet implemented in testing")
     }
 
     @Test
