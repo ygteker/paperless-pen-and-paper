@@ -1,19 +1,18 @@
 package lmu.msp.backend.model
 
-import com.fasterxml.jackson.annotation.JsonBackReference
-import com.fasterxml.jackson.annotation.JsonManagedReference
+import com.fasterxml.jackson.annotation.JsonIdentityInfo
+import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import javax.persistence.*
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator::class, property = "id")
 final class Campaign(
     @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.EAGER)
-    @JsonBackReference
     val owner: User,
     @Column(nullable = false, length = 45)
     val title: String,
-    @OneToMany(mappedBy = "campaign", cascade = [CascadeType.ALL],fetch = FetchType.EAGER, orphanRemoval = true)
-    @JsonManagedReference
+    @OneToMany(mappedBy = "campaign", cascade = [CascadeType.ALL], fetch = FetchType.EAGER, orphanRemoval = true)
     val campaignMembers: MutableList<CampaignMember> = mutableListOf()
 ) {
     @Id

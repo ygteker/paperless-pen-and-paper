@@ -27,8 +27,8 @@ class CampaignMemberController(@Autowired private val campaignService: ICampaign
     @DeleteMapping
     fun deleteMember(
         authentication: Authentication,
-        @RequestBody campaignId: Long,
-        @RequestBody userToRemoveId: Long
+        @RequestParam campaignId: Long,
+        @RequestParam userToRemoveId: Long
     ): Campaign? {
         val auth0Id = getAuth0IdFromAuthentication(authentication)
         return campaignService.removeMember(auth0Id, campaignId, userToRemoveId)
@@ -38,9 +38,9 @@ class CampaignMemberController(@Autowired private val campaignService: ICampaign
     @PutMapping
     fun updateMember(
         authentication: Authentication,
-        @RequestBody campaignId: Long,
+        @RequestParam campaignId: Long,
         @Size(max = 45)
-        @RequestBody name: String
+        @RequestParam name: String
     ): Campaign? {
         val auth0Id = getAuth0IdFromAuthentication(authentication)
         return campaignService.renameMember(auth0Id, campaignId, name)
@@ -50,9 +50,9 @@ class CampaignMemberController(@Autowired private val campaignService: ICampaign
     @PostMapping("/invite/accept")
     fun acceptInvite(
         authentication: Authentication,
-        @RequestBody campaignId: Long,
+        @RequestParam campaignId: Long,
         @Size(max = 45)
-        @RequestBody name: String
+        @RequestParam name: String
     ): Campaign? {
         val auth0Id = getAuth0IdFromAuthentication(authentication)
         return campaignService.addMember(auth0Id, campaignId, name)
