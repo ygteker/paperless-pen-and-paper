@@ -47,7 +47,9 @@ class LoginActivity : AppCompatActivity() {
             // Toast.makeText(this@LoginActivity, "Login", Toast.LENGTH_SHORT).show()
 
             // Login method
-            login(email, password, databaseConnection)
+        //    login(email, password, databaseConnection)
+            intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
 
             // loginWithBrowser()
 
