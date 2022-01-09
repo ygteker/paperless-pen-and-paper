@@ -11,8 +11,8 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="invite_friend">Invite Friend</string>
-    <string name="com_auth0_client_id">lmu.msp.frontend</string>
-    <string name="com_auth0_domain">YOUR_DOMAIN</string>
+    <string name="com_auth0_client_id">fO2ATpY1mfFrutuO9HLpiiF80qQRSJiH</string>
+    <string name="com_auth0_domain">dev-paperlesspenandpaper.eu.auth0.com</string>
 
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_home">Home</string>

@@ -12,7 +12,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/email"
+        app:layout_constraintBottom_toTopOf="@id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -21,34 +21,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/logo"
-        app:layout_constraintBottom_toTopOf="@id/email"
+        app:layout_constraintBottom_toTopOf="@id/buttonNest"
         android:text="Login"
         android:fontFamily="@font/nunito"
         android:textColor="@color/isabelline"
         android:gravity="center"
         android:textSize="36sp" />
-
-    <EditText
-        android:id="@+id/email"
-        android:hint="email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        app:layout_constraintBottom_toTopOf="@id/password"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        style="@style/editTextTheme"/>
-
-    <EditText
-        android:id="@+id/password"
-        android:hint="password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/email"
-        app:layout_constraintBottom_toTopOf="@id/buttonNest"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        style="@style/editTextTheme"/>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/buttonNest"
@@ -59,24 +37,15 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/password">
+        app:layout_constraintTop_toBottomOf="@id/title">
 
         <Button
             android:id="@+id/loginButton"
             style="@style/buttonTheme"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_marginRight="12dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
             android:text="@string/action_login" />
 
-        <Button
-            android:id="@+id/registerButton"
-            android:layout_weight="0.5"
-            style="@style/buttonTheme"
-            android:layout_marginLeft="12dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/action_register" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.constraintlayout.widget.ConstraintLayout>
