@@ -14,7 +14,7 @@ class User(
     @JsonManagedReference
     val campaignOwner: MutableList<Campaign> = mutableListOf(),
 
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.EAGER, orphanRemoval = true)
     @JsonManagedReference
     val campaignMember: MutableList<CampaignMember> = mutableListOf()
 ) {
@@ -22,10 +22,5 @@ class User(
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     val id: Long = 0
-
-    override fun toString(): String {
-        return "User(auth0Id='$auth0Id', campaignOwner=$campaignOwner, campaignMember=$campaignMember, id=$id)"
-    }
-
 
 }

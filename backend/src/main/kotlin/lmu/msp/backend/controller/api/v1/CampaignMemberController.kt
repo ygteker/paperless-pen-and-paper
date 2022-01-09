@@ -42,7 +42,7 @@ class CampaignMemberController(@Autowired private val campaignService: ICampaign
         TODO("Not yet implemented")
     }
 
-    @Operation(summary = "user needs to accept an invite to join a campaing as a member. Owner is not allowed to join as a member. For now invite is not needed. Only campaignId.")
+    @Operation(summary = "user needs to accept an invite to join a campaign as a member. Owner is not allowed to join as a member. For now invite is not needed. Only campaignId.")
     @PostMapping("/invite/accept")
     fun acceptInvite(authentication: Authentication, @RequestBody campaignId: Long): Campaign {
         val auth0Id = getAuth0IdFromAuthentication(authentication)

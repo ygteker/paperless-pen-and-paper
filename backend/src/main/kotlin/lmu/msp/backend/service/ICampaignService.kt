@@ -39,11 +39,36 @@ interface ICampaignService {
      * @param campaignId
      * @return null if auth0Id is not a member or owner
      */
-    fun getMembers(auth0Id: String,campaignId: Long): List<CampaignMember>?
+    fun getMembers(auth0Id: String, campaignId: Long): List<CampaignMember>?
 
-    fun inviteMember(auth0Id: String, campaignId: Long, memberId: Long)
+    /**
+     * add a member to a campaign. The member will only be added if the member isn't already an owner or member of the campaign
+     * TODO for now there is no restriction who can join a campaign (no invite system yet)
+     *
+     * @param auth0Id
+     * @param campaignId
+     * @param name
+     * @return null if campaign doesn't exist otherwise updated campaign obj
+     */
+    fun addMember(auth0Id: String, campaignId: Long, name:String): Campaign?
 
-    fun acceptMember()
+    /**
+     * remove a member from a campaign. The auth0Id user must be the campaign owner or the user to remove (user can remove itself).
+     *
+     * @param auth0Id
+     * @param campaignId
+     * @param userIdToRemove
+     * @return null if campaign doesn't exist, userToRemove not a member of the campaign, auth0Id isn't the campaign owner neither the userToRemove, otherwise return updated campaign obj
+     */
+    fun removeMember(auth0Id: String, campaignId: Long, userIdToRemove: Long): Campaign?
 
-    fun removeMember()
+    /**
+     * update the name of a campaign member
+     *
+     * @param auth0Id
+     * @param campaignId
+     * @param newName
+     * @return null if auth0Id not a member of the campaign or campaign doesn't exist
+     */
+    fun renameMember(auth0Id: String, campaignId: Long, newName: String): Campaign?
 }

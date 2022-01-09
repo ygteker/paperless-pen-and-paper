@@ -12,9 +12,9 @@ final class Campaign(
     val owner: User,
     @Column(nullable = false, length = 45)
     val title: String,
-    @OneToMany(mappedBy = "campaign", cascade = [CascadeType.ALL], fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "campaign", cascade = [CascadeType.ALL],fetch = FetchType.EAGER, orphanRemoval = true)
     @JsonManagedReference
-    val campaignMembers: List<CampaignMember> = emptyList()
+    val campaignMembers: MutableList<CampaignMember> = mutableListOf()
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

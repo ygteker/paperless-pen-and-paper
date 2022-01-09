@@ -5,20 +5,15 @@ import lmu.msp.backend.model.User
 import lmu.msp.backend.repository.CampaignRepository
 import lmu.msp.backend.repository.UserRepository
 import org.assertj.core.api.Assertions.assertThat
-import org.hamcrest.CoreMatchers.`is`
 import org.junit.jupiter.api.*
-import org.junit.jupiter.params.shadow.com.univocity.parsers.conversions.Conversions.string
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.test.context.support.WithMockUser
-import org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.get
-import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 
 @AutoConfigureMockMvc
@@ -51,11 +46,11 @@ internal class CampaignControllerTest(@Autowired private val mockMvc: MockMvc) {
 
     }
 
-    private lateinit var campaign: Campaign
+    private var campaignId: Long = 0
 
     @BeforeEach
     fun initCampaign(@Autowired campaignRepository: CampaignRepository) {
-        campaign = campaignRepository.save(Campaign(owner, "title"))
+        campaignId = campaignRepository.save(Campaign(owner, "title")).id
     }
 
     @AfterEach
@@ -66,81 +61,68 @@ internal class CampaignControllerTest(@Autowired private val mockMvc: MockMvc) {
     @Test
     @WithMockUser(username = "owner")
     fun getCampaignOwner() {
-        mockMvc.perform(
-            get(path).param("campaignId", campaign.id.toString())
-        ).andExpect {
-            status().isOk
-            jsonPath("$.id", `is`(campaign.id.toInt()))
-        }
+        mockMvc.perform(get(path).param("campaignId", campaignId.toString()))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.id").value(campaignId))
     }
 
     @Test
     @WithMockUser(username = "member")
     fun getCampaignMember() {
-        mockMvc.perform(
-            get(path).param("campaignId", campaign.id.toString())
-        ).andExpect {
-            status().isOk
-            jsonPath("$.id", `is`(campaign.id.toInt()))
-        }
+        mockMvc.perform(get(path).param("campaignId", campaignId.toString()))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.id").value(campaignId))
+        TODO("campaing member not yet implemented in testing")
     }
 
     @Test
     @WithMockUser(username = "noMember")
     fun getCampaignNoMember() {
-        mockMvc.perform(
-            get(path).param("campaignId", campaign.id.toString())
-        ).andExpect {
-            status().isOk
-            content().string("")
-        }
+        mockMvc.perform(get(path).param("campaignId", campaignId.toString()))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.id").doesNotExist())
     }
 
     @Test
     @WithMockUser(username = "owner")
     fun createCampaign() {
         val title = "new title"
-        mockMvc.perform(
-            post(path).content(title)
-        ).andExpect {
-            status().isOk
-            jsonPath("$.title", `is`(title))
-        }
+        mockMvc.perform(post(path).content(title).with(csrf().asHeader()))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.title").value(title))
     }
 
     @Test
     @WithMockUser(username = "owner")
     fun deleteCampaignOwner(@Autowired campaignRepository: CampaignRepository) {
         mockMvc.perform(
-            delete(path).param("campaignId", campaign.id.toString())
-        ).andExpect {
-            status().isOk
-            content().string("true")
-        }
-        assertThat(campaignRepository.findById(campaign.id)).isEmpty
+            delete(path).param("campaignId", campaignId.toString()).with(csrf().asHeader())
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().string("true"))
+
+        assertThat(campaignRepository.findById(campaignId)).isEmpty
     }
 
     @Test
     @WithMockUser(username = "member")
     fun deleteCampaignMember(@Autowired campaignRepository: CampaignRepository) {
         mockMvc.perform(
-            delete(path).param("campaignId", campaign.id.toString())
-        ).andExpect {
-            status().isOk
-            content().string("false")
-        }
-        assertThat(campaignRepository.findById(campaign.id)).isNotEmpty
+            delete(path).param("campaignId", campaignId.toString()).with(csrf().asHeader())
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().string("false"))
+        assertThat(campaignRepository.findById(campaignId)).isNotEmpty
     }
 
     @Test
     @WithMockUser(username = "noMember")
     fun deleteCampaignNoMember(@Autowired campaignRepository: CampaignRepository) {
         mockMvc.perform(
-            delete(path).param("campaignId", campaign.id.toString())
-        ).andExpect {
-            status().isOk
-            content().string("false")
-        }
-        assertThat(campaignRepository.findById(campaign.id)).isNotEmpty
+            delete(path).param("campaignId", campaignId.toString()).with(csrf().asHeader())
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().string("false"))
+        assertThat(campaignRepository.findById(campaignId)).isNotEmpty
     }
 }

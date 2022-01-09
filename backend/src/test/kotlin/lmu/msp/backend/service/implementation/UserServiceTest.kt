@@ -1,59 +1,96 @@
 package lmu.msp.backend.service.implementation
 
 import lmu.msp.backend.model.Campaign
+import lmu.msp.backend.model.CampaignMember
+import lmu.msp.backend.model.User
 import lmu.msp.backend.repository.CampaignRepository
+import lmu.msp.backend.repository.MemberRepository
+import lmu.msp.backend.repository.UserRepository
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.repository.findByIdOrNull
+import javax.persistence.EntityManager
 
 @SpringBootTest
-internal class UserServiceTest(@Autowired val userService: UserService) {
+internal class UserServiceTest(
+    @Autowired private val userService: UserService,
+    @Autowired private val userRepository: UserRepository,
+    @Autowired private val campaignRepository: CampaignRepository,
+    @Autowired private val memberRepository: MemberRepository
+) {
 
-    @Test
-    fun getUserByAuth0Id() {
-        val auth0Id = "test"
+    private val auth0Owner = "owner"
+    private val auth0Member = "member"
 
-        //we don't have user yet => a new user needs to be created
-        val user1 = userService.getUserByAuth0Id(auth0Id)
-        assertThat(user1).isNotNull
-        assertThat(user1.auth0Id).isEqualTo(auth0Id)
+    private var campaignId: Long = 0
 
-        //load the auth0id again. The user must be the same as the first
-        val user2 = userService.getUserByAuth0Id(auth0Id)
-        assertThat(user1.auth0Id).isEqualTo(user2.auth0Id)
 
+    @BeforeEach
+    fun setUp() {
+        val owner = userRepository.save(User(auth0Owner))
+        val member = userRepository.save(User(auth0Member))
+        val campaign = campaignRepository.save(Campaign(owner, "name"))
+
+        val campaignMember = CampaignMember(campaign, member, "charName")
+        campaign.campaignMembers.add(campaignMember)
+        member.campaignMember.add(campaignMember)
+        memberRepository.save(campaignMember)
+
+        campaignId = campaign.id
+    }
+
+    @AfterEach
+    fun tearDown(
+        @Autowired entityManager: EntityManager,
+        @Autowired campaignRepository: CampaignRepository,
+        @Autowired userRepository: UserRepository,
+        @Autowired memberRepository: MemberRepository
+    ) {
+        entityManager.clear()
+        userRepository.deleteAll()
+        campaignRepository.deleteAll()
+        memberRepository.deleteAll()
     }
 
     @Test
-    fun removeCampaignFromUser(@Autowired campaignRepository: CampaignRepository) {
-        val auth0Owner = "owner"
-        val auth0Member = "member"
+    fun getUserByAuth0Id() {
+        val user = userService.getUserByAuth0Id(auth0Owner)
+        assertThat(user.id).isEqualTo(userRepository.findUserByAuth0Id(auth0Owner)!!.id)
+    }
 
+    @Test
+    fun getNewUserBy() {
+        val auth0Id = "test"
+        val user = userService.getUserByAuth0Id(auth0Id)
+        assertThat(user.id).isEqualTo(userRepository.findUserByAuth0Id(auth0Id)!!.id)
 
-        var userOwner = userService.getUserByAuth0Id(auth0Owner)
-        val userMember = userService.getUserByAuth0Id(auth0Member)
+        //load the auth0id again. The user must be the same as the first
+        assertThat(userService.getUserByAuth0Id(auth0Id).id).isEqualTo(user.id)
+    }
 
-        val campaign = campaignRepository.save(Campaign(userOwner, "test"))
+    @Test
+    fun removeCampaignFromMember(@Autowired campaignRepository: CampaignRepository) {
+        val member = userRepository.findUserByAuth0Id(auth0Member)!!
+        val campaign = campaignRepository.findById(campaignId).get()
+        userService.removeCampaignFromUser(member, campaign)
 
-        userOwner = userService.getUserByAuth0Id(auth0Owner)
+        assertThat(userRepository.findUserByAuth0Id(auth0Member)!!.campaignMember).isEmpty()
+        assertThat(campaignRepository.findById(campaignId).get().campaignMembers).isEmpty()
+    }
 
-        //check if new campaign is owned by owner
-        assertThat(userOwner.id).isEqualTo(campaign.owner.id)
+    @Test
+    fun removeCampaignFromOwner(@Autowired campaignRepository: CampaignRepository) {
+        val owner = userRepository.findUserByAuth0Id(auth0Owner)!!
+        val campaign = campaignRepository.findById(campaignId).get()
+        userService.removeCampaignFromUser(owner, campaign)
 
+        assertThat(campaignRepository.findById(campaignId)).isEmpty
 
-        userOwner = userService.removeCampaignFromUser(userOwner, campaign)
-
-
-        //check if returned obj doesn't contain campaign
-        assertThat(userOwner.campaignOwner).isEmpty()
-        //check if changes are written to the db
-        assertThat(userService.getUserByAuth0Id(auth0Owner).campaignOwner).isEmpty()
-        //check if there is really no campaign anymore
-        assertThat(campaignRepository.findByIdOrNull(campaign.id)).isNull()
-
-        TODO("Delete Member from Campaign not yet implemented")
+        assertThat(userRepository.findUserByAuth0Id(auth0Owner)!!.campaignOwner).isEmpty()
     }
 
 
