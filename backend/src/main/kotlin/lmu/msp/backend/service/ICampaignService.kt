@@ -10,7 +10,7 @@ interface ICampaignService {
      *
      * @param auth0Id must be a member or the owner of the campaign
      * @param campaignId the campaign
-     * @return null if the auth0Id isn't a member or owner of the campaig or if campaign doesn't exist
+     * @return null if the auth0Id isn't a member or owner of the campaign or if campaign doesn't exist
      */
     fun getCampaign(auth0Id: String, campaignId: Long): Campaign?
 
