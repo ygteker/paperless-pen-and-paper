@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import lmu.msp.frontend.R
-import lmu.msp.frontend.databinding.FragmentCampaignBinding
+
 
 class CampaignFragment : Fragment() {
 
