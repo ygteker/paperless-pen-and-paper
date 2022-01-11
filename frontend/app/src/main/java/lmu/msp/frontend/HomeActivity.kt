@@ -8,16 +8,21 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import lmu.msp.frontend.databinding.ActivityHomeBinding
+import lmu.msp.frontend.helpers.auth0.PAuthenticator
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
+
+    private lateinit var auth: PAuthenticator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        auth = PAuthenticator(this)
 
         val navView: BottomNavigationView = binding.navView
 
@@ -31,5 +36,9 @@ class HomeActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+    }
+
+    fun logout() {
+        auth.logout()
     }
 }
