@@ -13,6 +13,7 @@
     <string name="invite_friend">Invite Friend</string>
     <string name="com_auth0_client_id">fO2ATpY1mfFrutuO9HLpiiF80qQRSJiH</string>
     <string name="com_auth0_domain">dev-paperlesspenandpaper.eu.auth0.com</string>
+    <string name="com_auth0_audience">https://dev-paperlesspenandpaper.eu.auth0.com/api/v2/</string>
     <string name="com_auth0_scheme">demo</string>
 
     <string name="title_activity_home">HomeActivity</string>

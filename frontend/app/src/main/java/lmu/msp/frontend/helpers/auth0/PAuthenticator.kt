@@ -34,6 +34,7 @@ class PAuthenticator(private val context: Context) {
     fun login() {
         WebAuthProvider.login(account)
             .withScheme(context.getString(R.string.com_auth0_scheme))
+            .withAudience(context.getString(R.string.com_auth0_audience))
             .start(context, object : Callback<Credentials, AuthenticationException> {
                 override fun onSuccess(result: Credentials) {
                     val intent = Intent(context, HomeActivity::class.java)
