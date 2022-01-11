@@ -27,6 +27,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var auth: PAuthenticator
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Theme_MaterialComponents_NoActionBar)
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         val view = binding.root
