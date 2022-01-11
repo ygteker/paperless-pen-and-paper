@@ -5,16 +5,120 @@
     android:layout_height="match_parent">
 
 
-    <ImageView
-        android:id="@+id/d6View"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:src="@drawable/d6_one" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rollDiceRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
     <TextView
-        android:id="@+id/resultView"
+        android:id="@+id/resultTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/d6View"
-        android:text="" />
+        android:layout_below="@id/rollDiceRecyclerView"
+        android:text="Result: "
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/layoutD4D6D8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/resultTextView"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/addButtonD4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:text="Add D4" />
+
+        <Button
+            android:id="@+id/addButtonD6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:text="Add D6" />
+
+        <Button
+            android:id="@+id/addButtonD8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:text="Add D8" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutD10D12D20"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layoutD4D6D8"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/addButtonD10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:text="Add D10" />
+
+        <Button
+            android:id="@+id/addButtonD12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:text="Add D12" />
+
+        <Button
+            android:id="@+id/addButtonD20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:text="Add D20" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/rollDiceButtonAll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layoutD10D12D20"
+        android:layout_margin="5dp"
+        android:text="Roll Dice!"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/testButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rollDiceButtonAll"
+        android:text="Test" />
+
+
 </RelativeLayout>

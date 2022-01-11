@@ -45,8 +45,8 @@ class CampaignFragment : Fragment() {
         )
         val view = inflater.inflate(R.layout.fragment_campaign, container, false)
         addCampaignButton = view.findViewById(R.id.testAddButton)
-
         newRecyclerView = view.findViewById(R.id.recyclerView)
+
         val horizontalLayoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         newRecyclerView.layoutManager = horizontalLayoutManager
