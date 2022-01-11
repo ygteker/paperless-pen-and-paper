@@ -1,5 +1,6 @@
 package lmu.msp.frontend.ui.campaign
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.TextureView
 import android.view.View
@@ -40,11 +41,14 @@ class CampaignAdapter(private val campaignList: ArrayList<campaigns>) : Recycler
 
 
         init {
-            cardButton.setOnClickListener{v: View -> campaignButtonClick(titleString.text)}
+            cardButton.setOnClickListener{ v: View -> campaignButtonClick(v, titleString.text) }
         }
 
-        private fun campaignButtonClick( titleString: CharSequence) {
-            Toast.makeText(itemView.context, "You clicked on item $titleString", Toast.LENGTH_SHORT).show()
+        private fun campaignButtonClick(v: View, titleString: CharSequence) {
+            //Toast.makeText(itemView.context, "You clicked on item $titleString", Toast.LENGTH_SHORT).show()
+            val intent = Intent(v.context, CampaignActivity::class.java)
+            v.context.startActivity(intent)
+
         }
 
     }
