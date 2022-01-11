@@ -29,25 +29,26 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     }
 
 }
-private const val STROKE_WIDTH = 12f // has to be float
+
 private class MyCanvasView(context: Context) : View(context) {
-    private lateinit var extraCanvas: Canvas
-    private lateinit var extraBitmap: Bitmap
-
-    private val drawColor = ResourcesCompat.getColor(resources, R.color.black, null)
+    private var extraCanvas: Canvas? = null
     private var path = Path()
+    private val paths = ArrayList<Path>()
+    private val undonePaths = ArrayList<Path>()
+    private var strokeWidth = 12f
+    private val drawColor = ResourcesCompat.getColor(resources, R.color.black, null)
 
-    // Set up the paint with which to draw.
+
     private val paint = Paint().apply {
         color = drawColor
-        // Smooths out edges of what is drawn without affecting shape.
+
         isAntiAlias = true
-        // Dithering affects how colors with higher-precision than the device are down-sampled.
+
         isDither = true
-        style = Paint.Style.STROKE // default: FILL
-        strokeJoin = Paint.Join.ROUND // default: MITER
-        strokeCap = Paint.Cap.ROUND // default: BUTT
-        strokeWidth = STROKE_WIDTH // default: Hairline-width (really thin)
+        style = Paint.Style.STROKE
+        strokeJoin = Paint.Join.ROUND
+        strokeCap = Paint.Cap.ROUND
+        strokeWidth = 12f
     }
 
     private var motionTouchEventX = 0f
@@ -59,18 +60,16 @@ private class MyCanvasView(context: Context) : View(context) {
     private val touchTolerance = ViewConfiguration.get(context).scaledTouchSlop
 
 
-    private val backgroundColor = ResourcesCompat.getColor(resources, R.color.white, null)
-
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
         super.onSizeChanged(width, height, oldWidth, oldHeight)
-        if (::extraBitmap.isInitialized) extraBitmap.recycle()
-        extraBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        extraCanvas = Canvas(extraBitmap)
-        extraCanvas.drawColor(backgroundColor)
+        extraCanvas = Canvas()
     }
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawBitmap(extraBitmap, 0f, 0f, null)
+        for (Path in paths) {
+            canvas.drawPath(Path, paint)
+        }
+        canvas.drawPath(path, paint)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -85,10 +84,12 @@ private class MyCanvasView(context: Context) : View(context) {
         return true
     }
     private fun touchStart() {
+        undonePaths.clear()
         path.reset()
         path.moveTo(motionTouchEventX, motionTouchEventY)
         currentX = motionTouchEventX
         currentY = motionTouchEventY
+        invalidate()
     }
 
     private fun touchMove() {
@@ -100,14 +101,37 @@ private class MyCanvasView(context: Context) : View(context) {
             path.quadTo(currentX, currentY, (motionTouchEventX + currentX) / 2, (motionTouchEventY + currentY) / 2)
             currentX = motionTouchEventX
             currentY = motionTouchEventY
-            // Draw the path in the extra bitmap to cache it.
-            extraCanvas.drawPath(path, paint)
         }
         invalidate()
     }
 
     private fun touchUp() {
-        // Reset the path so it doesn't get drawn again.
-        path.reset()
+        path.lineTo(currentX, currentY)
+        extraCanvas?.drawPath(path, paint)
+        paths.add(path)
+        path = Path()
+
     }
+
+    /*fun undoCanvasDrawing() {
+        if (paths.size > 0) {
+            undonePaths.add(paths.removeAt(paths.size - 1))
+            invalidate()
+        } else {
+            Log.d("UNDO_ERROR", "Something went wrong with UNDO action")
+        }
+    }
+    fun redoCanvasDrawing() {
+        if (undonePaths.size > 0) {
+            paths.add(undonePaths.removeAt(undonePaths.size - 1))
+            invalidate()
+        } else {
+            Log.d("REDO_ERROR", "Something went wrong with REDO action")
+        }
+    }
+    fun resetCanvasDrawing() {
+        path.reset() // Avoiding saving redo from Path()
+        paths.clear()
+        invalidate()
+    }*/
 }
