@@ -6,6 +6,24 @@
     android:layout_height="match_parent"
     tools:context=".ui.profile.ProfileFragment">
 
+<!--    <ListView-->
+<!--        android:id="@+id/list"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        android:entries="@array/profile_list_items">-->
+<!--    </ListView>-->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
     <TextView
         android:id="@+id/text_profile"
         android:layout_width="match_parent"
