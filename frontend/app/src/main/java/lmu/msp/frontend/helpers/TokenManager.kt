@@ -1,36 +1,68 @@
 package lmu.msp.frontend.helpers
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
-import lmu.msp.frontend.Constants.Companion.SHARED_PATH_USER_TOKEN
-import lmu.msp.frontend.R
+import com.auth0.android.Auth0
+import com.auth0.android.authentication.AuthenticationAPIClient
+import com.auth0.android.authentication.storage.CredentialsManagerException
+import com.auth0.android.authentication.storage.SecureCredentialsManager
+import com.auth0.android.authentication.storage.SharedPreferencesStorage
+import com.auth0.android.callback.Callback
+import com.auth0.android.result.Credentials
 
 
 class TokenManager(context: Context) {
 
-    companion object{
+    companion object {
         private const val TAG = "TokenManager"
     }
 
+    private var token: String = ""
 
-    private var sharedPreferences: SharedPreferences = context.getSharedPreferences(
-        context.getString(R.string.app_name), Context.MODE_PRIVATE
-    )
+    private val credentialsManager: SecureCredentialsManager
 
-    fun save(token: String) {
-        Log.i(TAG,"save")
-        //write token to shared preferences (they are in private mode)
-        sharedPreferences.edit().putString(SHARED_PATH_USER_TOKEN, token).apply()
+    init {
+        val auth0 = Auth0(context)
+        val apiClient = AuthenticationAPIClient(auth0)
+        credentialsManager =
+            SecureCredentialsManager(context, apiClient, SharedPreferencesStorage(context))
+
+        credentialsManager.getCredentials(object :
+            Callback<Credentials, CredentialsManagerException> {
+            override fun onSuccess(result: Credentials) {
+                Log.d(TAG, "loaded token from credentials manager")
+                token = result.accessToken
+            }
+
+            override fun onFailure(error: CredentialsManagerException) {
+                Log.d(TAG, "wasn't able to load token from credentials manager")
+                token = ""
+            }
+        })
     }
 
-    fun load(): String? {
-        Log.i(TAG,"load")
-        return sharedPreferences.getString(SHARED_PATH_USER_TOKEN, null)
+    fun save(credentials: Credentials) {
+        Log.d(TAG, "save new credentials")
+        credentialsManager.saveCredentials(credentials)
+        token = credentials.accessToken
+    }
+
+    fun hasToken(): Boolean {
+        Log.d(TAG, "check if auth token is valid")
+        return token.isNotEmpty() && credentialsManager.hasValidCredentials()
+    }
+
+    fun load(): String {
+        Log.d(TAG, "load auth token")
+        return if (hasToken()) {
+            token
+        } else {
+            ""
+        }
     }
 
     fun deleteToken() {
-        Log.i(TAG,"delete")
-        sharedPreferences.edit().remove(SHARED_PATH_USER_TOKEN).apply()
+        Log.d(TAG, "delete auth token")
+        credentialsManager.clearCredentials()
     }
 }

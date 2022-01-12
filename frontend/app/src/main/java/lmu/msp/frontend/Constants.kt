@@ -10,10 +10,5 @@ class Constants {
         const val PATH_MEMBER_INVITE_LINK = "$PATH_MEMBER/invite/link"
         const val PATH_MEMBER_INVITE_ACCEPT = "$PATH_MEMBER/invite/accept"
         const val PATH_USER = "user"
-
-        //paths for shared preferences
-        const val SHARED_PATH_USER_TOKEN = "user_token"
-
-
     }
 }
