@@ -9,6 +9,6 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_margin="5dp"
-        android:src="@drawable/d6_one" />
+        android:src="@drawable/logo" />
 
 </LinearLayout>
