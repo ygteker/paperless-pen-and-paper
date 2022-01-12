@@ -1,7 +1,5 @@
 package lmu.msp.frontend.helpers.auth0
 
-import android.app.Activity
-import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
