@@ -16,7 +16,13 @@ class User(
     val campaignOwner: MutableList<Campaign> = mutableListOf(),
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.EAGER, orphanRemoval = true)
-    val campaignMember: MutableList<CampaignMember> = mutableListOf()
+    val campaignMember: MutableList<CampaignMember> = mutableListOf(),
+
+    @OneToMany(mappedBy = "sender", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
+    val sendMails: MutableList<Mail> = mutableListOf(),
+
+    @OneToMany(mappedBy = "receiver", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
+    val receivedMails: MutableList<Mail> = mutableListOf()
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
