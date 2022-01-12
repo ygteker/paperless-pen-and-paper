@@ -32,7 +32,7 @@ internal class CampaignMemberTest(
         val campaign = campaignRepository.save(Campaign(owner, "name"))
 
         val campaignMember = CampaignMember(campaign, member, "charName")
-        campaign.campaignMembers.add(campaignMember)
+        campaign.campaignMember.add(campaignMember)
         member.campaignMember.add(campaignMember)
 
         campaignMemberId = memberRepository.save(campaignMember).id
@@ -57,10 +57,10 @@ internal class CampaignMemberTest(
 
         val campaignMember = memberRepository.findByCampaignIdAndUserId(campaignId, memberId)!!
 
-        assertThat(campaign.campaignMembers).isNotEmpty
+        assertThat(campaign.campaignMember).isNotEmpty
         assertThat(member.campaignMember).isNotEmpty
         assertThat(campaignMember.characterName).isEqualTo("charName")
-        assertThat(campaign.campaignMembers[0].id).isEqualTo(campaignMember.id)
+        assertThat(campaign.campaignMember[0].id).isEqualTo(campaignMember.id)
         assertThat(member.campaignMember[0].id).isEqualTo(campaignMember.id)
 
     }
@@ -69,7 +69,7 @@ internal class CampaignMemberTest(
     fun removeMember() {
         val campaignMember = memberRepository.findById(campaignMemberId).get()
         campaignMember.user.campaignMember.remove(campaignMember)
-        campaignMember.campaign.campaignMembers.remove(campaignMember)
+        campaignMember.campaign.campaignMember.remove(campaignMember)
 
         memberRepository.deleteById(campaignMemberId)
 
@@ -79,7 +79,7 @@ internal class CampaignMemberTest(
 
 
         assertThat(campaignRepository.findById(campaignId)).isNotEmpty
-        assertThat(campaignRepository.findById(campaignId).get().campaignMembers).isEmpty()
+        assertThat(campaignRepository.findById(campaignId).get().campaignMember).isEmpty()
 
         assertThat(userRepository.findById(memberId)).isNotEmpty
         assertThat(userRepository.findById(memberId).get().campaignMember).isEmpty()
@@ -96,7 +96,7 @@ internal class CampaignMemberTest(
 
         assertThat(memberRepository.findById(campaignMemberId).get().characterName).isEqualTo(newName)
         assertThat(userRepository.findById(memberId).get().campaignMember[0].characterName).isEqualTo(newName)
-        assertThat(campaignRepository.findById(campaignId).get().campaignMembers[0].characterName).isEqualTo(newName)
+        assertThat(campaignRepository.findById(campaignId).get().campaignMember[0].characterName).isEqualTo(newName)
 
     }
 

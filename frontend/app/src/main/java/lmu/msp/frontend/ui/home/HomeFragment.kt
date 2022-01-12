@@ -24,8 +24,8 @@ class HomeFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
 
-        userApi = RetrofitProvider().getUserApi(view.context)
-
+        userApi = RetrofitProvider(view.context).getUserApi()
+/*
         userApi.getAuthenticatedHelloWorld()
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
@@ -35,7 +35,7 @@ class HomeFragment : Fragment() {
             }
             .doOnSuccess { Log.i("abc", it) }
             .subscribe { t1, t2 -> Log.i("abc", "subscr: $t1") }
-
+*/
         return view
     }
 }

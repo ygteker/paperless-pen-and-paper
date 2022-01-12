@@ -26,8 +26,8 @@ class UserService(
     @Transactional
     override fun removeCampaignFromUser(user: User, campaign: Campaign): User {
         if (campaign.owner.id == user.id) {
-            campaign.campaignMembers.forEach { it.user.campaignMember.remove(it) }
-            campaign.campaignMembers.clear()
+            campaign.campaignMember.forEach { it.user.campaignMember.remove(it) }
+            campaign.campaignMember.clear()
             memberRepository.deleteByCampaignId(campaign.id)
 
             user.campaignOwner.removeIf { it.id == campaign.id }
@@ -35,7 +35,7 @@ class UserService(
             val campaignMember = user.campaignMember.find { it.campaign.id == campaign.id }
             if (campaignMember != null) {
                 user.campaignMember.remove(campaignMember)
-                campaignMember.campaign.campaignMembers.remove(campaignMember)
+                campaignMember.campaign.campaignMember.remove(campaignMember)
 
                 memberRepository.save(campaignMember)
             }

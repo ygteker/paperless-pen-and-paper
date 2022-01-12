@@ -13,7 +13,7 @@ final class Campaign(
     @Column(nullable = false, length = 45)
     val title: String,
     @OneToMany(mappedBy = "campaign", cascade = [CascadeType.ALL], fetch = FetchType.EAGER, orphanRemoval = true)
-    val campaignMembers: MutableList<CampaignMember> = mutableListOf()
+    val campaignMember: MutableList<CampaignMember> = mutableListOf()
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

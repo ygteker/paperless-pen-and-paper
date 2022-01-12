@@ -15,28 +15,17 @@ import retrofit2.converter.gson.GsonConverterFactory
  * provides retrofit apis
  *
  */
-class RetrofitProvider {
+class RetrofitProvider(context: Context) {
+
+    private val okHttpClient: OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(interceptorAuth(context))
+        .addInterceptor(interceptorLogging())
+        .build()
 
     private lateinit var userApi: PenAndPaperApiInterface.UserApi
-
-    /**
-     * if not init yet generates ne userApi and returns it
-     *
-     * @param context
-     * @return
-     */
-    fun getUserApi(context: Context): PenAndPaperApiInterface.UserApi {
-        if (!::userApi.isInitialized) {
-            val okHttpClient = OkHttpClient.Builder()
-                .addInterceptor(interceptorAuth(context))
-                .addInterceptor(interceptorLogging())
-                .build()
-
-            userApi = createRetrofitWithRxJava(okHttpClient)
-                .create(PenAndPaperApiInterface.UserApi::class.java)
-        }
-        return userApi
-    }
+    private lateinit var campaignApi: PenAndPaperApiInterface.CampaignApi
+    private lateinit var campaignMemberApi: PenAndPaperApiInterface.CampaignMemberApi
+    private lateinit var inviteCampaignApi: PenAndPaperApiInterface.InviteCampaignApi
 
     private fun interceptorLogging() =
         HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC)
@@ -44,9 +33,45 @@ class RetrofitProvider {
     private fun interceptorAuth(context: Context) = AuthInterceptor(TokenManager(context))
 
     private fun createRetrofitWithRxJava(okHttpClient: OkHttpClient) = Retrofit.Builder()
-        .baseUrl(Constants.API_BASE_PATH_DEMO)
+        .baseUrl(Constants.API_BASE_PATH)
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(GsonConverterFactory.create())
         .client(okHttpClient)
         .build()
+
+    /**
+     * with the "!::userApi.isInitialized" implementation
+     * an api object only hast to be created if the class really needs it
+     *
+     */
+
+
+    fun getUserApi(): PenAndPaperApiInterface.UserApi {
+        if (!::userApi.isInitialized) {
+            userApi = createRetrofitWithRxJava(okHttpClient)
+                .create(PenAndPaperApiInterface.UserApi::class.java)
+        }
+        return userApi
+    }
+    fun getCampaignApi(): PenAndPaperApiInterface.CampaignApi {
+        if (!::campaignApi.isInitialized) {
+            campaignApi = createRetrofitWithRxJava(okHttpClient)
+                .create(PenAndPaperApiInterface.CampaignApi::class.java)
+        }
+        return campaignApi
+    }
+    fun getCampaignMemberApi(): PenAndPaperApiInterface.CampaignMemberApi {
+        if (!::campaignMemberApi.isInitialized) {
+            campaignMemberApi = createRetrofitWithRxJava(okHttpClient)
+                .create(PenAndPaperApiInterface.CampaignMemberApi::class.java)
+        }
+        return campaignMemberApi
+    }
+    fun getInviteCampaignApi(): PenAndPaperApiInterface.InviteCampaignApi {
+        if (!::inviteCampaignApi.isInitialized) {
+            inviteCampaignApi = createRetrofitWithRxJava(okHttpClient)
+                .create(PenAndPaperApiInterface.InviteCampaignApi::class.java)
+        }
+        return inviteCampaignApi
+    }
 }
