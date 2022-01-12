@@ -45,7 +45,7 @@ class CampaignService(
     override fun getMembers(auth0Id: String, campaignId: Long): List<CampaignMember>? {
         val campaign = campaignRepository.findByIdOrNull(campaignId) ?: return null
         return if (isMemberOrOwner(auth0Id, campaign)) {
-            campaign.campaignMembers
+            campaign.campaignMember
         } else {
             null
         }
@@ -60,7 +60,7 @@ class CampaignService(
         val user = userService.getUserByAuth0Id(auth0Id)
 
         val campaignMember = CampaignMember(campaign, user, name)
-        campaign.campaignMembers.add(campaignMember)
+        campaign.campaignMember.add(campaignMember)
         user.campaignMember.add(campaignMember)
 
         memberRepository.save(campaignMember)
@@ -86,7 +86,7 @@ class CampaignService(
         val campaignMember = memberRepository.findByCampaignIdAndUserId(campaignId, userIdToRemove) ?: return null
 
         campaignMember.user.campaignMember.remove(campaignMember)
-        campaignMember.campaign.campaignMembers.remove(campaignMember)
+        campaignMember.campaign.campaignMember.remove(campaignMember)
 
         memberRepository.deleteById(campaignMember.id)
         return campaignMember.campaign
@@ -108,7 +108,7 @@ class CampaignService(
     }
 
     private fun isMember(userId: Long, campaign: Campaign): Boolean {
-        return campaign.campaignMembers.find { it.user.id == userId } != null
+        return campaign.campaignMember.find { it.user.id == userId } != null
     }
 
     private fun isMemberOrOwner(userId: Long, campaign: Campaign): Boolean {
@@ -120,7 +120,7 @@ class CampaignService(
     }
 
     private fun isMember(auth0Id: String, campaign: Campaign): Boolean {
-        return campaign.campaignMembers.find { it.user.auth0Id == auth0Id } != null
+        return campaign.campaignMember.find { it.user.auth0Id == auth0Id } != null
     }
 
     private fun isMemberOrOwner(auth0Id: String, campaign: Campaign): Boolean {
