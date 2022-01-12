@@ -1,5 +1,7 @@
 package lmu.msp.frontend.helpers.auth0
 
+import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
@@ -10,6 +12,7 @@ import com.auth0.android.callback.Callback
 import com.auth0.android.provider.WebAuthProvider
 import com.auth0.android.request.DefaultClient
 import com.auth0.android.result.Credentials
+import lmu.msp.frontend.HomeActivity
 import lmu.msp.frontend.LoginActivity
 import lmu.msp.frontend.R
 import lmu.msp.frontend.helpers.TokenManager
@@ -38,6 +41,10 @@ class PAuthenticator(private val context: Context, private val tokenManager: Tok
             .start(context, object : Callback<Credentials, AuthenticationException> {
                 override fun onSuccess(result: Credentials) {
                     tokenManager.save(result)
+
+                    context.startActivity(Intent(context, HomeActivity::class.java))
+
+
                 }
 
                 override fun onFailure(error: AuthenticationException) {

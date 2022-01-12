@@ -31,14 +31,13 @@ class LoginActivity : AppCompatActivity() {
         loginButton.setOnClickListener {
             auth.login()
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
         if(tokenManager.hasToken()){
-            this.startActivity(Intent(this, HomeActivity::class.java))
+            val intent = Intent(this, HomeActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME
+            startActivity(intent)
+            finish()
         }
     }
-
 
 }
