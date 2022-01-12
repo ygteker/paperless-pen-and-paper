@@ -1,29 +1,32 @@
 package lmu.msp.frontend.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.activityViewModels
+import lmu.msp.frontend.viewmodels.UserViewModel
 import lmu.msp.frontend.R
-import lmu.msp.frontend.ui.campaign.campaigns
 
 class HomeFragment : Fragment() {
+    companion object{
+        private const val TAG = "HomeFragment"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        return inflater.inflate(R.layout.fragment_home, container, false)
+    }
 
-       val view =inflater.inflate(R.layout.fragment_home, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-
-        return view
+        val viewModel: UserViewModel by activityViewModels()
+        viewModel.getUser().observe(viewLifecycleOwner, { Log.i(TAG, "new user ${it.id}") })
     }
 }

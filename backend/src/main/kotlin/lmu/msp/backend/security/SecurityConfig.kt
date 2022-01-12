@@ -34,7 +34,9 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 //allow swagger 3
                 "/api-docs",
                 "/v3/api-docs/**",
-                "/swagger-ui/**"
+                "/swagger-ui/**",
+                "/h2-console",
+                "/h2-console/**"
             ).permitAll()
             .anyRequest().authenticated()
             .and().cors()
