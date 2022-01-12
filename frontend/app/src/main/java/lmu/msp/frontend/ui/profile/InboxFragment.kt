@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,16 +28,17 @@ class InboxFragment: Fragment() {
         listrc = binding.inboxList
 
         messages = MessageModel.createContactsList(50)
-        val adapter = MessagesAdapter(messages)
+        val adapter = MessagesAdapter({position -> onListItemClick(position) }, messages)
         listrc.adapter = adapter
 
         listrc.layoutManager = LinearLayoutManager(requireContext())
 
-        adapter.onItemClick{
-
-        }
-
+        Toast.makeText(requireContext(), "Testing toast", Toast.LENGTH_LONG).show()
         return binding.root
+    }
+
+    private fun onListItemClick(position: Int) {
+        Toast.makeText(requireActivity(), messages[position].content, Toast.LENGTH_LONG).show()
     }
 
     // Needed to make changes to the list

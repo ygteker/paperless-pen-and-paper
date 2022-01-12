@@ -9,15 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import lmu.msp.frontend.R
 import lmu.msp.frontend.models.MessageModel
 
-class MessagesAdapter(private val messages: ArrayList<MessageModel>):
+class MessagesAdapter(private val onItemClicked: (position: Int) -> Unit, private val messages: ArrayList<MessageModel>) :
     RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
 
     inner class ViewHolder(
         itemView: View,
         private val onItemClicked: (position: Int) -> Unit
-    ): RecyclerView.ViewHolder(itemView), View.OnClickListener {
-
-        var onItemClick: ((MessageModel) -> Unit)? = null
+    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val messageTitle = itemView.findViewById<TextView>(R.id.from)
         val messageSummary = itemView.findViewById<TextView>(R.id.summary)
         val avatar = itemView.findViewById<ImageView>(R.id.senderAvatar)
@@ -26,10 +24,11 @@ class MessagesAdapter(private val messages: ArrayList<MessageModel>):
             itemView.setOnClickListener(this)
         }
 
-        override fun onClick(v: View?) {
+        override fun onClick(v: View) {
             val position = adapterPosition
             onItemClicked(position)
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessagesAdapter.ViewHolder {
@@ -38,7 +37,7 @@ class MessagesAdapter(private val messages: ArrayList<MessageModel>):
 
         val messagesView = inflater.inflate(R.layout.inbox_list, parent, false)
 
-        return ViewHolder(messagesView, 0)
+        return ViewHolder(messagesView, onItemClicked)
     }
 
     override fun onBindViewHolder(holder: MessagesAdapter.ViewHolder, position: Int) {
