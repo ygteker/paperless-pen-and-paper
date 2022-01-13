@@ -23,4 +23,5 @@ class MessagesActivity: AppCompatActivity() {
 
         // TODO update inbox list
     }
+
 }
