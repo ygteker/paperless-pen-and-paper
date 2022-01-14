@@ -43,7 +43,7 @@ internal class CampaignServiceTest(@Autowired private val campaignService: Campa
         campaignId = campaign.id
 
         val campaignMember = CampaignMember(campaign, member, charName)
-        campaign.campaignMembers.add(campaignMember)
+        campaign.campaignMember.add(campaignMember)
         member.campaignMember.add(campaignMember)
 
         memberRepository.save(campaignMember)
@@ -130,7 +130,7 @@ internal class CampaignServiceTest(@Autowired private val campaignService: Campa
         val campaign = campaignService.addMember(auth0NoMember, campaignId, charName)
         assertThat(campaign).isNotNull
         campaign!!
-        assertThat(campaign.campaignMembers.size).isEqualTo(2)
+        assertThat(campaign.campaignMember.size).isEqualTo(2)
         assertThat(userRepository.findUserByAuth0Id(auth0NoMember)!!.campaignMember.size).isEqualTo(1)
     }
 
@@ -151,7 +151,7 @@ internal class CampaignServiceTest(@Autowired private val campaignService: Campa
 
         assertThat(campaign).isNotNull
 
-        assertThat(campaignRepository.findById(campaignId).get().campaignMembers).isEmpty()
+        assertThat(campaignRepository.findById(campaignId).get().campaignMember).isEmpty()
         assertThat(userRepository.findUserByAuth0Id(auth0Member)!!.campaignMember).isEmpty()
     }
 
@@ -165,7 +165,7 @@ internal class CampaignServiceTest(@Autowired private val campaignService: Campa
 
         assertThat(campaign).isNotNull
 
-        assertThat(campaignRepository.findById(campaignId).get().campaignMembers).isEmpty()
+        assertThat(campaignRepository.findById(campaignId).get().campaignMember).isEmpty()
         assertThat(userRepository.findUserByAuth0Id(auth0Member)!!.campaignMember).isEmpty()
     }
 
@@ -179,7 +179,7 @@ internal class CampaignServiceTest(@Autowired private val campaignService: Campa
 
         assertThat(campaign).isNull()
 
-        assertThat(campaignRepository.findById(campaignId).get().campaignMembers).isNotEmpty
+        assertThat(campaignRepository.findById(campaignId).get().campaignMember).isNotEmpty
         assertThat(userRepository.findUserByAuth0Id(auth0Member)!!.campaignMember).isNotEmpty
     }
 

@@ -13,8 +13,9 @@ import com.auth0.android.result.Credentials
 import lmu.msp.frontend.HomeActivity
 import lmu.msp.frontend.LoginActivity
 import lmu.msp.frontend.R
+import lmu.msp.frontend.helpers.TokenManager
 
-class PAuthenticator(private val context: Context) {
+class PAuthenticator(private val context: Context, private val tokenManager: TokenManager) {
 
     private val account: Auth0 by lazy {
         // -- REPLACE this credentials with your own Auth0 app credentials!
@@ -37,9 +38,11 @@ class PAuthenticator(private val context: Context) {
             .withAudience(context.getString(R.string.com_auth0_audience))
             .start(context, object : Callback<Credentials, AuthenticationException> {
                 override fun onSuccess(result: Credentials) {
-                    val intent = Intent(context, HomeActivity::class.java)
-                    intent.putExtra("access_token", result.accessToken)
-                    context.startActivity(intent)
+                    tokenManager.save(result)
+
+                    context.startActivity(Intent(context, HomeActivity::class.java))
+
+
                 }
 
                 override fun onFailure(error: AuthenticationException) {
@@ -53,6 +56,8 @@ class PAuthenticator(private val context: Context) {
             .withScheme(context.getString(R.string.com_auth0_scheme))
             .start(context, object : Callback<Void?, AuthenticationException> {
                 override fun onSuccess(result: Void?) {
+                    tokenManager.deleteToken()
+
                     val intent = Intent(context, LoginActivity::class.java)
                     context.startActivity(intent)
                 }

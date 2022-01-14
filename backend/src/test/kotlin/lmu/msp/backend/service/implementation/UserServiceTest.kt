@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.repository.findByIdOrNull
 import javax.persistence.EntityManager
 
 @SpringBootTest
@@ -36,7 +35,7 @@ internal class UserServiceTest(
         val campaign = campaignRepository.save(Campaign(owner, "name"))
 
         val campaignMember = CampaignMember(campaign, member, "charName")
-        campaign.campaignMembers.add(campaignMember)
+        campaign.campaignMember.add(campaignMember)
         member.campaignMember.add(campaignMember)
         memberRepository.save(campaignMember)
 
@@ -79,7 +78,7 @@ internal class UserServiceTest(
         userService.removeCampaignFromUser(member, campaign)
 
         assertThat(userRepository.findUserByAuth0Id(auth0Member)!!.campaignMember).isEmpty()
-        assertThat(campaignRepository.findById(campaignId).get().campaignMembers).isEmpty()
+        assertThat(campaignRepository.findById(campaignId).get().campaignMember).isEmpty()
     }
 
     @Test

@@ -48,7 +48,7 @@ internal class CampaignMemberControllerTest(@Autowired private val mockMvc: Mock
         campaignId = campaign.id
 
         val campaignMember = CampaignMember(campaign, member, charName)
-        campaign.campaignMembers.add(campaignMember)
+        campaign.campaignMember.add(campaignMember)
         member.campaignMember.add(campaignMember)
 
         memberRepository.save(campaignMember)
@@ -106,7 +106,7 @@ internal class CampaignMemberControllerTest(@Autowired private val mockMvc: Mock
                 .with(csrf().asHeader())
         )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.campaignMembers").isEmpty)
+            .andExpect(jsonPath("$.campaignMember").isEmpty)
 
         assertThat(userRepository.findUserByAuth0Id(auth0Member)!!.campaignMember).isEmpty()
 
@@ -123,7 +123,7 @@ internal class CampaignMemberControllerTest(@Autowired private val mockMvc: Mock
                 .with(csrf().asHeader())
         )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.campaignMembers").isEmpty)
+            .andExpect(jsonPath("$.campaignMember").isEmpty)
 
         assertThat(userRepository.findUserByAuth0Id(auth0Member)!!.campaignMember).isEmpty()
     }
@@ -165,7 +165,7 @@ internal class CampaignMemberControllerTest(@Autowired private val mockMvc: Mock
                 .with(csrf().asHeader())
         )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.campaignMembers[0].characterName").value("newName"))
+            .andExpect(jsonPath("$.campaignMember[0].characterName").value("newName"))
 
         assertThat(
             memberRepository.findByCampaignIdAndUserAuth0Id(
@@ -196,8 +196,8 @@ internal class CampaignMemberControllerTest(@Autowired private val mockMvc: Mock
                 .with(csrf().asHeader())
         )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.campaignMembers[0].characterName").value(charName))
-            .andExpect(jsonPath("$.campaignMembers[1].characterName").value("newName"))
+            .andExpect(jsonPath("$.campaignMember[0].characterName").value(charName))
+            .andExpect(jsonPath("$.campaignMember[1].characterName").value("newName"))
     }
 
     @Test
