@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import java.util.*
 import javax.persistence.EntityManager
 
 @DataJpaTest
@@ -74,6 +75,10 @@ internal class MailTest(
         assertThat(
             mailRepository.findBySender_IdAndReceiver_IdOrSender_IdAndReceiver_Id(u1.id, u2.id).size
         ).isEqualTo(2)
+
+        mailRepository.findBySender_IdOrReceiver_Id(u1.id).forEach {
+            assertThat(it.sender.id == u1.id || it.receiver.id == u1.id)
+        }
     }
 
     @Test
@@ -82,7 +87,9 @@ internal class MailTest(
         val u2 = userRepository.findUserByAuth0Id(auth0U2)!!
 
         val newMail = Mail(u1, u2, testMsg)
-        mailRepository.save(newMail)
+        val savedMail = mailRepository.save(newMail)
+        //time check can fail if the minute switches between "saveMail=..." and "currentMin=..."
+        val currentMin = Calendar.MINUTE
 
         assertThat(
             mailRepository.findBySender_IdAndReceiver_IdOrSender_IdAndReceiver_Id(
@@ -90,6 +97,14 @@ internal class MailTest(
                 u2.id
             ).size
         ).isEqualTo(3)
+
+        assertThat(savedMail.time)
+            .hasMinute(currentMin)
+            .hasHourOfDay(Calendar.HOUR_OF_DAY)
+            .hasDayOfMonth(Calendar.DAY_OF_MONTH)
+            .hasMonth(Calendar.MONTH)
+            .hasYear(Calendar.YEAR)
+
     }
 
     @Test

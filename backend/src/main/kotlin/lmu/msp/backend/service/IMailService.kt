@@ -11,7 +11,7 @@ interface IMailService {
      * @param contactId
      * @return
      */
-    fun getMails(authO: String, contactId: Long?): List<Mail>
+    fun getMails(authO: String, contactId: Long? = null): List<Mail>
 
     /**
      * send an mail. The auth0 id == sender

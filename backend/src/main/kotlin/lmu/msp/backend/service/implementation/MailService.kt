@@ -3,12 +3,13 @@ package lmu.msp.backend.service.implementation
 import lmu.msp.backend.model.Mail
 import lmu.msp.backend.repository.MailRepository
 import lmu.msp.backend.service.IMailService
+import lmu.msp.backend.service.IUserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
 class MailService(
-    @Autowired private val userService: UserService,
+    @Autowired private val userService: IUserService,
     @Autowired private val mailRepository: MailRepository
 ) : IMailService {
 

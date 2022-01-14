@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import org.hibernate.annotations.CreationTimestamp
 import java.sql.Timestamp
-import java.time.LocalDateTime
 import javax.persistence.*
 
 

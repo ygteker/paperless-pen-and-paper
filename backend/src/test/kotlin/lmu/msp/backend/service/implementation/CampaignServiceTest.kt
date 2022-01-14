@@ -6,6 +6,7 @@ import lmu.msp.backend.model.User
 import lmu.msp.backend.repository.CampaignRepository
 import lmu.msp.backend.repository.MemberRepository
 import lmu.msp.backend.repository.UserRepository
+import lmu.msp.backend.service.ICampaignService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -17,7 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import javax.persistence.EntityManager
 
 @SpringBootTest
-internal class CampaignServiceTest(@Autowired private val campaignService: CampaignService) {
+internal class CampaignServiceTest(@Autowired private val campaignService: ICampaignService) {
 
     val charName = "charName"
 
@@ -190,7 +191,7 @@ internal class CampaignServiceTest(@Autowired private val campaignService: Campa
 
         assertThat(campaign).isNotNull
 
-        assertThat(memberRepository.findByCampaignIdAndUserAuth0Id(campaignId,auth0Member)!!.characterName).isEqualTo(
+        assertThat(memberRepository.findByCampaignIdAndUserAuth0Id(campaignId, auth0Member)!!.characterName).isEqualTo(
             newName
         )
 
