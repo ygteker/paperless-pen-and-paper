@@ -22,10 +22,11 @@ class UserMailController(@Autowired private val mailService: IMailService) {
     }
 
     @Operation(summary = "send a mail to a user. The saved mail obj will be returned. If the Mail was invalid it will return null")
-    @PostMapping
-    fun sendMail(authentication: Authentication, @RequestBody mail: Mail): Mail? {
+    @PostMapping(consumes = ["text/plain"])
+    fun sendMail(authentication: Authentication, @RequestParam receiverId: Long, @RequestBody message: String): Mail? {
         val auth0Id = getAuth0IdFromAuthentication(authentication)
-        return mailService.sendMail(auth0Id, mail)
+
+        return mailService.sendMail(auth0Id, receiverId, message)
     }
 
     @Operation(summary = "delete a mail. Return true if delete was successful")

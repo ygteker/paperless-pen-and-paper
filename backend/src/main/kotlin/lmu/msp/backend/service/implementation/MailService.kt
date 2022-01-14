@@ -21,11 +21,18 @@ class MailService(
         }
     }
 
-    override fun sendMail(authO: String, mail: Mail): Mail? {
-        TODO("Not yet implemented")
+    override fun sendMail(authO: String, receiverId: Long, message: String): Mail? {
+        val sender = userService.getUserByAuth0Id(authO)
+        val receiver = userService.getUserById(receiverId) ?: return null
+
+        val mail = Mail(sender, receiver, message)
+        return mailRepository.save(mail)
     }
 
     override fun delMail(authO: String, mailId: Long): Boolean {
-        TODO("Not yet implemented")
+        val sender = userService.getUserByAuth0Id(authO)
+
+        val delCount = mailRepository.deleteBySender_IdAndIdAllIgnoreCase(sender.id, mailId)
+        return delCount == 1L
     }
 }

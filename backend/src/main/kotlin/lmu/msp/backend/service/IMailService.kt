@@ -18,10 +18,11 @@ interface IMailService {
      * if successful returns mail obj otherwise return null
      *
      * @param authO
-     * @param mail
+     * @param receiverId
+     * @param message
      * @return
      */
-    fun sendMail(authO: String, mail: Mail): Mail?
+    fun sendMail(authO: String, receiverId: Long, message: String): Mail?
 
     /**
      * delete the mail with mailId. The auth0 id must be the sender.

@@ -1,6 +1,7 @@
 package lmu.msp.backend.model
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
+import com.fasterxml.jackson.annotation.JsonIdentityReference
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import javax.persistence.*
@@ -19,9 +20,13 @@ class User(
     val campaignMember: MutableList<CampaignMember> = mutableListOf(),
 
     @OneToMany(mappedBy = "sender", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator::class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     val sendMails: MutableList<Mail> = mutableListOf(),
 
     @OneToMany(mappedBy = "receiver", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator::class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     val receivedMails: MutableList<Mail> = mutableListOf()
 ) {
     @Id

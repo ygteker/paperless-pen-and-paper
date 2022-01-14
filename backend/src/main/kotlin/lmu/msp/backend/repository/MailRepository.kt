@@ -2,6 +2,7 @@ package lmu.msp.backend.repository
 
 import lmu.msp.backend.model.Mail
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.transaction.annotation.Transactional
 
 interface MailRepository : JpaRepository<Mail, Long> {
 
@@ -15,7 +16,7 @@ interface MailRepository : JpaRepository<Mail, Long> {
         receiver2: Long = sender
     ): List<Mail>
 
-
+    @Transactional
     fun deleteBySender_IdAndIdAllIgnoreCase(senderId: Long, mailId: Long): Long
 
 }

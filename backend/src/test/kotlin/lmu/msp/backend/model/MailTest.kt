@@ -27,7 +27,6 @@ internal class MailTest(
      * - save mail
      * - get mail
      * - delete mail
-     * - delete user
      */
 
     @BeforeEach
@@ -96,21 +95,9 @@ internal class MailTest(
     @Test
     fun deleteMail(@Autowired userRepository: UserRepository) {
         val u1 = userRepository.findUserByAuth0Id(auth0U1)!!
-        val u2 = userRepository.findUserByAuth0Id(auth0U2)!!
 
         assertThat(mailRepository.deleteBySender_IdAndIdAllIgnoreCase(u1.id, mail1Id)).isEqualTo(1)
-
         assertThat(mailRepository.findBySender_IdOrReceiver_Id(u1.id).size).isEqualTo(2)
-
-
-    }
-
-    @Test
-    fun deleteUser(@Autowired userRepository: UserRepository) {
-        val u1 = userRepository.findUserByAuth0Id(auth0U1)!!
-        val u2 = userRepository.findUserByAuth0Id(auth0U2)!!
-
-
     }
 
 }
