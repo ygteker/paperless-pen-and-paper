@@ -1,11 +1,11 @@
 package lmu.msp.frontend.ui.profile
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -24,6 +24,13 @@ class InboxFragment: Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewModel: MessagesViewModel
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        viewModel = ViewModelProvider(requireActivity()).get(MessagesViewModel::class.java)
+        viewModel.getMessages("Bearer " + getString(R.string.access_token))
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,22 +38,23 @@ class InboxFragment: Fragment() {
     ): View? {
         _binding = FragmentInboxBinding.inflate(inflater, container, false)
         viewManager = LinearLayoutManager(requireActivity())
-        viewModel = ViewModelProvider(requireActivity()).get(MessagesViewModel::class.java)
         recyclerView = binding.inboxList
 
-        addDummyData()
+//        addDummyData()
         initialiseAdapter()
         observeData()
         return binding.root
     }
 
-    private fun onListItemClick(position: Int) {
+    private fun onListItemClick(position: Int, messageModel: MessageModel) {
         Log.i("POS", "Position: $position")
 
         val messageFragment: Fragment = MessageFragment()
         val bundle = Bundle()
 
         bundle.putInt("pos", position)
+//        bundle.putString("message", messageModel.content)
+        bundle.putParcelable("messageModel", messageModel)
         messageFragment.arguments = bundle
 
         requireActivity().supportFragmentManager
@@ -64,13 +72,13 @@ class InboxFragment: Fragment() {
     private fun observeData() {
         viewModel.lst.observe(requireActivity(), Observer {
             Log.i("data", it.toString())
-            recyclerView.adapter = MessagesAdapter({position -> onListItemClick(position) }, it)
+            recyclerView.adapter = MessagesAdapter({position -> onListItemClick(position, it[position]) }, it)
         })
     }
 
     private fun addDummyData() {
-        for (i in 1..40) {
-            val mes = MessageModel("Player B", "Sample message", "Sample Content", false)
+        for (i in 1..2) {
+            val mes = MessageModel(1,  "Player B", "Sample message", "Sample Content", false)
             viewModel.add(mes)
         }
     }

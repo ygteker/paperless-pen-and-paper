@@ -1,15 +1,36 @@
 package lmu.msp.frontend.models
 
-data class MessageModel(val from: String, val title: String, val content: String, val isRead: Boolean) {
+import android.os.Parcel
+import android.os.Parcelable
 
+data class MessageModel(var id: Int, var from: String?, var title: String?, var content: String?, var isRead: Boolean = false): Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readByte() != 0.toByte()
+    ) {
+    }
 
-    companion object {
-        fun createContactsList(amount: Int): ArrayList<MessageModel> {
-            val messages = ArrayList<MessageModel>()
-            for (i in 1..amount) {
-                messages.add(MessageModel("Player B", "Sample message", "Sample Content", false))
-            }
-            return messages
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(from)
+        parcel.writeString(title)
+        parcel.writeString(content)
+        parcel.writeByte(if (isRead) 1 else 0)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<MessageModel> {
+        override fun createFromParcel(parcel: Parcel): MessageModel {
+            return MessageModel(parcel)
+        }
+
+        override fun newArray(size: Int): Array<MessageModel?> {
+            return arrayOfNulls(size)
         }
     }
 }
