@@ -1,6 +1,6 @@
 package lmu.msp.frontend.models
 
-class MessageModel(val from: String, val title: String, val content: String, val isRead: Boolean) {
+data class MessageModel(val from: String, val title: String, val content: String, val isRead: Boolean) {
 
 
     companion object {
