@@ -27,7 +27,7 @@ class InboxFragment: Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         viewModel = ViewModelProvider(requireActivity()).get(MessagesViewModel::class.java)
-        viewModel.getMessages("Bearer " + getString(R.string.access_token))
+        viewModel.getMessages("Bearer " + (activity?.intent?.extras?.get("access_token")))
 
     }
 

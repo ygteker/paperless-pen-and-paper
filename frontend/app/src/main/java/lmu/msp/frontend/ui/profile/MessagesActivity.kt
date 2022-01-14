@@ -2,6 +2,7 @@ package lmu.msp.frontend.ui.profile
 
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import lmu.msp.frontend.R

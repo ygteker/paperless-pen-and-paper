@@ -39,7 +39,7 @@ class MessageFragment: Fragment() {
         binding.messageText.text = pos.toString() + "\n" + messageModel?.content + "Message id: " + messageModel?.id
 
         binding.deleteButton.setOnClickListener {
-            viewModel.deleteMessage("Bearer " + getString(R.string.access_token), messageModel!!)
+            viewModel.deleteMessage("Bearer " + (activity?.intent?.extras?.get("access_token")), messageModel!!)
             requireActivity().supportFragmentManager.popBackStack()
         }
 

@@ -1,5 +1,6 @@
 package lmu.msp.frontend.ui.profile
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -37,7 +38,13 @@ class ProfileFragment : Fragment() {
             //TODO(implement list item clicks)
 
             if (position == 0) {
-                //TODO start MessagesActivity
+
+                activity?.let{
+                    val intent = Intent (it, MessagesActivity::class.java)
+                    intent.putExtra("access_token", it.intent.extras?.get("access_token").toString())
+                    it.startActivity(intent)
+                }
+
             } else if (position == 1) {
                 //TODO start
             } else {
