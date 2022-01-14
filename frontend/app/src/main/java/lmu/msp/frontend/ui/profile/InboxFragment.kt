@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import lmu.msp.frontend.R
 import lmu.msp.frontend.databinding.FragmentInboxBinding
+import lmu.msp.frontend.helpers.TokenManager
 import lmu.msp.frontend.helpers.auth0.MessagesAdapter
 import lmu.msp.frontend.models.MessageModel
 import lmu.msp.frontend.viewmodels.MessagesViewModel
@@ -23,11 +24,13 @@ class InboxFragment: Fragment() {
     private val binding get() = _binding!!
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewModel: MessagesViewModel
+    private lateinit var tokenManager: TokenManager
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        tokenManager = activity?.applicationContext?.let { TokenManager(it) }!!
         viewModel = ViewModelProvider(requireActivity()).get(MessagesViewModel::class.java)
-        viewModel.getMessages("Bearer " + (activity?.intent?.extras?.get("access_token")))
+        viewModel.getMessages("Bearer " + tokenManager.load())
 
     }
 
@@ -40,7 +43,6 @@ class InboxFragment: Fragment() {
         viewManager = LinearLayoutManager(requireActivity())
         recyclerView = binding.inboxList
 
-//        addDummyData()
         initialiseAdapter()
         observeData()
         return binding.root
@@ -52,7 +54,6 @@ class InboxFragment: Fragment() {
         val bundle = Bundle()
 
         bundle.putInt("pos", position)
-//        bundle.putString("message", messageModel.content)
         bundle.putParcelable("messageModel", messageModel)
         messageFragment.arguments = bundle
 
@@ -74,16 +75,4 @@ class InboxFragment: Fragment() {
         })
     }
 
-    private fun addDummyData() {
-        for (i in 1..2) {
-            val mes = MessageModel(1,  "Player B", "Sample message", "Sample Content", false)
-            viewModel.add(mes)
-        }
-    }
-
-
-
-    // Needed to make changes to the list
-    // adapter.notifyItemInserted(0)
-    // adapter.notifyItemRangeInserted(curSize, newItems.size)
 }

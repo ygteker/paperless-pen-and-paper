@@ -2,6 +2,7 @@ package lmu.msp.frontend.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.auth0.android.authentication.storage.SecureCredentialsManager
 import lmu.msp.frontend.helpers.auth0.ApiInterface
 import lmu.msp.frontend.models.Message
 import lmu.msp.frontend.models.MessageModel

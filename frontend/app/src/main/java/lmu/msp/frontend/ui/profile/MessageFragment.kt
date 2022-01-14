@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import lmu.msp.frontend.R
 import lmu.msp.frontend.databinding.FragmentMessageBinding
 import lmu.msp.frontend.databinding.FragmentProfileBinding
+import lmu.msp.frontend.helpers.TokenManager
 import lmu.msp.frontend.models.MessageModel
 import lmu.msp.frontend.viewmodels.MessagesViewModel
 import kotlin.math.log
@@ -20,10 +21,12 @@ class MessageFragment: Fragment() {
     private var _binding: FragmentMessageBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: MessagesViewModel
+    private lateinit var tokenManager: TokenManager
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         viewModel = ViewModelProvider(requireActivity()).get(MessagesViewModel::class.java)
+        tokenManager = activity?.applicationContext?.let { TokenManager(it) }!!
     }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,11 +38,12 @@ class MessageFragment: Fragment() {
 
         val pos: Int? = arguments?.getInt("pos")
         val messageModel = arguments?.getParcelable<MessageModel>("messageModel")
-//        val message: String? = arguments?.getString("message")
         binding.messageText.text = pos.toString() + "\n" + messageModel?.content + "Message id: " + messageModel?.id
 
         binding.deleteButton.setOnClickListener {
-            viewModel.deleteMessage("Bearer " + (activity?.intent?.extras?.get("access_token")), messageModel!!)
+
+            viewModel.deleteMessage("Bearer " + tokenManager.load(), messageModel!!)
+
             requireActivity().supportFragmentManager.popBackStack()
         }
 

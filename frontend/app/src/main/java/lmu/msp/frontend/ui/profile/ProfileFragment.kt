@@ -7,15 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import lmu.msp.frontend.viewmodels.UserViewModel
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import lmu.msp.frontend.HomeActivity
 import lmu.msp.frontend.R
 import lmu.msp.frontend.databinding.FragmentProfileBinding
+import lmu.msp.frontend.viewmodels.UserViewModel
 
 class ProfileFragment : Fragment() {
     companion object {
@@ -47,7 +44,6 @@ class ProfileFragment : Fragment() {
 
                 activity?.let{
                     val intent = Intent (it, MessagesActivity::class.java)
-                    intent.putExtra("access_token", it.intent.extras?.get("access_token").toString())
                     it.startActivity(intent)
                 }
 
