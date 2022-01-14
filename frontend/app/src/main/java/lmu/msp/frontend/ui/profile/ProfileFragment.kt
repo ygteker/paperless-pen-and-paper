@@ -1,15 +1,18 @@
 package lmu.msp.frontend.ui.profile
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import lmu.msp.frontend.HomeActivity
-import lmu.msp.frontend.viewmodels.UserViewModel
+import lmu.msp.frontend.R
 import lmu.msp.frontend.databinding.FragmentProfileBinding
+import lmu.msp.frontend.viewmodels.UserViewModel
 
 class ProfileFragment : Fragment() {
     companion object {
@@ -23,11 +26,34 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         binding.logoutButton.setOnClickListener {
             (activity as HomeActivity?)!!.logout()
         }
+
+        val listView = binding.list
+        val profileArray = resources.getStringArray(R.array.profile_list_items)
+        val adapter = ArrayAdapter<String>(requireActivity(), android.R.layout.simple_list_item_1, profileArray)
+        listView.adapter = adapter
+
+        listView.setOnItemClickListener{ parent, view, position, id ->
+            //TODO(implement list item clicks)
+
+            if (position == 0) {
+
+                activity?.let{
+                    val intent = Intent (it, MessagesActivity::class.java)
+                    it.startActivity(intent)
+                }
+
+            } else if (position == 1) {
+                //TODO start
+            } else {
+
+            }
+        }
+
         return binding.root
     }
 
