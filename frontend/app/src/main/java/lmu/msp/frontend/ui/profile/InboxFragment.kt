@@ -47,7 +47,6 @@ class InboxFragment: Fragment() {
     }
 
     private fun onListItemClick(position: Int, messageModel: MessageModel) {
-        Log.i("POS", "Position: $position")
 
         val messageFragment: Fragment = MessageFragment()
         val bundle = Bundle()
@@ -71,7 +70,6 @@ class InboxFragment: Fragment() {
 
     private fun observeData() {
         viewModel.lst.observe(requireActivity(), Observer {
-            Log.i("data", it.toString())
             recyclerView.adapter = MessagesAdapter({position -> onListItemClick(position, it[position]) }, it)
         })
     }

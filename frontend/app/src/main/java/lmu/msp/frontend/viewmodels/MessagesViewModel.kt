@@ -30,7 +30,6 @@ class MessagesViewModel: ViewModel() {
         apiInterface.enqueue(object: Callback<List<Message>>{
             override fun onResponse(call: Call<List<Message>>, response: Response<List<Message>>) {
                 if (response.body() != null) {
-                    Log.i("reqBody", "Response body: " + response.body().toString())
                     val arr = response.body()!!
                     for (item in arr) {
                         add(MessageModel(item.id, item.receiver.toString(), "Title", item.string, false))
@@ -49,16 +48,13 @@ class MessagesViewModel: ViewModel() {
         apiInterface.enqueue(object: Callback<String>{
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
-                    Log.i("success", "Delete was successful")
                     remove(messageModel)
                 }
-                Log.i("reponse", response.toString())
             }
 
             override fun onFailure(call: Call<String>, t: Throwable) {
                 print(t.message)
             }
         })
-        Log.i("test", "asdasdasdasdasdasd")
     }
 }
