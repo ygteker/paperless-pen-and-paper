@@ -1,12 +1,13 @@
 package lmu.msp.frontend.ui.campaign
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import android.widget.RelativeLayout
 import androidx.core.content.res.ResourcesCompat
@@ -23,8 +24,21 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_map, container, false)
         var relativeLayout = view.findViewById<RelativeLayout>(R.id.rect)
-        relativeLayout.addView( MyCanvasView(view.context))
 
+        val myCanvasView = MyCanvasView(view.context)
+        relativeLayout.addView( myCanvasView)
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            relativeLayout.background = ResourcesCompat.getDrawable(resources ,R.drawable.yawning, null);
+        }*/
+        var delete = view.findViewById<Button>(R.id.delete)
+        var draw = view.findViewById<Button>(R.id.draw)
+        delete.setOnClickListener {
+            myCanvasView.resetCanvasDrawing()
+        }
+        draw.setOnClickListener {
+            myCanvasView.drawFromServer(myCanvasView.testDrawnObject)
+
+        }
             return view
     }
 
@@ -32,24 +46,28 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
 private class MyCanvasView(context: Context) : View(context) {
     private var extraCanvas: Canvas? = null
+
+
     private var path = Path()
+    private var allStrokes = ArrayList<Stroke>()
     private val paths = ArrayList<Path>()
     private val undonePaths = ArrayList<Path>()
+
+
     private var strokeWidth = 12f
     private val drawColor = ResourcesCompat.getColor(resources, R.color.black, null)
 
 
     private val paint = Paint().apply {
         color = drawColor
-
         isAntiAlias = true
-
         isDither = true
         style = Paint.Style.STROKE
         strokeJoin = Paint.Join.ROUND
         strokeCap = Paint.Cap.ROUND
         strokeWidth = 12f
     }
+
 
     private var motionTouchEventX = 0f
     private var motionTouchEventY = 0f
@@ -63,11 +81,12 @@ private class MyCanvasView(context: Context) : View(context) {
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
         super.onSizeChanged(width, height, oldWidth, oldHeight)
         extraCanvas = Canvas()
+
     }
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        for (Path in paths) {
-            canvas.drawPath(Path, paint)
+        for (s: Stroke in allStrokes) {
+            canvas.drawPath(s.path, s.paint)
         }
         canvas.drawPath(path, paint)
     }
@@ -89,6 +108,7 @@ private class MyCanvasView(context: Context) : View(context) {
         path.moveTo(motionTouchEventX, motionTouchEventY)
         currentX = motionTouchEventX
         currentY = motionTouchEventY
+        emitToServer(motionTouchEventX,motionTouchEventY)
         invalidate()
     }
 
@@ -96,8 +116,7 @@ private class MyCanvasView(context: Context) : View(context) {
         val dx = Math.abs(motionTouchEventX - currentX)
         val dy = Math.abs(motionTouchEventY - currentY)
         if (dx >= touchTolerance || dy >= touchTolerance) {
-            // QuadTo() adds a quadratic bezier from the last point,
-            // approaching control point (x1,y1), and ending at (x2,y2).
+            emitToServer(motionTouchEventX,motionTouchEventY)
             path.quadTo(currentX, currentY, (motionTouchEventX + currentX) / 2, (motionTouchEventY + currentY) / 2)
             currentX = motionTouchEventX
             currentY = motionTouchEventY
@@ -106,12 +125,29 @@ private class MyCanvasView(context: Context) : View(context) {
     }
 
     private fun touchUp() {
+        emitToServer(motionTouchEventX,motionTouchEventY)
         path.lineTo(currentX, currentY)
         extraCanvas?.drawPath(path, paint)
-        paths.add(path)
+        allStrokes.add(Stroke(path,paint))
         path = Path()
-
     }
+        var testDrawnObject:DrawObject = DrawObject(0f,0f,0f,0f)
+    private fun emitToServer(x: Float, y: Float) {
+        val drawObject = DrawObject(currentX,x,currentY,y)
+        testDrawnObject = drawObject
+    }
+    fun drawFromServer(drawObject: DrawObject) {
+        val mx = drawObject.currentX
+        val x = drawObject.eventX
+        val my = drawObject.currentY
+        val y = drawObject.eventY
+        path.moveTo(mx,my)
+        path.lineTo(x,y)
+        allStrokes.add(Stroke(path,paint))
+        path = Path()
+        invalidate()
+    }
+
 
     /*fun undoCanvasDrawing() {
         if (paths.size > 0) {
@@ -128,10 +164,14 @@ private class MyCanvasView(context: Context) : View(context) {
         } else {
             Log.d("REDO_ERROR", "Something went wrong with REDO action")
         }
-    }
+    }*/
     fun resetCanvasDrawing() {
         path.reset() // Avoiding saving redo from Path()
-        paths.clear()
+        allStrokes.clear()
         invalidate()
-    }*/
+    }
+
+
+    class DrawObject(val currentX: Float, val eventX:Float, val currentY: Float, val eventY:Float)
+    class Stroke(val path: Path, val paint: Paint)
 }
