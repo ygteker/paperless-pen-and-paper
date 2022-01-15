@@ -4,6 +4,9 @@ import lmu.msp.backend.model.Campaign
 import lmu.msp.backend.model.User
 
 interface IUserService {
+
+    fun getUserById(id: Long): User?
+
     /**
      * Loads the user from the database.
      * If the user doesn't exist creates a new one and returns the created one.
