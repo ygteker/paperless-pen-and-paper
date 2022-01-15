@@ -6,6 +6,7 @@ import lmu.msp.backend.model.User
 import lmu.msp.backend.repository.CampaignRepository
 import lmu.msp.backend.repository.MemberRepository
 import lmu.msp.backend.repository.UserRepository
+import lmu.msp.backend.service.IUserService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -16,7 +17,7 @@ import javax.persistence.EntityManager
 
 @SpringBootTest
 internal class UserServiceTest(
-    @Autowired private val userService: UserService,
+    @Autowired private val userService: IUserService,
     @Autowired private val userRepository: UserRepository,
     @Autowired private val campaignRepository: CampaignRepository,
     @Autowired private val memberRepository: MemberRepository

@@ -15,6 +15,16 @@ class UserService(
     @Autowired private val memberRepository: MemberRepository
 ) : IUserService {
 
+
+    override fun getUserById(id: Long): User? {
+        val user = userRepository.findById(id)
+        return if (user.isEmpty) {
+            null
+        } else {
+            user.get()
+        }
+    }
+
     override fun getUserByAuth0Id(authO: String): User {
         var user = userRepository.findUserByAuth0Id(authO)
         if (user == null) {
