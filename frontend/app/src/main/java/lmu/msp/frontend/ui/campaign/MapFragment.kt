@@ -108,7 +108,7 @@ private class MyCanvasView(context: Context) : View(context) {
         path.moveTo(motionTouchEventX, motionTouchEventY)
         currentX = motionTouchEventX
         currentY = motionTouchEventY
-        emitToServer(motionTouchEventX,motionTouchEventY)
+        emitToServer()
         invalidate()
     }
 
@@ -116,7 +116,7 @@ private class MyCanvasView(context: Context) : View(context) {
         val dx = Math.abs(motionTouchEventX - currentX)
         val dy = Math.abs(motionTouchEventY - currentY)
         if (dx >= touchTolerance || dy >= touchTolerance) {
-            emitToServer(motionTouchEventX,motionTouchEventY)
+            emitToServer()
             path.quadTo(currentX, currentY, (motionTouchEventX + currentX) / 2, (motionTouchEventY + currentY) / 2)
             currentX = motionTouchEventX
             currentY = motionTouchEventY
@@ -125,22 +125,22 @@ private class MyCanvasView(context: Context) : View(context) {
     }
 
     private fun touchUp() {
-        emitToServer(motionTouchEventX,motionTouchEventY)
+        emitToServer()
         path.lineTo(currentX, currentY)
-        extraCanvas?.drawPath(path, paint)
         allStrokes.add(Stroke(path,paint))
+        extraCanvas?.drawPath(path, paint)
         path = Path()
     }
         var testDrawnObject:DrawObject = DrawObject(0f,0f,0f,0f)
-    private fun emitToServer(x: Float, y: Float) {
-        val drawObject = DrawObject(currentX,x,currentY,y)
+    private fun emitToServer() {
+        val drawObject = DrawObject(currentX/width,motionTouchEventX/width,currentY/height,motionTouchEventY/height)
         testDrawnObject = drawObject
     }
     fun drawFromServer(drawObject: DrawObject) {
-        val mx = drawObject.currentX
-        val x = drawObject.eventX
-        val my = drawObject.currentY
-        val y = drawObject.eventY
+        val mx = drawObject.currentX*width
+        val x = drawObject.eventX*width
+        val my = drawObject.currentY*height
+        val y = drawObject.eventY*height
         path.moveTo(mx,my)
         path.lineTo(x,y)
         allStrokes.add(Stroke(path,paint))
