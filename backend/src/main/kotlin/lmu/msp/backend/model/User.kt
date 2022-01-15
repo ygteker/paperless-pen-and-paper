@@ -27,7 +27,13 @@ class User(
     @OneToMany(mappedBy = "receiver", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator::class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
-    val receivedMails: MutableList<Mail> = mutableListOf()
+    val receivedMails: MutableList<Mail> = mutableListOf(),
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(nullable = false, length = 100000)
+    @JsonIgnore
+    var image: ByteArray = ByteArray(0)
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

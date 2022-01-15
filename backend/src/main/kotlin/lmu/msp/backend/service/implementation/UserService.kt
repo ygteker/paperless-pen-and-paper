@@ -52,4 +52,24 @@ class UserService(
         }
         return userRepository.save(user)
     }
+
+    override fun updateProfileImage(authO: String, byteArray: ByteArray): Boolean {
+        val user = userRepository.findUserByAuth0Id(authO) ?: return false
+        user.image = byteArray
+
+        userRepository.save(user)
+        return true
+    }
+
+    override fun getProfileImage(authO: String): ByteArray? {
+        val user = userRepository.findUserByAuth0Id(authO) ?: return null
+        return user.image
+    }
+
+    override fun getProfileImage(authO: String, userId: Long): ByteArray? {
+        val requestUser = userRepository.findUserByAuth0Id(authO) ?: return null
+        if (userId == requestUser.id) return requestUser.image
+        val user = getUserById(userId) ?: return null
+        return user.image
+    }
 }
