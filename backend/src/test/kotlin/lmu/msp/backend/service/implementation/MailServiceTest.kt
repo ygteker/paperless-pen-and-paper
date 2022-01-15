@@ -78,7 +78,7 @@ internal class MailServiceTest(@Autowired private val mailService: IMailService)
         assertThat(mail).isNotNull
         assertThat(mailService.getMails(auth0U1).size).isEqualTo(4)
 
-        mailService.getMails(auth0U1).forEach { assertThat(it.string).isEqualTo(testMsg) }
+        mailService.getMails(auth0U1).forEach { assertThat(it.message).isEqualTo(testMsg) }
     }
 
     @Test

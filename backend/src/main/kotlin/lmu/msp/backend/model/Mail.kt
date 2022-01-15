@@ -21,7 +21,7 @@ class Mail(
     @JsonIdentityReference(alwaysAsId = true)
     val receiver: User,
     @Column(nullable = false)
-    val string: String
+    val message: String
 
 ) {
 
