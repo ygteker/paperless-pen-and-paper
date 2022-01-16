@@ -27,4 +27,20 @@ interface IUserService {
      */
     fun removeCampaignFromUser(user: User, campaign: Campaign): User
 
+    /**
+     * update the profile picture of a user. returns if save was successful
+     *
+     * @param authO
+     * @param byteArray
+     * @return
+     */
+    fun updateProfileImage(authO: String, byteArray: ByteArray): Boolean
+
+    /**
+     * finds and return the profile picture of a user (of a specific id). If the user doesn't exist returns null.
+     *
+     * @param authO
+     * @return
+     */
+    fun getProfileImage(authO: String, userId: Long): ByteArray?
 }

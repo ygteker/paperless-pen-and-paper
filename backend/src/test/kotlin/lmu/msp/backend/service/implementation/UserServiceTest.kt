@@ -26,6 +26,9 @@ internal class UserServiceTest(
     private val auth0Owner = "owner"
     private val auth0Member = "member"
 
+    private var ownerId = 0L
+    private var memberId = 0L
+
     private var campaignId: Long = 0
 
 
@@ -41,6 +44,9 @@ internal class UserServiceTest(
         memberRepository.save(campaignMember)
 
         campaignId = campaign.id
+
+        ownerId = owner.id
+        memberId = member.id
     }
 
     @AfterEach
@@ -91,6 +97,26 @@ internal class UserServiceTest(
         assertThat(campaignRepository.findById(campaignId)).isEmpty
 
         assertThat(userRepository.findUserByAuth0Id(auth0Owner)!!.campaignOwner).isEmpty()
+    }
+
+    @Test
+    fun updateProfileImage() {
+        assertThat(userService.updateProfileImage(auth0Owner, ByteArray(10)))
+        assertThat(userRepository.findUserByAuth0Id(auth0Owner)!!.image.size).isEqualTo(10)
+    }
+
+    @Test
+    fun getProfileImage() {
+        assertThat(userService.getProfileImage(auth0Owner, ownerId)).isEmpty()
+
+
+        val member = userRepository.findUserByAuth0Id(auth0Member)!!
+        member.image = ByteArray(10)
+        userRepository.save(member)
+
+        assertThat(userService.getProfileImage(auth0Owner, memberId)!!.size).isEqualTo(10)
+        assertThat(userService.getProfileImage(auth0Owner, -1)).isNull()
+
     }
 
 
