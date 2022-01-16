@@ -2,6 +2,7 @@ package lmu.msp.frontend.helpers.auth0
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationAPIClient
@@ -38,6 +39,7 @@ class PAuthenticator(private val context: Context, private val tokenManager: Tok
             .withAudience(context.getString(R.string.com_auth0_audience))
             .start(context, object : Callback<Credentials, AuthenticationException> {
                 override fun onSuccess(result: Credentials) {
+                    Log.i("token", result.accessToken)
                     tokenManager.save(result)
 
                     context.startActivity(Intent(context, HomeActivity::class.java))
