@@ -24,8 +24,9 @@
     <string name="title_messages">Messages</string>
     <string name="title_message">{sender_name}</string>
     <string name="delete_button_title">delete</string>
+    <string name="canvas_background">Canvas Background</string>
 
-    
+
     <string-array name="profile_list_items">
         <item>Messages</item>
         <item>Test Item</item>

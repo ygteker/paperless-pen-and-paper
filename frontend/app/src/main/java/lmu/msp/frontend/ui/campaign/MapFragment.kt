@@ -20,7 +20,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_map, container, false)
-        val relativeLayout = view.findViewById<RelativeLayout>(R.id.rect)
+        val relativeLayout = view.findViewById<RelativeLayout>(R.id.canvas_layout)
         val canvas_bg = view.findViewById<ImageView>(R.id.canvas_bg)
 
         val myCanvasView = MyCanvasView(view.context)
