@@ -44,6 +44,12 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!-- websocket dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
         <!-- openAPI 3.0 dependencies (for swagger ui and api documentation)-->
         <dependency>
             <groupId>org.springdoc</groupId>
