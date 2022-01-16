@@ -15,6 +15,16 @@ class UserService(
     @Autowired private val memberRepository: MemberRepository
 ) : IUserService {
 
+
+    override fun getUserById(id: Long): User? {
+        val user = userRepository.findById(id)
+        return if (user.isEmpty) {
+            null
+        } else {
+            user.get()
+        }
+    }
+
     override fun getUserByAuth0Id(authO: String): User {
         var user = userRepository.findUserByAuth0Id(authO)
         if (user == null) {
@@ -26,8 +36,8 @@ class UserService(
     @Transactional
     override fun removeCampaignFromUser(user: User, campaign: Campaign): User {
         if (campaign.owner.id == user.id) {
-            campaign.campaignMembers.forEach { it.user.campaignMember.remove(it) }
-            campaign.campaignMembers.clear()
+            campaign.campaignMember.forEach { it.user.campaignMember.remove(it) }
+            campaign.campaignMember.clear()
             memberRepository.deleteByCampaignId(campaign.id)
 
             user.campaignOwner.removeIf { it.id == campaign.id }
@@ -35,11 +45,26 @@ class UserService(
             val campaignMember = user.campaignMember.find { it.campaign.id == campaign.id }
             if (campaignMember != null) {
                 user.campaignMember.remove(campaignMember)
-                campaignMember.campaign.campaignMembers.remove(campaignMember)
+                campaignMember.campaign.campaignMember.remove(campaignMember)
 
                 memberRepository.save(campaignMember)
             }
         }
         return userRepository.save(user)
+    }
+
+    override fun updateProfileImage(authO: String, byteArray: ByteArray): Boolean {
+        val user = getUserByAuth0Id(authO)
+        user.image = byteArray
+
+        userRepository.save(user)
+        return true
+    }
+
+    override fun getProfileImage(authO: String, userId: Long): ByteArray? {
+        val requestUser =  getUserByAuth0Id(authO)
+        if (userId == requestUser.id) return requestUser.image
+        val user = getUserById(userId) ?: return null
+        return user.image
     }
 }

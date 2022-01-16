@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:src="@drawable/logo"
+        android:layout_gravity="center"
+        android:layout_marginBottom="12dp"
+       />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:background="@drawable/background_messagebox">
+
+        <TextView
+            android:id="@+id/messageText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:lineHeight="24sp"
+            android:letterSpacing="0.1"
+            android:textSize="18sp"
+            android:textColor="@color/space_cadet"
+            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam augue velit, tincidunt in odio feugiat, placerat ultricies orci. Fusce rutrum lectus nec neque cursus, at vulputate diam imperdiet. Praesent ultrices tristique faucibus. Nunc nisi tortor, sagittis ut purus quis, imperdiet molestie odio. Etiam laoreet malesuada neque vel faucibus."/>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        style="@style/buttonTheme" />
+</LinearLayout>

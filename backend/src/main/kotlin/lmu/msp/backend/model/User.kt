@@ -1,6 +1,7 @@
 package lmu.msp.backend.model
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
+import com.fasterxml.jackson.annotation.JsonIdentityReference
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import javax.persistence.*
@@ -16,7 +17,23 @@ class User(
     val campaignOwner: MutableList<Campaign> = mutableListOf(),
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.EAGER, orphanRemoval = true)
-    val campaignMember: MutableList<CampaignMember> = mutableListOf()
+    val campaignMember: MutableList<CampaignMember> = mutableListOf(),
+
+    @OneToMany(mappedBy = "sender", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator::class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    val sendMails: MutableList<Mail> = mutableListOf(),
+
+    @OneToMany(mappedBy = "receiver", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator::class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    val receivedMails: MutableList<Mail> = mutableListOf(),
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(nullable = false, length = 100000)
+    @JsonIgnore
+    var image: ByteArray = ByteArray(0)
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

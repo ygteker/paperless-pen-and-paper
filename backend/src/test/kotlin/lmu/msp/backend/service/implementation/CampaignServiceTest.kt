@@ -6,6 +6,7 @@ import lmu.msp.backend.model.User
 import lmu.msp.backend.repository.CampaignRepository
 import lmu.msp.backend.repository.MemberRepository
 import lmu.msp.backend.repository.UserRepository
+import lmu.msp.backend.service.ICampaignService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -17,7 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import javax.persistence.EntityManager
 
 @SpringBootTest
-internal class CampaignServiceTest(@Autowired private val campaignService: CampaignService) {
+internal class CampaignServiceTest(@Autowired private val campaignService: ICampaignService) {
 
     val charName = "charName"
 
@@ -43,7 +44,7 @@ internal class CampaignServiceTest(@Autowired private val campaignService: Campa
         campaignId = campaign.id
 
         val campaignMember = CampaignMember(campaign, member, charName)
-        campaign.campaignMembers.add(campaignMember)
+        campaign.campaignMember.add(campaignMember)
         member.campaignMember.add(campaignMember)
 
         memberRepository.save(campaignMember)
@@ -130,7 +131,7 @@ internal class CampaignServiceTest(@Autowired private val campaignService: Campa
         val campaign = campaignService.addMember(auth0NoMember, campaignId, charName)
         assertThat(campaign).isNotNull
         campaign!!
-        assertThat(campaign.campaignMembers.size).isEqualTo(2)
+        assertThat(campaign.campaignMember.size).isEqualTo(2)
         assertThat(userRepository.findUserByAuth0Id(auth0NoMember)!!.campaignMember.size).isEqualTo(1)
     }
 
@@ -151,7 +152,7 @@ internal class CampaignServiceTest(@Autowired private val campaignService: Campa
 
         assertThat(campaign).isNotNull
 
-        assertThat(campaignRepository.findById(campaignId).get().campaignMembers).isEmpty()
+        assertThat(campaignRepository.findById(campaignId).get().campaignMember).isEmpty()
         assertThat(userRepository.findUserByAuth0Id(auth0Member)!!.campaignMember).isEmpty()
     }
 
@@ -165,7 +166,7 @@ internal class CampaignServiceTest(@Autowired private val campaignService: Campa
 
         assertThat(campaign).isNotNull
 
-        assertThat(campaignRepository.findById(campaignId).get().campaignMembers).isEmpty()
+        assertThat(campaignRepository.findById(campaignId).get().campaignMember).isEmpty()
         assertThat(userRepository.findUserByAuth0Id(auth0Member)!!.campaignMember).isEmpty()
     }
 
@@ -179,7 +180,7 @@ internal class CampaignServiceTest(@Autowired private val campaignService: Campa
 
         assertThat(campaign).isNull()
 
-        assertThat(campaignRepository.findById(campaignId).get().campaignMembers).isNotEmpty
+        assertThat(campaignRepository.findById(campaignId).get().campaignMember).isNotEmpty
         assertThat(userRepository.findUserByAuth0Id(auth0Member)!!.campaignMember).isNotEmpty
     }
 
@@ -190,7 +191,7 @@ internal class CampaignServiceTest(@Autowired private val campaignService: Campa
 
         assertThat(campaign).isNotNull
 
-        assertThat(memberRepository.findByCampaignIdAndUserAuth0Id(campaignId,auth0Member)!!.characterName).isEqualTo(
+        assertThat(memberRepository.findByCampaignIdAndUserAuth0Id(campaignId, auth0Member)!!.characterName).isEqualTo(
             newName
         )
 

@@ -44,7 +44,7 @@ internal class CampaignControllerTest(@Autowired private val mockMvc: MockMvc) {
         val campaign = campaignRepository.save(Campaign(owner, "name"))
 
         val campaignMember = CampaignMember(campaign, member, "charName")
-        campaign.campaignMembers.add(campaignMember)
+        campaign.campaignMember.add(campaignMember)
         member.campaignMember.add(campaignMember)
 
         memberRepository.save(campaignMember)

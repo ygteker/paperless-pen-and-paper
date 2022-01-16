@@ -6,18 +6,18 @@ import lmu.msp.backend.model.User
 import lmu.msp.backend.repository.CampaignRepository
 import lmu.msp.backend.repository.MemberRepository
 import lmu.msp.backend.repository.UserRepository
+import lmu.msp.backend.service.IUserService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.repository.findByIdOrNull
 import javax.persistence.EntityManager
 
 @SpringBootTest
 internal class UserServiceTest(
-    @Autowired private val userService: UserService,
+    @Autowired private val userService: IUserService,
     @Autowired private val userRepository: UserRepository,
     @Autowired private val campaignRepository: CampaignRepository,
     @Autowired private val memberRepository: MemberRepository
@@ -25,6 +25,9 @@ internal class UserServiceTest(
 
     private val auth0Owner = "owner"
     private val auth0Member = "member"
+
+    private var ownerId = 0L
+    private var memberId = 0L
 
     private var campaignId: Long = 0
 
@@ -36,11 +39,14 @@ internal class UserServiceTest(
         val campaign = campaignRepository.save(Campaign(owner, "name"))
 
         val campaignMember = CampaignMember(campaign, member, "charName")
-        campaign.campaignMembers.add(campaignMember)
+        campaign.campaignMember.add(campaignMember)
         member.campaignMember.add(campaignMember)
         memberRepository.save(campaignMember)
 
         campaignId = campaign.id
+
+        ownerId = owner.id
+        memberId = member.id
     }
 
     @AfterEach
@@ -79,7 +85,7 @@ internal class UserServiceTest(
         userService.removeCampaignFromUser(member, campaign)
 
         assertThat(userRepository.findUserByAuth0Id(auth0Member)!!.campaignMember).isEmpty()
-        assertThat(campaignRepository.findById(campaignId).get().campaignMembers).isEmpty()
+        assertThat(campaignRepository.findById(campaignId).get().campaignMember).isEmpty()
     }
 
     @Test
@@ -91,6 +97,26 @@ internal class UserServiceTest(
         assertThat(campaignRepository.findById(campaignId)).isEmpty
 
         assertThat(userRepository.findUserByAuth0Id(auth0Owner)!!.campaignOwner).isEmpty()
+    }
+
+    @Test
+    fun updateProfileImage() {
+        assertThat(userService.updateProfileImage(auth0Owner, ByteArray(10)))
+        assertThat(userRepository.findUserByAuth0Id(auth0Owner)!!.image.size).isEqualTo(10)
+    }
+
+    @Test
+    fun getProfileImage() {
+        assertThat(userService.getProfileImage(auth0Owner, ownerId)).isEmpty()
+
+
+        val member = userRepository.findUserByAuth0Id(auth0Member)!!
+        member.image = ByteArray(10)
+        userRepository.save(member)
+
+        assertThat(userService.getProfileImage(auth0Owner, memberId)!!.size).isEqualTo(10)
+        assertThat(userService.getProfileImage(auth0Owner, -1)).isNull()
+
     }
 
 

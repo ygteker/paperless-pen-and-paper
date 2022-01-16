@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import androidx.fragment.app.ListFragment
+import lmu.msp.frontend.diceRolling.DiceFragmentAnimated
 import lmu.msp.frontend.R
 
 
@@ -23,6 +23,7 @@ class ToolsFragment : Fragment() {
         arrayList.add("Map")
         arrayList.add("Roll Dice")
         arrayList.add("Chat")
+        arrayList.add("Roll animated Dice")
         val arrayAdapter = ArrayAdapter(view.context, android.R.layout.simple_list_item_1, arrayList)
         toolsList.adapter = arrayAdapter
         toolsList.setOnItemClickListener { _, view, position, id ->
@@ -31,6 +32,7 @@ class ToolsFragment : Fragment() {
                 0 -> fragmentManager.replace(R.id.fragment, MapFragment()).addToBackStack(null)
                 1 -> fragmentManager.replace(R.id.fragment, DiceFragment()).addToBackStack(null)
                 2 -> fragmentManager.replace(R.id.fragment, ChatFragment()).addToBackStack(null)
+                3 -> fragmentManager.replace(R.id.fragment, DiceFragmentAnimated()).addToBackStack(null)
             }
             fragmentManager.commit()
         }
