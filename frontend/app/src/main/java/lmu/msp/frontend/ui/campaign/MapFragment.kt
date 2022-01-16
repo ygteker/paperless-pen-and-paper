@@ -2,7 +2,6 @@ package lmu.msp.frontend.ui.campaign
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.os.Bundle
@@ -15,26 +14,20 @@ import androidx.core.content.res.ResourcesCompat
 import lmu.msp.frontend.R
 
 class MapFragment : Fragment(R.layout.fragment_map) {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_map, container, false)
-        var relativeLayout = view.findViewById<RelativeLayout>(R.id.rect)
-        var canvas_bg = view.findViewById<ImageView>(R.id.canvas_bg)
+        val relativeLayout = view.findViewById<RelativeLayout>(R.id.rect)
+        val canvas_bg = view.findViewById<ImageView>(R.id.canvas_bg)
 
         val myCanvasView = MyCanvasView(view.context)
         relativeLayout.addView( myCanvasView)
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            relativeLayout.background = ResourcesCompat.getDrawable(resources ,R.drawable.yawning, null);
-        }*/
-        var delete = view.findViewById<Button>(R.id.delete)
-        var draw = view.findViewById<Button>(R.id.draw)
-        var background = view.findViewById<Button>(R.id.background)
+        val delete = view.findViewById<Button>(R.id.delete)
+        val draw = view.findViewById<Button>(R.id.draw)
+        val background = view.findViewById<Button>(R.id.background)
         delete.setOnClickListener {
             myCanvasView.resetCanvasDrawing()
         }
@@ -57,7 +50,6 @@ private class MyCanvasView(context: Context) : View(context) {
 
     private var path = Path()
     private var allStrokes = ArrayList<Stroke>()
-    private val paths = ArrayList<Path>()
     private val undonePaths = ArrayList<Path>()
 
 
@@ -155,25 +147,8 @@ private class MyCanvasView(context: Context) : View(context) {
         invalidate()
     }
 
-
-    /*fun undoCanvasDrawing() {
-        if (paths.size > 0) {
-            undonePaths.add(paths.removeAt(paths.size - 1))
-            invalidate()
-        } else {
-            Log.d("UNDO_ERROR", "Something went wrong with UNDO action")
-        }
-    }
-    fun redoCanvasDrawing() {
-        if (undonePaths.size > 0) {
-            paths.add(undonePaths.removeAt(undonePaths.size - 1))
-            invalidate()
-        } else {
-            Log.d("REDO_ERROR", "Something went wrong with REDO action")
-        }
-    }*/
     fun resetCanvasDrawing() {
-        path.reset() // Avoiding saving redo from Path()
+        path.reset()
         allStrokes.clear()
         invalidate()
     }
