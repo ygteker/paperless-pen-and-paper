@@ -8,6 +8,7 @@ import android.graphics.Path
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import android.widget.RelativeLayout
 import androidx.core.content.res.ResourcesCompat
@@ -24,6 +25,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_map, container, false)
         var relativeLayout = view.findViewById<RelativeLayout>(R.id.rect)
+        var canvas_bg = view.findViewById<ImageView>(R.id.canvas_bg)
 
         val myCanvasView = MyCanvasView(view.context)
         relativeLayout.addView( myCanvasView)
@@ -32,11 +34,16 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         }*/
         var delete = view.findViewById<Button>(R.id.delete)
         var draw = view.findViewById<Button>(R.id.draw)
+        var background = view.findViewById<Button>(R.id.background)
         delete.setOnClickListener {
             myCanvasView.resetCanvasDrawing()
         }
         draw.setOnClickListener {
             myCanvasView.drawFromServer(myCanvasView.testDrawnObject)
+
+        }
+        background.setOnClickListener {
+            canvas_bg.setImageResource(R.drawable.yawning)
 
         }
             return view

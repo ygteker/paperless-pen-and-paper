@@ -27,11 +27,11 @@
             android:id="@+id/canvas_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="Canvas Background"
-            android:src="@drawable/yawning" />
+            android:contentDescription="Canvas Background" />
 
 
     </RelativeLayout>
+
     <Button
         android:id="@+id/delete"
         android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="25dp"
         android:layout_marginBottom="21dp"
-        android:text="Button" />
+        android:text="delete" />
 
     <Button
         android:id="@+id/draw"
@@ -50,7 +50,17 @@
         android:layout_marginStart="169dp"
         android:layout_marginBottom="-2dp"
         android:layout_toEndOf="@+id/delete"
-        android:text="Button" />
+        android:text="draw" />
+
+    <Button
+        android:id="@+id/background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="22dp"
+        android:layout_toEndOf="@+id/delete"
+        android:text="background" />
 </RelativeLayout>
 
 </FrameLayout>
