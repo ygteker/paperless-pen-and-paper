@@ -9,9 +9,17 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.MediaType
+import org.springframework.mock.web.MockMultipartFile
 import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -29,7 +37,10 @@ internal class UserControllerTest(
         @BeforeAll
         fun init(@Autowired userRepository: UserRepository) {
             user1 = userRepository.save(User("user1"))
-            user2 = userRepository.save(User("user2"))
+
+            val u2 = User("user2")
+            u2.image = ByteArray(10)
+            user2 = userRepository.save(u2)
         }
 
         @JvmStatic
@@ -73,5 +84,34 @@ internal class UserControllerTest(
                 status { isOk() }
                 content { jsonPath("$.id", `is`(userRepository.findUserByAuth0Id("user3")!!.id.toInt())) }
             }
+    }
+
+    @Test
+    @WithMockUser(username = "user1")
+    fun setUserProfilePicture() {
+        val file = MockMultipartFile(MediaType.IMAGE_JPEG_VALUE, ByteArray(20))
+        mockMvc.perform(
+            multipart("$path/${user1.id}/avatar")
+                .file("image", file.bytes)
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                .with(csrf().asHeader())
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().string("true"))
+    }
+
+    @Test
+    @WithMockUser(username = "user1")
+    fun getUserProfilePicture() {
+
+        mockMvc.perform(get("$path/-1/avatar"))
+            .andExpect(status().isNotFound)
+
+        mockMvc.perform(get("$path/${user1.id}/avatar"))
+            .andExpect(status().isOk)
+            .andExpect(content().bytes(ByteArray(0)))
+        mockMvc.perform(get("$path/${user2.id}/avatar"))
+            .andExpect(status().isOk)
+            .andExpect(content().bytes(ByteArray(10)))
     }
 }
