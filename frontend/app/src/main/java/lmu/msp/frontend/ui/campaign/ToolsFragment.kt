@@ -46,8 +46,6 @@ class ToolsFragment : Fragment() {
             fragmentManager.commit()
             }
 
-
-
         return view
     }
 
