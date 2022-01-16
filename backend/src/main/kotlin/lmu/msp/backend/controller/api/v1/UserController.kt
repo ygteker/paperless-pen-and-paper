@@ -1,6 +1,9 @@
 package lmu.msp.backend.controller.api.v1
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import lmu.msp.backend.model.User
 import lmu.msp.backend.service.IUserService
@@ -39,11 +42,23 @@ class UserController(@Autowired private val userService: IUserService) {
     }
 
     @GetMapping("/{id}/avatar")
-    fun getUserProfilePicture(authentication: Authentication, @PathVariable id: String): ResponseEntity<ByteArray> {
+    @ApiResponses(
+        ApiResponse(responseCode = "200"),
+        ApiResponse(responseCode = "401", description = "Invalid Authentication", content = [Content()]),
+        ApiResponse(responseCode = "404", content = [Content()])
+    )
+    fun getUserProfilePicture(authentication: Authentication, @PathVariable id: Long): ResponseEntity<ByteArray> {
         val auth0Id = getAuth0IdFromAuthentication(authentication)
-        return ResponseEntity.ok()
-            .contentType(MediaType.parseMediaType(MediaType.IMAGE_PNG_VALUE))
-            .body(userService.getProfileImage(auth0Id))
+
+        val byteArray = userService.getProfileImage(auth0Id, id)
+
+        return if (null == byteArray) {
+            ResponseEntity.notFound().build()
+        } else {
+            ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(MediaType.IMAGE_PNG_VALUE))
+                .body(byteArray)
+        }
     }
 
 }
