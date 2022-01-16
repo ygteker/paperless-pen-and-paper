@@ -61,11 +61,6 @@ class UserService(
         return true
     }
 
-    override fun getProfileImage(authO: String): ByteArray? {
-        val user =  getUserByAuth0Id(authO)
-        return user.image
-    }
-
     override fun getProfileImage(authO: String, userId: Long): ByteArray? {
         val requestUser =  getUserByAuth0Id(authO)
         if (userId == requestUser.id) return requestUser.image

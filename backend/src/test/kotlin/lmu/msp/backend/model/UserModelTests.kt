@@ -30,6 +30,12 @@ internal class UserModelTests(
     }
 
     @Test
+    fun defaultProfilePictureIsEmpty() {
+        val u1 = userRepository.save(User("u1"))
+        assertThat(u1.image).isEmpty()
+    }
+
+    @Test
     fun uniqueAuth0IdTest() {
         val u1 = User("u")
         val u2 = User("u")
