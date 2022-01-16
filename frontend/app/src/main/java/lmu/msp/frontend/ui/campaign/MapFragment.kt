@@ -24,7 +24,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         val canvas_bg = view.findViewById<ImageView>(R.id.canvas_bg)
 
         val myCanvasView = MyCanvasView(view.context)
-        relativeLayout.addView( myCanvasView)
+        relativeLayout.addView(myCanvasView)
         val delete = view.findViewById<Button>(R.id.delete)
         val draw = view.findViewById<Button>(R.id.draw)
         val background = view.findViewById<Button>(R.id.background)
@@ -39,20 +39,16 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             canvas_bg.setImageResource(R.drawable.yawning)
 
         }
-            return view
+        return view
     }
 
 }
 
 private class MyCanvasView(context: Context) : View(context) {
     private var extraCanvas: Canvas? = null
-
-
     private var path = Path()
     private var allStrokes = ArrayList<Stroke>()
     private val undonePaths = ArrayList<Path>()
-
-
     private var strokeWidth = 12f
     private val drawColor = ResourcesCompat.getColor(resources, R.color.black, null)
 
@@ -82,6 +78,7 @@ private class MyCanvasView(context: Context) : View(context) {
         extraCanvas = Canvas()
 
     }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         for (s: Stroke in allStrokes) {
@@ -101,6 +98,7 @@ private class MyCanvasView(context: Context) : View(context) {
         }
         return true
     }
+
     private fun touchStart() {
         undonePaths.clear()
         path.reset()
@@ -116,7 +114,12 @@ private class MyCanvasView(context: Context) : View(context) {
         val dy = Math.abs(motionTouchEventY - currentY)
         if (dx >= touchTolerance || dy >= touchTolerance) {
             emitToServer()
-            path.quadTo(currentX, currentY, (motionTouchEventX + currentX) / 2, (motionTouchEventY + currentY) / 2)
+            path.quadTo(
+                currentX,
+                currentY,
+                (motionTouchEventX + currentX) / 2,
+                (motionTouchEventY + currentY) / 2
+            )
             currentX = motionTouchEventX
             currentY = motionTouchEventY
         }
@@ -126,23 +129,30 @@ private class MyCanvasView(context: Context) : View(context) {
     private fun touchUp() {
         emitToServer()
         path.lineTo(currentX, currentY)
-        allStrokes.add(Stroke(path,paint))
+        allStrokes.add(Stroke(path, paint))
         extraCanvas?.drawPath(path, paint)
         path = Path()
     }
-        var testDrawnObject:DrawObject = DrawObject(0f,0f,0f,0f)
+
+    var testDrawnObject: DrawObject = DrawObject(0f, 0f, 0f, 0f)
     private fun emitToServer() {
-        val drawObject = DrawObject(currentX/width,motionTouchEventX/width,currentY/height,motionTouchEventY/height)
+        val drawObject = DrawObject(
+            currentX / width,
+            motionTouchEventX / width,
+            currentY / height,
+            motionTouchEventY / height
+        )
         testDrawnObject = drawObject
     }
+
     fun drawFromServer(drawObject: DrawObject) {
-        val mx = drawObject.currentX*width
-        val x = drawObject.eventX*width
-        val my = drawObject.currentY*height
-        val y = drawObject.eventY*height
-        path.moveTo(mx,my)
-        path.lineTo(x,y)
-        allStrokes.add(Stroke(path,paint))
+        val mx = drawObject.currentX * width
+        val x = drawObject.eventX * width
+        val my = drawObject.currentY * height
+        val y = drawObject.eventY * height
+        path.moveTo(mx, my)
+        path.lineTo(x, y)
+        allStrokes.add(Stroke(path, paint))
         path = Path()
         invalidate()
     }
@@ -154,6 +164,6 @@ private class MyCanvasView(context: Context) : View(context) {
     }
 
 
-    class DrawObject(val currentX: Float, val eventX:Float, val currentY: Float, val eventY:Float)
+    class DrawObject(val currentX: Float, val eventX: Float, val currentY: Float, val eventY: Float)
     class Stroke(val path: Path, val paint: Paint)
 }
