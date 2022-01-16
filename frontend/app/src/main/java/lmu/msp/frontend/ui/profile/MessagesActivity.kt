@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentTransaction
 import lmu.msp.frontend.R
 import lmu.msp.frontend.databinding.ActivityMessagesBinding
 
-class MessagesActivity: AppCompatActivity() {
+class MessagesActivity: AppCompatActivity(){
 
     private lateinit var binding: ActivityMessagesBinding
 
@@ -22,7 +22,5 @@ class MessagesActivity: AppCompatActivity() {
         ft.replace(R.id.fragmentPlaceholder, InboxFragment())
         ft.commit()
 
-        // TODO update inbox list
     }
-
 }
