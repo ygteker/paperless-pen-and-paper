@@ -10,32 +10,47 @@
         android:layout_height="match_parent"
         android:text="This is the Map Fragment, you can draw below" />
 
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
     <RelativeLayout
         android:id="@+id/rect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="186dp"
+        android:background="@drawable/canvas_border">
+
 
         <ImageView
             android:id="@+id/canvas_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/yawning"
-            android:contentDescription="Canvas Background" />
+            android:contentDescription="Canvas Background"
+            android:src="@drawable/yawning" />
 
-        <Button
-            android:id="@+id/delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Button" />
 
-        <Button
-            android:id="@+id/draw"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_toEndOf="@+id/delete"
-            android:text="Button" />
     </RelativeLayout>
+    <Button
+        android:id="@+id/delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="25dp"
+        android:layout_marginBottom="21dp"
+        android:text="Button" />
 
+    <Button
+        android:id="@+id/draw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/delete"
+        android:layout_marginStart="169dp"
+        android:layout_marginBottom="-2dp"
+        android:layout_toEndOf="@+id/delete"
+        android:text="Button" />
+</RelativeLayout>
 
 </FrameLayout>
