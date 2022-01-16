@@ -3,9 +3,11 @@ package lmu.msp.frontend.ui.campaign
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentManager
 import lmu.msp.frontend.R
 import lmu.msp.frontend.databinding.ActivityCampaignBinding
@@ -24,12 +26,6 @@ class CampaignActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.fragment, ToolsFragment(), "tools")
             commit()
-        }
-        binding.floatingActionButton.setOnClickListener {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.fragment, QRFragment()).addToBackStack(null)
-                commit()
-            }
         }
 
 
@@ -50,6 +46,7 @@ class CampaignActivity : AppCompatActivity() {
         supportActionBar?.title = "Campaign 1"
 
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

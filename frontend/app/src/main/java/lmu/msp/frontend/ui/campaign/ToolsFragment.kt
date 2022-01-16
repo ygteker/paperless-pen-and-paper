@@ -9,16 +9,20 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import lmu.msp.frontend.diceRolling.DiceFragmentAnimated
 import lmu.msp.frontend.R
+import lmu.msp.frontend.databinding.FragmentToolsBinding
 
 
 class ToolsFragment : Fragment() {
-
+    private var _binding: FragmentToolsBinding? = null
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_tools, container, false)
-        val toolsList = view.findViewById<ListView>(R.id.tools_list)
+        _binding = FragmentToolsBinding.inflate(inflater, container, false)
+        val view = binding.root
+        val toolsList = binding.toolsList
+        val floatingActionButton = binding.inviteFriendFAB
         val arrayList = ArrayList<String>()
         arrayList.add("Map")
         arrayList.add("Roll Dice")
@@ -36,15 +40,19 @@ class ToolsFragment : Fragment() {
             }
             fragmentManager.commit()
         }
+        floatingActionButton.setOnClickListener {
+            val fragmentManager = parentFragmentManager.beginTransaction()
+            fragmentManager.replace(R.id.fragment, QRFragment()).addToBackStack(null)
+            fragmentManager.commit()
+            }
 
 
 
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
