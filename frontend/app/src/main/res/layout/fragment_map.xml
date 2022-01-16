@@ -8,6 +8,59 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="This is the Map Fragment" />
+        android:text="This is the Map Fragment, you can draw below" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/rect"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="186dp"
+            android:background="@drawable/canvas_border">
+
+
+            <ImageView
+                android:id="@+id/canvas_bg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="Canvas Background" />
+
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="25dp"
+            android:layout_marginBottom="21dp"
+            android:text="delete" />
+
+        <Button
+            android:id="@+id/draw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/delete"
+            android:layout_marginStart="169dp"
+            android:layout_marginBottom="-2dp"
+            android:layout_toEndOf="@+id/delete"
+            android:text="draw" />
+
+        <Button
+            android:id="@+id/background"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="22dp"
+            android:layout_toEndOf="@+id/delete"
+            android:text="background" />
+    </RelativeLayout>
 
 </FrameLayout>
