@@ -34,11 +34,5 @@
             android:textColor="@color/space_cadet"
             android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam augue velit, tincidunt in odio feugiat, placerat ultricies orci. Fusce rutrum lectus nec neque cursus, at vulputate diam imperdiet. Praesent ultrices tristique faucibus. Nunc nisi tortor, sagittis ut purus quis, imperdiet molestie odio. Etiam laoreet malesuada neque vel faucibus."/>
     </ScrollView>
-
-    <Button
-        android:id="@+id/deleteButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Delete"
-        style="@style/buttonTheme" />
+    
 </LinearLayout>
