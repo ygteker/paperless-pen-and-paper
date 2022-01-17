@@ -13,7 +13,6 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import org.springframework.web.socket.server.HandshakeInterceptor
-import java.util.logging.Logger
 
 
 @Configuration
@@ -28,6 +27,8 @@ class WebSocketConfig() : WebSocketConfigurer {
 
     @Bean
     fun campaignHandler(): WebSocketHandler {
+
+
         return CampaignHandler()
     }
 
@@ -40,7 +41,6 @@ class WebSocketConfig() : WebSocketConfigurer {
                 wsHandler: WebSocketHandler,
                 attributes: MutableMap<String, Any>
             ): Boolean {
-
                 //write auth0 id to session
                 val authentication = SecurityContextHolder.getContext().authentication
                 setAuth0IdToAttributes(attributes, authentication.name)
@@ -49,7 +49,7 @@ class WebSocketConfig() : WebSocketConfigurer {
                 val campaignId = getCampaignIdFromPath(request.uri.path) ?: return false
                 setCampaignIdToAttributes(attributes, campaignId)
 
-                return true
+                return true //TODO disabled for easy testing campaignService.isMemberOrOwner(authentication.name, campaignId)
             }
 
             /**
@@ -72,6 +72,7 @@ class WebSocketConfig() : WebSocketConfigurer {
                 wsHandler: WebSocketHandler,
                 exception: Exception?
             ) {
+
                 /*nothing to do*/
             }
         }
