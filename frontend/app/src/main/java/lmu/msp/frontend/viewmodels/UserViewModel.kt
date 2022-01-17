@@ -12,6 +12,7 @@ class UserViewModel : ViewModel() {
         userData.value = user
     }
 
+
     fun getUser(): LiveData<User> = userData
 
 }
