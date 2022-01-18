@@ -10,5 +10,6 @@ class Constants {
         const val PATH_MEMBER_INVITE_LINK = "$PATH_MEMBER/invite/link"
         const val PATH_MEMBER_INVITE_ACCEPT = "$PATH_MEMBER/invite/accept"
         const val PATH_USER = "user"
+        const val PATH_MAIL = "$PATH_USER/mail"
     }
 }

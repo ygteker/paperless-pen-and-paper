@@ -3,11 +3,13 @@ package lmu.msp.frontend.api
 import io.reactivex.Maybe
 import io.reactivex.Single
 import lmu.msp.frontend.Constants.Companion.PATH_CAMPAIGN
+import lmu.msp.frontend.Constants.Companion.PATH_MAIL
 import lmu.msp.frontend.Constants.Companion.PATH_MEMBER
 import lmu.msp.frontend.Constants.Companion.PATH_MEMBER_INVITE_ACCEPT
 import lmu.msp.frontend.Constants.Companion.PATH_USER
 import lmu.msp.frontend.api.model.Campaign
 import lmu.msp.frontend.api.model.CampaignMember
+import lmu.msp.frontend.api.model.Message
 import lmu.msp.frontend.api.model.User
 import retrofit2.http.*
 
@@ -64,5 +66,13 @@ interface PenAndPaperApiInterface {
             @Query("campaignId ") campaignId: Long,
             @Query("name") name: String
         ): Maybe<Campaign>
+    }
+
+    interface MessageApi {
+        @POST(PATH_MAIL)
+        fun sendMessage(
+            @Query("receiverId") receiverId: Long,
+            @Body message: String
+        ): Maybe<Message>
     }
 }
