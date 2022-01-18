@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import lmu.msp.frontend.R
+import lmu.msp.frontend.viewmodels.UserViewModel
 
 
 class CampaignFragment : Fragment() {
@@ -25,14 +27,14 @@ class CampaignFragment : Fragment() {
     private lateinit var addCampaignButton : Button
     private lateinit var campaignAdapter : CampaignAdapter
 
+    val sharedViewModel: UserViewModel by activityViewModels()
+    private lateinit var user_text: TextView
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-
-
         titleStrings = arrayOf(
             "Curse of Strahd",
             "A wild sheep chase",
@@ -44,6 +46,16 @@ class CampaignFragment : Fragment() {
             "000003"
         )
         val view = inflater.inflate(R.layout.fragment_campaign, container, false)
+
+
+        user_text = view.findViewById(R.id.user_id_text_campaign)
+
+        sharedViewModel.userData.observe(
+            viewLifecycleOwner,
+            { userData -> user_text.setText(userData.toString()) })
+
+
+
         addCampaignButton = view.findViewById(R.id.testAddButton)
         newRecyclerView = view.findViewById(R.id.recyclerView)
 
@@ -59,10 +71,15 @@ class CampaignFragment : Fragment() {
         helper.attachToRecyclerView(newRecyclerView)
 
         fillCampaigns()
+        fetchCampaigns()
 
         addCampaignButton.setOnClickListener { addCampaign() }
 
         return view
+    }
+
+    private fun fetchCampaigns() {
+
     }
 
     private fun addCampaign() {

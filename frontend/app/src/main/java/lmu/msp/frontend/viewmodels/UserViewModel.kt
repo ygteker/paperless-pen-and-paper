@@ -6,12 +6,15 @@ import androidx.lifecycle.ViewModel
 import lmu.msp.frontend.api.model.User
 
 class UserViewModel : ViewModel() {
-    private var userData = MutableLiveData<User>()
+    private var _userData = MutableLiveData<User>()
+    val userData: MutableLiveData<User> = _userData
+
+    val testString = "LoremIpsum"
 
     fun setUser(user: User) {
-        userData.value = user
+        _userData.value = user
     }
 
-    fun getUser(): LiveData<User> = userData
+  //  fun getUser(): LiveData<User> = userData
 
 }
