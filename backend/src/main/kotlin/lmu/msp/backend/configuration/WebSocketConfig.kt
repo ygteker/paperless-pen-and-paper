@@ -20,7 +20,7 @@ import org.springframework.web.socket.server.HandshakeInterceptor
 class WebSocketConfig() : WebSocketConfigurer {
 
     /**
-     * register websocket. every campaign uses another endpoint (/1 /2...)
+     * register websocket. every campaign uses another endpoint ("/1" "/2"...)
      *
      * @param registry
      */

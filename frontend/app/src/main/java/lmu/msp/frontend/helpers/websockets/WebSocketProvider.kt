@@ -6,12 +6,12 @@ import lmu.msp.frontend.helpers.TokenManager
 import lmu.msp.frontend.helpers.retrofit.interceptor.AuthInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
 import okhttp3.logging.HttpLoggingInterceptor
 
 
 class WebSocketProvider(context: Context) {
-
-    private var rxWebSocket: IRxWebSocket? = null
 
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(interceptorAuth(context))
@@ -23,13 +23,11 @@ class WebSocketProvider(context: Context) {
 
     private fun interceptorAuth(context: Context) = AuthInterceptor(TokenManager(context))
 
-    fun start(campaignId: Long): IRxWebSocket {
+    fun start(campaignId: Long, webSocketListener: WebSocketListener): WebSocket {
+
         val request = Request.Builder().url(WS_BASE_PATH + campaignId).build()
 
-        rxWebSocket?.close()
-        rxWebSocket = RxWebSocket(okHttpClient, request)
-
-        return rxWebSocket!!
+        return okHttpClient.newWebSocket(request, webSocketListener)
     }
 
 }
