@@ -5,6 +5,7 @@ import lmu.msp.backend.service.ICampaignService
 import lmu.msp.backend.service.ISessionService
 import lmu.msp.backend.socket.model.BaseMessage
 import lmu.msp.backend.utility.getAuth0IdFromAttributes
+import lmu.msp.backend.utility.getAuth0IdFromAuthentication
 import lmu.msp.backend.utility.getCampaignIdFromAttributes
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
