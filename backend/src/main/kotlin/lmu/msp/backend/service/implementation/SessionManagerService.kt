@@ -18,6 +18,12 @@ class SessionManagerService(@Autowired private val campaignService: ICampaignSer
     ISessionService.ISessionWorkerService {
     private val sessionMap = HashMap<Long, HashMap<String, WebSocketSession>>()
 
+    /**
+     * only stores if the session attributes contains an auth0Id which is a owner or member of the campaignId
+     *
+     * @param session
+     * @return
+     */
     override fun add(session: WebSocketSession): Boolean {
         val auth0Id = getAuth0IdFromAttributes(session.attributes)
         val campaignId = getCampaignIdFromAttributes(session.attributes)

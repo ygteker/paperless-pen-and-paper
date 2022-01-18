@@ -19,6 +19,11 @@ import org.springframework.web.socket.server.HandshakeInterceptor
 @EnableWebSocket
 class WebSocketConfig() : WebSocketConfigurer {
 
+    /**
+     * register websocket. every campaign uses another endpoint (/1 /2...)
+     *
+     * @param registry
+     */
     override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
         registry.addHandler(campaignHandler(), "/ws/campaign/*").addInterceptors(
             auth0SessionInterceptor()
@@ -27,11 +32,14 @@ class WebSocketConfig() : WebSocketConfigurer {
 
     @Bean
     fun campaignHandler(): WebSocketHandler {
-
-
         return CampaignHandler()
     }
 
+    /**
+     * used to write the campaigId and the auth0 id to the session attributes
+     *
+     * @return
+     */
     @Bean
     fun auth0SessionInterceptor(): HandshakeInterceptor {
         return object : HandshakeInterceptor {
@@ -53,10 +61,10 @@ class WebSocketConfig() : WebSocketConfigurer {
             }
 
             /**
-             * tries to convert the last part of the path var to a long. if it fails it will return null
+             * tries to convert the last part of the path var to a long.
              *
              * @param path
-             * @return
+             * @return campaignId or null if conversion fails
              */
             private fun getCampaignIdFromPath(path: String): Long? {
                 val lastIndex = path.lastIndexOf('/')
