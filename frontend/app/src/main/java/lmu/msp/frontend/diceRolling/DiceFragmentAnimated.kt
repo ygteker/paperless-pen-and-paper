@@ -219,7 +219,7 @@ class DiceFragmentAnimated : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun addDice(sides: Int) {
-        if (diceArrayList.size >= 24) {
+        if (diceArrayList.size >= 40) {
             Toast.makeText(context, "Cannot add any more dice", Toast.LENGTH_SHORT).show()
         } else {
             val data: diceData
