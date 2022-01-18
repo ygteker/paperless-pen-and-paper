@@ -21,7 +21,24 @@ interface ISessionService {
          * @param campaignId
          * @param auth0Ids vararg. if empty send message to everyone in the campaign (also to yourself)
          */
-        fun sendTo(message: BaseMessage, campaignId: Long, vararg auth0Ids: String)
+        fun sendTo(
+            message: BaseMessage,
+            campaignId: Long,
+            vararg auth0Ids: String
+        )
+
+        /**
+         * broadcast a message to every auth0Id in a campaign
+         *
+         * @param message
+         * @param campaignId
+         * @param auth0IdsToIgnore the message will not be send to the auth0ids provided here
+         */
+        fun sendToFiltered(
+            message: BaseMessage,
+            campaignId: Long,
+            vararg auth0IdsToIgnore: String
+        )
 
         /**
          * get list of currently active session in the campaign

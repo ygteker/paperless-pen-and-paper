@@ -6,8 +6,8 @@ data class BasicMessage(
     @SerializedName("messageType")
     val messageType: MessageType,
     @SerializedName("chatMessage")
-    val chatMessage: List<ChatMessage>?,
+    val chatMessage: List<ChatMessage>? = null,
     @SerializedName("drawMessage")
-    val drawMessage: List<DrawMessage>?
+    val drawMessage: List<DrawMessage>? = null
 )
 

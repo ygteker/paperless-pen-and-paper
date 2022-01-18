@@ -36,10 +36,11 @@ class SessionCampaignService(
 
     }
 
-    private fun handleDraw(campaignId: Long, drawMessages: List<DrawMessage>?) {
+    private fun handleDraw(auth0Id: String,campaignId: Long, drawMessages: List<DrawMessage>?) {
         if (drawMessages != null) {
             campaignMap[campaignId]!!.drawMessage.addAll(drawMessages)
-            sessionService.sendTo(BaseMessage(MessageType.DRAW_PATH, null, drawMessages), campaignId)
+            //dont sent to yourself
+            sessionService.sendToFiltered(BaseMessage(MessageType.DRAW_PATH, null, drawMessages), campaignId,auth0Id)
         }
     }
 
@@ -62,7 +63,7 @@ class SessionCampaignService(
             MessageType.CONNECT -> return //this message type is only send from the server to a newly connected client
             MessageType.DISCONNECT -> TODO()
             MessageType.CHAT_MESSAGE -> handleChatMessage(auth0Id, campaignId, baseMessage.chatMessage)
-            MessageType.DRAW_PATH -> handleDraw(campaignId, baseMessage.drawMessage)
+            MessageType.DRAW_PATH -> handleDraw(auth0Id,campaignId, baseMessage.drawMessage)
             MessageType.DRAW_IMAGE -> TODO()
             MessageType.DRAW_RESET -> handleResetDraw(campaignId)
         }

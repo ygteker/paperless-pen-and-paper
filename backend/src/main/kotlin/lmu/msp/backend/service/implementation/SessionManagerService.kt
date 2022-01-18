@@ -77,6 +77,15 @@ class SessionManagerService(@Autowired private val campaignService: ICampaignSer
         }
     }
 
+    override fun sendToFiltered(message: BaseMessage, campaignId: Long, vararg auth0IdsToIgnore: String) {
+        sessionMap[campaignId]?.let { map ->
+            val jsonString = jacksonObjectMapper().writeValueAsString(message)
+            val textMessage = TextMessage(jsonString)
+            map.keys.filter { !auth0IdsToIgnore.contains(it) }.forEach { map[it]!!.sendMessage(textMessage) }
+        }
+
+    }
+
     override fun getActive(campaignId: Long): Collection<String> {
         return sessionMap[campaignId]?.keys ?: emptyList()
     }

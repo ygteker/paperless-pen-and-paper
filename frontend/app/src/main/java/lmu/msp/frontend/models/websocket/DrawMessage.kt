@@ -4,9 +4,13 @@ import com.google.gson.annotations.SerializedName
 
 data class DrawMessage(
     @SerializedName("color")
-    val color: Int?,
-    @SerializedName("x")
-    val x: Int?,
-    @SerializedName("y")
-    val y: Int?
+    val color: Int,
+    @SerializedName("currentX")
+    val currentX: Float,
+    @SerializedName("eventX")
+    val eventX: Float,
+    @SerializedName("currentY")
+    val currentY: Float,
+    @SerializedName("eventY")
+    val eventY: Float
 )

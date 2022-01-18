@@ -4,14 +4,22 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
+import lmu.msp.frontend.helpers.liveDataListAddElement
+import lmu.msp.frontend.helpers.liveDataListAddElementList
+import lmu.msp.frontend.helpers.liveDataListClear
 import lmu.msp.frontend.helpers.websockets.CampaignWebSocketListener
 import lmu.msp.frontend.helpers.websockets.WebSocketCallback
 import lmu.msp.frontend.helpers.websockets.WebSocketProvider
+import lmu.msp.frontend.models.websocket.BasicMessage
 import lmu.msp.frontend.models.websocket.ChatMessage
 import lmu.msp.frontend.models.websocket.DrawMessage
+import lmu.msp.frontend.models.websocket.MessageType
 import okhttp3.WebSocket
+import java.util.*
 
 class WebSocketDataViewModel(application: Application) : AndroidViewModel(application) {
+    private val gson = Gson()
 
     private val webSocketProvider = WebSocketProvider(application)
 
@@ -21,14 +29,23 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
     private var webSocket: WebSocket? = null
 
     private val chatMessages = MutableLiveData<MutableList<ChatMessage>>(mutableListOf())
-
     private val drawMessages = MutableLiveData<MutableList<DrawMessage>>(mutableListOf())
+
 
     fun getCampaignId(): LiveData<Long> = campaignId
 
     fun getChatMessages(): LiveData<MutableList<ChatMessage>> = chatMessages
     fun getDrawMessages(): LiveData<MutableList<DrawMessage>> = drawMessages
 
+    fun sendDrawMessageClear() {
+        webSocket?.send(gson.toJson(BasicMessage(MessageType.DRAW_RESET)))
+        liveDataListClear(drawMessages)
+    }
+
+    fun sendDrawMessage(drawMessage: DrawMessage) {
+        liveDataListAddElement(drawMessage, drawMessages)
+        webSocket?.send(gson.toJson(BasicMessage(MessageType.DRAW_PATH, null, listOf(drawMessage))))
+    }
 
     fun startWebSocket(campaignId: Long) {
         this.campaignId.value = campaignId
@@ -40,20 +57,15 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
     private inner class ImpWebSocketCallback : WebSocketCallback {
 
         override fun receiveChatMessages(chatMessages: List<ChatMessage>) {
-            val data = this@WebSocketDataViewModel.chatMessages.value ?: mutableListOf()
-            data.addAll(chatMessages)
-            this@WebSocketDataViewModel.chatMessages.postValue(data)
+            liveDataListAddElementList(chatMessages, this@WebSocketDataViewModel.chatMessages)
         }
 
         override fun receiveDrawMessages(drawMessages: List<DrawMessage>) {
-            val data = this@WebSocketDataViewModel.drawMessages.value ?: mutableListOf()
-            data.addAll(drawMessages)
-            this@WebSocketDataViewModel.drawMessages.postValue(data)
-
+            liveDataListAddElementList(drawMessages, this@WebSocketDataViewModel.drawMessages)
         }
 
         override fun receiveDrawMessageReset() {
-            this@WebSocketDataViewModel.drawMessages.postValue(mutableListOf())
+            liveDataListClear(drawMessages)
         }
 
     }
