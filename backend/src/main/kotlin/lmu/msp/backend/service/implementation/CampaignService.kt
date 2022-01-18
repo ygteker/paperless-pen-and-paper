@@ -42,6 +42,11 @@ class CampaignService(
         return true
     }
 
+    override fun isMemberOrOwner(auth0Id: String, campaignId: Long): Boolean {
+        val campaign = campaignRepository.findByIdOrNull(campaignId) ?: return false
+        return isMemberOrOwner(auth0Id, campaign)
+    }
+
     override fun getMembers(auth0Id: String, campaignId: Long): List<CampaignMember>? {
         val campaign = campaignRepository.findByIdOrNull(campaignId) ?: return null
         return if (isMemberOrOwner(auth0Id, campaign)) {

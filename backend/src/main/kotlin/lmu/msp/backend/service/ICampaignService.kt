@@ -33,6 +33,15 @@ interface ICampaignService {
     fun deleteCampaign(auth0Id: String, campaignId: Long): Boolean
 
     /**
+     * checks if the auth0Id is a member or an owner in the campaign
+     *
+     * @param auth0Id
+     * @param campaignId
+     * @return
+     */
+    fun isMemberOrOwner(auth0Id: String, campaignId: Long): Boolean
+
+    /**
      * select all member of the campaign. the requesting user must be a member or owner
      *
      * @param auth0Id
@@ -50,7 +59,7 @@ interface ICampaignService {
      * @param name
      * @return null if campaign doesn't exist otherwise updated campaign obj
      */
-    fun addMember(auth0Id: String, campaignId: Long, name:String): Campaign?
+    fun addMember(auth0Id: String, campaignId: Long, name: String): Campaign?
 
     /**
      * remove a member from a campaign. The auth0Id user must be the campaign owner or the user to remove (user can remove itself).
