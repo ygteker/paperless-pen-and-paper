@@ -1,6 +1,7 @@
 package lmu.msp.backend.model
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
+import com.fasterxml.jackson.annotation.JsonIdentityReference
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import javax.persistence.*
 
@@ -13,6 +14,8 @@ class CampaignMember(
     val campaign: Campaign,
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator::class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     val user: User,
 
     @Column(nullable = false, length = 45)

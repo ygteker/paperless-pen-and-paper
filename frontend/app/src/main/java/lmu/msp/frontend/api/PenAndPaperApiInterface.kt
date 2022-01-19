@@ -2,6 +2,9 @@ package lmu.msp.frontend.api
 
 import io.reactivex.Maybe
 import io.reactivex.Single
+import lmu.msp.frontend.Constants.Companion.PARAMETER_CAMPAIGN_ID
+import lmu.msp.frontend.Constants.Companion.PARAMETER_NAME
+import lmu.msp.frontend.Constants.Companion.PARAMETER_USER_ID_TO_REMOVE
 import lmu.msp.frontend.Constants.Companion.PATH_CAMPAIGN
 import lmu.msp.frontend.Constants.Companion.PATH_MEMBER
 import lmu.msp.frontend.Constants.Companion.PATH_MEMBER_INVITE_ACCEPT
@@ -12,13 +15,6 @@ import lmu.msp.frontend.api.model.User
 import retrofit2.http.*
 
 interface PenAndPaperApiInterface {
-    /**
-     * TODO
-     * check what calls can return null
-     * these calls must have a maybe
-     * all other calls can have a single
-     *
-     */
 
     interface UserApi {
 
@@ -29,31 +25,31 @@ interface PenAndPaperApiInterface {
     interface CampaignApi {
 
         @GET(PATH_CAMPAIGN)
-        fun getCampaign(): Maybe<Campaign>
+        fun getCampaign(@Query(PARAMETER_CAMPAIGN_ID) campaignId: Long): Single<Campaign>
 
         @POST(PATH_CAMPAIGN)
-        fun createCampaign(@Body campaignName: String): Maybe<Campaign>
+        fun createCampaign(@Body campaignName: String): Single<Campaign>
 
         @DELETE(PATH_CAMPAIGN)
-        fun deleteCampaign(@Query("campaignId") campaignId: Long): Single<Boolean>
+        fun deleteCampaign(@Query(PARAMETER_CAMPAIGN_ID) campaignId: Long): Single<Boolean>
 
     }
 
     interface CampaignMemberApi {
         @GET(PATH_MEMBER)
-        fun getMembers(): Maybe<List<CampaignMember>>
+        fun getMembers(@Query(PARAMETER_CAMPAIGN_ID) campaignId: Long): Single<List<CampaignMember>>
 
         @PUT(PATH_MEMBER)
         fun updateMember(
-            @Query("campaignId ") campaignId: Long,
-            @Query("name") name: String
-        ): Maybe<CampaignMember>
+            @Query(PARAMETER_CAMPAIGN_ID) campaignId: Long,
+            @Query(PARAMETER_NAME) name: String
+        ): Single<List<CampaignMember>>
 
         @DELETE(PATH_MEMBER)
         fun removeMember(
-            @Query("campaignId ") campaignId: Long,
-            @Query("userToRemoveId") userToRemoveId: Long
-        ): Maybe<Campaign>
+            @Query(PARAMETER_CAMPAIGN_ID) campaignId: Long,
+            @Query(PARAMETER_USER_ID_TO_REMOVE) userToRemoveId: Long
+        ): Single<List<CampaignMember>>
 
     }
 
@@ -61,8 +57,8 @@ interface PenAndPaperApiInterface {
 
         @POST(PATH_MEMBER_INVITE_ACCEPT)
         fun acceptInvite(
-            @Query("campaignId ") campaignId: Long,
-            @Query("name") name: String
+            @Query(PARAMETER_CAMPAIGN_ID) campaignId: Long,
+            @Query(PARAMETER_NAME) name: String
         ): Maybe<Campaign>
     }
 }

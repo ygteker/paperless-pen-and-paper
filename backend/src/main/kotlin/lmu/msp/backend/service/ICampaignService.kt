@@ -57,9 +57,9 @@ interface ICampaignService {
      * @param auth0Id
      * @param campaignId
      * @param name
-     * @return null if campaign doesn't exist otherwise updated campaign obj
+     * @return null if campaign doesn't exist otherwise new campaign member obj
      */
-    fun addMember(auth0Id: String, campaignId: Long, name: String): Campaign?
+    fun addMember(auth0Id: String, campaignId: Long, name: String): CampaignMember?
 
     /**
      * remove a member from a campaign. The auth0Id user must be the campaign owner or the user to remove (user can remove itself).
@@ -67,9 +67,9 @@ interface ICampaignService {
      * @param auth0Id
      * @param campaignId
      * @param userIdToRemove
-     * @return null if campaign doesn't exist, userToRemove not a member of the campaign, auth0Id isn't the campaign owner neither the userToRemove, otherwise return updated campaign obj
+     * @return null if campaign doesn't exist, userToRemove not a member of the campaign, auth0Id isn't the campaign owner neither the userToRemove, otherwise return updated member list obj
      */
-    fun removeMember(auth0Id: String, campaignId: Long, userIdToRemove: Long): Campaign?
+    fun removeMember(auth0Id: String, campaignId: Long, userIdToRemove: Long): List<CampaignMember>?
 
     /**
      * update the name of a campaign member
@@ -79,5 +79,5 @@ interface ICampaignService {
      * @param newName
      * @return null if auth0Id not a member of the campaign or campaign doesn't exist
      */
-    fun renameMember(auth0Id: String, campaignId: Long, newName: String): Campaign?
+    fun renameMember(auth0Id: String, campaignId: Long, newName: String): CampaignMember?
 }
