@@ -3,7 +3,7 @@ package lmu.msp.frontend.api.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Campaign(
+data class CampaignOwner(
     @SerializedName("campaignMember")
     val campaignMember: List<Long>,
     @SerializedName("id")

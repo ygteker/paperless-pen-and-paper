@@ -91,7 +91,7 @@ internal class CampaignMemberControllerTest(@Autowired private val mockMvc: Mock
     @WithMockUser(username = "noMember")
     fun getMembersNoMember() {
         mockMvc.perform(get(path).param("campaignId", campaignId.toString()))
-            .andExpect(status().isOk)
+            .andExpect(status().isNotFound)
             .andExpect(content().string(""))
     }
 
@@ -106,7 +106,7 @@ internal class CampaignMemberControllerTest(@Autowired private val mockMvc: Mock
                 .with(csrf().asHeader())
         )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.campaignMember").isEmpty)
+            .andExpect(jsonPath("$").isEmpty)
 
         assertThat(userRepository.findUserByAuth0Id(auth0Member)!!.campaignMember).isEmpty()
 
@@ -123,7 +123,7 @@ internal class CampaignMemberControllerTest(@Autowired private val mockMvc: Mock
                 .with(csrf().asHeader())
         )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.campaignMember").isEmpty)
+            .andExpect(jsonPath("$").isEmpty)
 
         assertThat(userRepository.findUserByAuth0Id(auth0Member)!!.campaignMember).isEmpty()
     }
@@ -138,7 +138,7 @@ internal class CampaignMemberControllerTest(@Autowired private val mockMvc: Mock
                 .param("campaignId", campaignId.toString()).param("userToRemoveId", user.id.toString())
                 .with(csrf().asHeader())
         )
-            .andExpect(status().isOk)
+            .andExpect(status().isNotFound)
             .andExpect(content().string(""))
 
         assertThat(userRepository.findUserByAuth0Id(auth0Member)!!.campaignMember).isNotEmpty
@@ -152,7 +152,7 @@ internal class CampaignMemberControllerTest(@Autowired private val mockMvc: Mock
                 .param("campaignId", campaignId.toString()).param("name", "newName")
                 .with(csrf().asHeader())
         )
-            .andExpect(status().isOk)
+            .andExpect(status().isNotFound)
             .andExpect(content().string(""))
     }
 
@@ -165,7 +165,7 @@ internal class CampaignMemberControllerTest(@Autowired private val mockMvc: Mock
                 .with(csrf().asHeader())
         )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.campaignMember[0].characterName").value("newName"))
+            .andExpect(jsonPath("$.characterName").value("newName"))
 
         assertThat(
             memberRepository.findByCampaignIdAndUserAuth0Id(
@@ -183,7 +183,7 @@ internal class CampaignMemberControllerTest(@Autowired private val mockMvc: Mock
                 .param("campaignId", campaignId.toString()).param("name", "newName")
                 .with(csrf().asHeader())
         )
-            .andExpect(status().isOk)
+            .andExpect(status().isNotFound)
             .andExpect(content().string(""))
     }
 
@@ -196,8 +196,8 @@ internal class CampaignMemberControllerTest(@Autowired private val mockMvc: Mock
                 .with(csrf().asHeader())
         )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.campaignMember[0].characterName").value(charName))
-            .andExpect(jsonPath("$.campaignMember[1].characterName").value("newName"))
+            .andExpect(jsonPath("$.characterName").value("newName"))
+            .andExpect(jsonPath("$.campaign.title").value(campaignName))
     }
 
     @Test
@@ -208,7 +208,7 @@ internal class CampaignMemberControllerTest(@Autowired private val mockMvc: Mock
                 .param("campaignId", campaignId.toString()).param("name", "newName")
                 .with(csrf().asHeader())
         )
-            .andExpect(status().isOk)
+            .andExpect(status().isNotFound)
             .andExpect(content().string(""))
     }
 }

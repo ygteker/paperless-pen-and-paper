@@ -86,7 +86,7 @@ internal class CampaignControllerTest(@Autowired private val mockMvc: MockMvc) {
     @WithMockUser(username = "noMember")
     fun getCampaignNoMember() {
         mockMvc.perform(get(path).param("campaignId", campaignId.toString()))
-            .andExpect(status().isOk)
+            .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.id").doesNotExist())
     }
 
