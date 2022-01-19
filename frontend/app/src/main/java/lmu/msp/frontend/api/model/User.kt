@@ -9,9 +9,9 @@ data class User(
     @SerializedName("campaignOwner")
     val campaignOwner: List<CampaignOwner>,
     @SerializedName("id")
-    val id: Int,
+    val id: Long,
     @SerializedName("receivedMails")
-    val receivedMails: List<Int>,
+    val receivedMails: List<Long>,
     @SerializedName("sendMails")
-    val sendMails: List<Int>
+    val sendMails: List<Long>
 )

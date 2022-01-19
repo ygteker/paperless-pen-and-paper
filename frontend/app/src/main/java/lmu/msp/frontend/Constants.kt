@@ -13,5 +13,9 @@ class Constants {
         const val PATH_MEMBER_INVITE_LINK = "$PATH_MEMBER/invite/link"
         const val PATH_MEMBER_INVITE_ACCEPT = "$PATH_MEMBER/invite/accept"
         const val PATH_USER = "user"
+
+        const val PARAMETER_CAMPAIGN_ID = "campaignId"
+        const val PARAMETER_NAME = "name"
+        const val PARAMETER_USER_ID_TO_REMOVE = "userToRemoveId"
     }
 }

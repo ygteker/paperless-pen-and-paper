@@ -9,7 +9,7 @@ data class CampaignMember(
     @SerializedName("characterName")
     val characterName: String,
     @SerializedName("id")
-    val id: Int,
+    val id: Long,
     @SerializedName("user")
-    val user: Int
+    val user: Long
 )

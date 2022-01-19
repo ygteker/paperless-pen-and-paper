@@ -5,11 +5,11 @@ import com.google.gson.annotations.SerializedName
 
 data class Campaign(
     @SerializedName("campaignMember")
-    val campaignMember: List<Int>,
+    val campaignMember: List<Long>,
     @SerializedName("id")
-    val id: Int,
+    val id: Long,
     @SerializedName("owner")
-    val owner: Int,
+    val owner: Long,
     @SerializedName("title")
     val title: String
 )
