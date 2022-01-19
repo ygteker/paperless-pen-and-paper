@@ -12,13 +12,6 @@ import lmu.msp.frontend.api.model.User
 import retrofit2.http.*
 
 interface PenAndPaperApiInterface {
-    /**
-     * TODO
-     * check what calls can return null
-     * these calls must have a maybe
-     * all other calls can have a single
-     *
-     */
 
     interface UserApi {
 
@@ -29,10 +22,10 @@ interface PenAndPaperApiInterface {
     interface CampaignApi {
 
         @GET(PATH_CAMPAIGN)
-        fun getCampaign(): Maybe<Campaign>
+        fun getCampaign(@Query("campaignId") campaignId: Long): Single<Campaign>
 
         @POST(PATH_CAMPAIGN)
-        fun createCampaign(@Body campaignName: String): Maybe<Campaign>
+        fun createCampaign(@Body campaignName: String): Single<Campaign>
 
         @DELETE(PATH_CAMPAIGN)
         fun deleteCampaign(@Query("campaignId") campaignId: Long): Single<Boolean>
@@ -41,19 +34,19 @@ interface PenAndPaperApiInterface {
 
     interface CampaignMemberApi {
         @GET(PATH_MEMBER)
-        fun getMembers(): Maybe<List<CampaignMember>>
+        fun getMembers(): Single<List<CampaignMember>>
 
         @PUT(PATH_MEMBER)
         fun updateMember(
             @Query("campaignId ") campaignId: Long,
             @Query("name") name: String
-        ): Maybe<CampaignMember>
+        ): Single<List<CampaignMember>>
 
         @DELETE(PATH_MEMBER)
         fun removeMember(
             @Query("campaignId ") campaignId: Long,
             @Query("userToRemoveId") userToRemoveId: Long
-        ): Maybe<Campaign>
+        ): Single<List<CampaignMember>>
 
     }
 
