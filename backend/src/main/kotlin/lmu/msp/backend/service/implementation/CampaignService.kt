@@ -56,7 +56,7 @@ class CampaignService(
         }
     }
 
-    override fun addMember(auth0Id: String, campaignId: Long, name: String): Campaign? {
+    override fun addMember(auth0Id: String, campaignId: Long, name: String): CampaignMember? {
         val campaign = campaignRepository.findByIdOrNull(campaignId) ?: return null
         if (isMemberOrOwner(auth0Id, campaign)) {
             return null
@@ -68,14 +68,12 @@ class CampaignService(
         campaign.campaignMember.add(campaignMember)
         user.campaignMember.add(campaignMember)
 
-        memberRepository.save(campaignMember)
-
-        return campaign
+        return memberRepository.save(campaignMember)
 
     }
 
     @Transactional
-    override fun removeMember(auth0Id: String, campaignId: Long, userIdToRemove: Long): Campaign? {
+    override fun removeMember(auth0Id: String, campaignId: Long, userIdToRemove: Long): List<CampaignMember>? {
         val campaign = campaignRepository.findByIdOrNull(campaignId) ?: return null
 
         if (!isMember(userIdToRemove, campaign) /*user must be a member of the campaign*/) {
@@ -94,17 +92,17 @@ class CampaignService(
         campaignMember.campaign.campaignMember.remove(campaignMember)
 
         memberRepository.deleteById(campaignMember.id)
-        return campaignMember.campaign
+        return campaignMember.campaign.campaignMember
     }
 
-    override fun renameMember(auth0Id: String, campaignId: Long, newName: String): Campaign? {
+    override fun renameMember(auth0Id: String, campaignId: Long, newName: String): CampaignMember? {
         val campaignMember = memberRepository.findByCampaignIdAndUserAuth0Id(campaignId, auth0Id) ?: return null
 
         campaignMember.characterName = newName
 
         memberRepository.save(campaignMember)
 
-        return campaignMember.campaign
+        return campaignMember
     }
 
 

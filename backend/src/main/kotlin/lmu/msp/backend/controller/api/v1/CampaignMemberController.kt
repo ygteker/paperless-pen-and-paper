@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
-import lmu.msp.backend.model.Campaign
 import lmu.msp.backend.model.CampaignMember
 import lmu.msp.backend.service.ICampaignService
 import lmu.msp.backend.utility.getAuth0IdFromAuthentication
@@ -45,7 +44,7 @@ class CampaignMemberController(@Autowired private val campaignService: ICampaign
         }
     }
 
-    @Operation(summary = "removes user from the campaign. If the requesting user is still in the campaign returns Campaign obj (when owner deletes member)")
+    @Operation(summary = "removes user from the campaign. If the requesting user is still in the campaign returns List of remaining campaign members")
     @ApiResponses(
         ApiResponse(responseCode = "200"),
         ApiResponse(responseCode = "401", description = "Invalid Authentication", content = [Content()]),
@@ -60,13 +59,13 @@ class CampaignMemberController(@Autowired private val campaignService: ICampaign
         authentication: Authentication,
         @RequestParam campaignId: Long,
         @RequestParam userToRemoveId: Long
-    ): ResponseEntity<Campaign> {
+    ): ResponseEntity<List<CampaignMember>> {
         val auth0Id = getAuth0IdFromAuthentication(authentication)
-        val campaign = campaignService.removeMember(auth0Id, campaignId, userToRemoveId)
-        return if (null == campaign) {
+        val campaignMember = campaignService.removeMember(auth0Id, campaignId, userToRemoveId)
+        return if (null == campaignMember) {
             ResponseEntity(HttpStatus.NOT_FOUND)
         } else {
-            ResponseEntity(campaign, HttpStatus.OK)
+            ResponseEntity(campaignMember, HttpStatus.OK)
         }
     }
 
@@ -86,7 +85,7 @@ class CampaignMemberController(@Autowired private val campaignService: ICampaign
         @RequestParam campaignId: Long,
         @Size(max = 45)
         @RequestParam name: String
-    ): ResponseEntity<Campaign> {
+    ): ResponseEntity<CampaignMember> {
         val auth0Id = getAuth0IdFromAuthentication(authentication)
         val campaign = campaignService.renameMember(auth0Id, campaignId, name)
         return if (null == campaign) {
@@ -112,13 +111,13 @@ class CampaignMemberController(@Autowired private val campaignService: ICampaign
         @RequestParam campaignId: Long,
         @Size(max = 45)
         @RequestParam name: String
-    ): ResponseEntity<Campaign> {
+    ): ResponseEntity<CampaignMember> {
         val auth0Id = getAuth0IdFromAuthentication(authentication)
-        val campaign = campaignService.addMember(auth0Id, campaignId, name)
-        return if (null == campaign) {
+        val campaignMember = campaignService.addMember(auth0Id, campaignId, name)
+        return if (null == campaignMember) {
             ResponseEntity(HttpStatus.NOT_FOUND)
         } else {
-            ResponseEntity(campaign, HttpStatus.OK)
+            ResponseEntity(campaignMember, HttpStatus.OK)
         }
     }
 
