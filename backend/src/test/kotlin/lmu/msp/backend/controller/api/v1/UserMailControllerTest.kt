@@ -103,8 +103,7 @@ internal class UserMailControllerTest(@Autowired private val mockMvc: MockMvc) {
                 .contentType("text/plain")
                 .with(csrf().asHeader())
         )
-            .andExpect(status().isOk)
-            .andExpect(content().string(""))
+            .andExpect(status().isNotFound)
     }
 
     @Test
