@@ -32,18 +32,17 @@ class HomeFragment : Fragment() {
     }
 
     val sharedViewModel: UserViewModel by activityViewModels()
-    private lateinit var user_text: TextView
     private lateinit var joinCampaignButton: Button
     private lateinit var createCampaignButton: Button
     private lateinit var deleteCampaignButton: Button
     private lateinit var joinCampaignEditText: EditText
+    private lateinit var joinCampaignCharacterText: EditText
     private lateinit var createCampaignEditText: EditText
     private lateinit var deleteCampaignEditText: EditText
 
     private lateinit var campaignApi: PenAndPaperApiInterface.CampaignApi
+    private lateinit var inviteCampaignApi: PenAndPaperApiInterface.InviteCampaignApi
     private lateinit var auth: PAuthenticator
-
-
 
 
     override fun onCreateView(
@@ -52,12 +51,12 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
-        user_text = view.findViewById(R.id.user_id_text)
 
         joinCampaignButton = view.findViewById(R.id.joinCampaignButton)
         createCampaignButton = view.findViewById(R.id.createCampaignButton)
         deleteCampaignButton = view.findViewById(R.id.deleteCampaignButton)
         joinCampaignEditText = view.findViewById(R.id.joinCampaignEditText)
+        joinCampaignCharacterText = view.findViewById(R.id.joinCampaignCharacterText)
         createCampaignEditText = view.findViewById(R.id.createCampaignEditText)
         deleteCampaignEditText = view.findViewById(R.id.deleteCampaignEditText)
 
@@ -67,11 +66,7 @@ class HomeFragment : Fragment() {
 
         auth = PAuthenticator(view.context, TokenManager(view.context))
         campaignApi = RetrofitProvider(view.context).getCampaignApi()
-
-
-        sharedViewModel.userData.observe(
-            viewLifecycleOwner,
-            { userData -> user_text.setText(userData.toString()) })
+        inviteCampaignApi = RetrofitProvider(view.context).getInviteCampaignApi()
 
 
         var user = sharedViewModel.testString
@@ -106,14 +101,28 @@ class HomeFragment : Fragment() {
             }
             .doOnSuccess {
                 Toast.makeText(context, "Created Campaign", Toast.LENGTH_SHORT).show()
+                Log.d(TAG, createCampaignEditText.text.toString())
             }
             .subscribe()
     }
 
     private fun joinCampaign() {
-
-
+        inviteCampaignApi.acceptInvite(
+            joinCampaignEditText.text.toString().toLong(),
+            joinCampaignCharacterText.text.toString()
+        )
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnError {
+                Log.e(TAG, "error ${it.message}")
+                //TODO ERROR HANDLING
+            }
+            .doOnSuccess {
+                Toast.makeText(context, "Join Campaign Success", Toast.LENGTH_SHORT).show()
+            }
+            .subscribe()
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

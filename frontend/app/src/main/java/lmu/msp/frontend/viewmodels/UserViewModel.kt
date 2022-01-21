@@ -1,5 +1,7 @@
 package lmu.msp.frontend.viewmodels
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,7 +16,5 @@ class UserViewModel : ViewModel() {
     fun setUser(user: User) {
         _userData.value = user
     }
-
-  //  fun getUser(): LiveData<User> = userData
 
 }
