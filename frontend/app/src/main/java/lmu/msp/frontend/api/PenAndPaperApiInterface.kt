@@ -12,6 +12,7 @@ import lmu.msp.frontend.Constants.Companion.PATH_USER
 import lmu.msp.frontend.api.model.Campaign
 import lmu.msp.frontend.api.model.CampaignMember
 import lmu.msp.frontend.api.model.User
+import okhttp3.RequestBody
 import retrofit2.http.*
 
 interface PenAndPaperApiInterface {
@@ -27,8 +28,15 @@ interface PenAndPaperApiInterface {
         @GET(PATH_CAMPAIGN)
         fun getCampaign(@Query(PARAMETER_CAMPAIGN_ID) campaignId: Long): Single<Campaign>
 
+        /**
+         * to create a request body you can simply write "test-string".toRequestBody() or string.toRequestBody()
+         * this way is needed, so that the string is not converted to a json string
+         *
+         * @param campaignName
+         * @return
+         */
         @POST(PATH_CAMPAIGN)
-        fun createCampaign(@Body campaignName: String): Single<Campaign>
+        fun createCampaign(@Body campaignName: RequestBody): Single<Campaign>
 
         @DELETE(PATH_CAMPAIGN)
         fun deleteCampaign(@Query(PARAMETER_CAMPAIGN_ID) campaignId: Long): Single<Boolean>
