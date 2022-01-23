@@ -70,7 +70,7 @@ interface PenAndPaperApiInterface {
         fun acceptInvite(
             @Query(PARAMETER_CAMPAIGN_ID) campaignId: Long,
             @Query(PARAMETER_NAME) name: String
-        ): Maybe<Campaign>
+        ): Single<CampaignMember>
     }
 
     interface MessageApi {

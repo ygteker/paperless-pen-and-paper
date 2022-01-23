@@ -50,7 +50,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         viewModel = ViewModelProvider(requireActivity()).get(WebSocketDataViewModel::class.java)
 
 
-        viewModel.getDrawMessages().observe(viewLifecycleOwner, { drawMessages ->
+        viewModel.getDrawMessagesNew().observe(viewLifecycleOwner, { drawMessages ->
+            viewModel.getSemaphore().acquire()
+
             drawMessages.forEach {
                 myCanvasView.drawFromServer(
                     DrawObject(
@@ -61,11 +63,30 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                     )
                 )
 
-
             }
-            Log.i("draw", " ${drawMessages.size}")
+            Log.i("draw ing", " ${drawMessages.size}")
+            drawMessages.clear()
+            viewModel.getSemaphore().release()
         })
 
+        viewModel.getDrawCanvasClear().observe(viewLifecycleOwner, {
+            if (it) {
+                myCanvasView.resetCanvasDrawing()
+                viewModel.getDrawCanvasClear().postValue(false)
+            }
+
+        })
+
+        viewModel.getDrawMessages().value?.forEach {
+            myCanvasView.drawFromServer(
+                DrawObject(
+                    it.currentX,
+                    it.eventX,
+                    it.currentY,
+                    it.eventY
+                )
+            )
+        }
         return view
     }
 
