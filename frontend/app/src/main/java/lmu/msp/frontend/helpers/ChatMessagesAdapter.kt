@@ -17,7 +17,7 @@ class ChatMessagesAdapter (private val messages: LiveData<MutableList<ChatMessag
     inner class ViewHolder(
         itemView: View
     ) : RecyclerView.ViewHolder(itemView){
-        val sender = itemView.findViewById<TextView>(R.id.sender)
+//        val sender = itemView.findViewById<TextView>(R.id.sender)
         val chatBubble = itemView.findViewById<TextView>(R.id.message)
     }
 
@@ -33,12 +33,12 @@ class ChatMessagesAdapter (private val messages: LiveData<MutableList<ChatMessag
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         var message: ChatMessage
-        val sender = holder.sender
+//        val sender = holder.sender
         val chatBubble = holder.chatBubble
 
         messages.observe(activity, Observer {
             message = it.get(position)
-            sender.text = message.senderId.toString()
+//            sender.text = message.senderId.toString()
             chatBubble.text = message.message
 //            notifyItemChanged(position)
         })
