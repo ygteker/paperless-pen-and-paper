@@ -6,12 +6,15 @@ import lmu.msp.frontend.Constants.Companion.PARAMETER_CAMPAIGN_ID
 import lmu.msp.frontend.Constants.Companion.PARAMETER_NAME
 import lmu.msp.frontend.Constants.Companion.PARAMETER_USER_ID_TO_REMOVE
 import lmu.msp.frontend.Constants.Companion.PATH_CAMPAIGN
+import lmu.msp.frontend.Constants.Companion.PATH_MAIL
 import lmu.msp.frontend.Constants.Companion.PATH_MEMBER
 import lmu.msp.frontend.Constants.Companion.PATH_MEMBER_INVITE_ACCEPT
 import lmu.msp.frontend.Constants.Companion.PATH_USER
 import lmu.msp.frontend.api.model.Campaign
 import lmu.msp.frontend.api.model.CampaignMember
+import lmu.msp.frontend.api.model.Message
 import lmu.msp.frontend.api.model.User
+import lmu.msp.frontend.models.MessageModel
 import okhttp3.RequestBody
 import retrofit2.http.*
 
@@ -68,5 +71,22 @@ interface PenAndPaperApiInterface {
             @Query(PARAMETER_CAMPAIGN_ID) campaignId: Long,
             @Query(PARAMETER_NAME) name: String
         ): Single<CampaignMember>
+    }
+
+    interface MessageApi {
+        @POST(PATH_MAIL)
+        @Headers("Content-Type: text/plain")
+        fun sendMessage(
+            @Query("receiverId") receiverId: Long,
+            @Body message: RequestBody
+        ): Maybe<Message>
+
+        @DELETE(PATH_MAIL)
+        fun deleteMessage(
+            @Query("mailId") emailId: Int
+        ): Maybe<Message>
+
+        @GET(PATH_MAIL)
+        fun getMessages(): Maybe<Message>
     }
 }
