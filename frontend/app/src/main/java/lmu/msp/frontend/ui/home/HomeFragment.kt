@@ -25,6 +25,7 @@ import lmu.msp.frontend.api.model.User
 import lmu.msp.frontend.helpers.TokenManager
 import lmu.msp.frontend.helpers.auth0.PAuthenticator
 import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class HomeFragment : Fragment() {
     companion object {
@@ -92,7 +93,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun createCampaign() {
-        campaignApi.createCampaign(createCampaignEditText.text.toString())
+        campaignApi.createCampaign(createCampaignEditText.text.toString().toRequestBody())
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnError {
