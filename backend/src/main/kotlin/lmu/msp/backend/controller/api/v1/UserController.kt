@@ -9,6 +9,7 @@ import lmu.msp.backend.model.User
 import lmu.msp.backend.service.IUserService
 import lmu.msp.backend.utility.getAuth0IdFromAuthentication
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
@@ -21,12 +22,20 @@ import org.springframework.web.multipart.MultipartFile
 class UserController(@Autowired private val userService: IUserService) {
 
     @Operation(summary = "load and return user obj of the authenticated user")
+    @ApiResponses(
+        ApiResponse(responseCode = "200"),
+        ApiResponse(responseCode = "401", description = "Invalid Authentication", content = [Content()])
+    )
     @GetMapping
     fun getUser(authentication: Authentication): User {
         val auth0Id = getAuth0IdFromAuthentication(authentication)
         return userService.getUserByAuth0Id(auth0Id)
     }
 
+    @ApiResponses(
+        ApiResponse(responseCode = "200"),
+        ApiResponse(responseCode = "401", description = "Invalid Authentication", content = [Content()])
+    )
     @PostMapping("/{id}/avatar", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun setUserProfilePicture(
         authentication: Authentication,
@@ -41,19 +50,19 @@ class UserController(@Autowired private val userService: IUserService) {
 
     }
 
-    @GetMapping("/{id}/avatar")
     @ApiResponses(
         ApiResponse(responseCode = "200"),
         ApiResponse(responseCode = "401", description = "Invalid Authentication", content = [Content()]),
         ApiResponse(responseCode = "404", content = [Content()])
     )
+    @GetMapping("/{id}/avatar")
     fun getUserProfilePicture(authentication: Authentication, @PathVariable id: Long): ResponseEntity<ByteArray> {
         val auth0Id = getAuth0IdFromAuthentication(authentication)
 
         val byteArray = userService.getProfileImage(auth0Id, id)
 
         return if (null == byteArray) {
-            ResponseEntity.notFound().build()
+            ResponseEntity(HttpStatus.NOT_FOUND)
         } else {
             ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(MediaType.IMAGE_PNG_VALUE))

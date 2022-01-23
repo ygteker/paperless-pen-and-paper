@@ -1,10 +1,12 @@
 package lmu.msp.frontend.ui.campaign
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import lmu.msp.frontend.R
 import lmu.msp.frontend.databinding.ActivityCampaignBinding
+import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
 
 class CampaignActivity : AppCompatActivity() {
 
@@ -24,6 +26,10 @@ class CampaignActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Campaign 1"
 
+
+        val viewModel = ViewModelProvider(this).get(WebSocketDataViewModel::class.java)
+
+        viewModel.startWebSocket(1L)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

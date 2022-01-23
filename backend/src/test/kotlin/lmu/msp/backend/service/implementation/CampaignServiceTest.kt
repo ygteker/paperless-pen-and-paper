@@ -128,10 +128,10 @@ internal class CampaignServiceTest(@Autowired private val campaignService: ICamp
 
     @Test
     fun addMemberNoMember(@Autowired userRepository: UserRepository) {
-        val campaign = campaignService.addMember(auth0NoMember, campaignId, charName)
-        assertThat(campaign).isNotNull
-        campaign!!
-        assertThat(campaign.campaignMember.size).isEqualTo(2)
+        val campaignMember = campaignService.addMember(auth0NoMember, campaignId, charName)
+        assertThat(campaignMember).isNotNull
+        campaignMember!!
+        assertThat(campaignMember.campaign.campaignMember.size).isEqualTo(2)
         assertThat(userRepository.findUserByAuth0Id(auth0NoMember)!!.campaignMember.size).isEqualTo(1)
     }
 
