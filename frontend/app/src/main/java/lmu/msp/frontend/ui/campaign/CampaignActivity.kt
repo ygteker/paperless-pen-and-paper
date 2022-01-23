@@ -25,16 +25,14 @@ class CampaignActivity : AppCompatActivity() {
         }
 
         val intent = intent
-        var campaignIdFromIntent = intent.getSerializableExtra("campaignId")
-        var campaignId = campaignIdFromIntent.toString().toLong()
+        val campaignId = intent.getSerializableExtra("campaignId").toString().toLong()
+        val titleString = intent.getSerializableExtra("titleString").toString()
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Campaign 1"
+        supportActionBar?.title = titleString
 
 
         val viewModel = ViewModelProvider(this).get(WebSocketDataViewModel::class.java)
-
-
         viewModel.startWebSocket(campaignId)
     }
 

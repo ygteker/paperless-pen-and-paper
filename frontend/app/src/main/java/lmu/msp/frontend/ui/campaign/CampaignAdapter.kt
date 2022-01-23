@@ -40,14 +40,19 @@ class CampaignAdapter(private val campaignList: ArrayList<campaigns>) :
 
 
         init {
-            cardButton.setOnClickListener { v: View -> campaignButtonClick(v, campaignId.text) }
+            cardButton.setOnClickListener { v: View ->
+                campaignButtonClick(
+                    v,
+                    campaignId.text.toString(),
+                    titleString.text.toString()
+                )
+            }
         }
 
-        private fun campaignButtonClick(v: View, campaignId: CharSequence) {
-            //  Toast.makeText(itemView.context, "You clicked on item $titleString", Toast.LENGTH_SHORT).show()
-
+        private fun campaignButtonClick(v: View, campaignId: String, titleString: String) {
             val intent = Intent(v.context, CampaignActivity::class.java)
             intent.putExtra("campaignId", campaignId)
+            intent.putExtra("titleString", titleString)
             v.context.startActivity(intent)
         }
 
