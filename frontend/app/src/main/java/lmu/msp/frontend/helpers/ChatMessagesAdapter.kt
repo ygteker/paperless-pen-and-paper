@@ -4,11 +4,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import lmu.msp.frontend.R
 import lmu.msp.frontend.models.websocket.ChatMessage
+import lmu.msp.frontend.ui.campaign.CampaignActivity
 
-class ChatMessagesAdapter (private val messages: MutableList<ChatMessage>):
+class ChatMessagesAdapter (private val messages: LiveData<MutableList<ChatMessage>>, private val activity: FragmentActivity):
     RecyclerView.Adapter<ChatMessagesAdapter.ViewHolder>(){
     inner class ViewHolder(
         itemView: View
@@ -27,14 +31,24 @@ class ChatMessagesAdapter (private val messages: MutableList<ChatMessage>):
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val message: ChatMessage = messages.get(position)
+
+        var message: ChatMessage
         val sender = holder.sender
-        val charBubble = holder.chatBubble
-        sender.text  = message.senderId.toString()
-        charBubble.text = message.message
+        val chatBubble = holder.chatBubble
+
+        messages.observe(activity, Observer {
+            message = it.get(position)
+            sender.text = message.senderId.toString()
+            chatBubble.text = message.message
+//            notifyItemChanged(position)
+        })
     }
 
     override fun getItemCount(): Int {
-        return messages.size
+        var size: Int = 0
+        messages.observe(activity, Observer{
+            size = it.size
+        })
+        return size
     }
 }

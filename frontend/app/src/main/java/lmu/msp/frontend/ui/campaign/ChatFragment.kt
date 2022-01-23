@@ -2,6 +2,7 @@ package lmu.msp.frontend.ui.campaign
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +26,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
     private lateinit var chatView: RecyclerView
     private lateinit var viewManager: LinearLayoutManager
     private lateinit var viewModel: WebSocketDataViewModel
+    private lateinit var chatMessagesAdapter: ChatMessagesAdapter
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -39,30 +41,30 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
         _binding = FragmentChatBinding.inflate(inflater, container, false)
         chatView = binding.chatView
         viewManager = LinearLayoutManager(requireActivity())
+        viewManager.stackFromEnd = true
         chatView.layoutManager = viewManager
+        chatMessagesAdapter = ChatMessagesAdapter(viewModel.getChatMessages(), requireActivity())
+        chatView.adapter = chatMessagesAdapter
 
         binding.sendButton.setOnClickListener {
             val textToSend = binding.chatBox.text.toString()
-            //TODO handle ws call
+            sendMessage(ChatMessage(textToSend, 2, 1))
+            binding.chatBox.setText("")
         }
         observeData()
-//        createDummyData()
         return binding.root
     }
 
     private fun observeData() {
-        viewModel.getChatMessages().observe(requireActivity(), Observer{
-            chatView.adapter = ChatMessagesAdapter(it)
+
+        viewModel.getChatMessages().observe(requireActivity(), Observer {
+            chatMessagesAdapter.notifyItemChanged(it.size - 1)
+            chatView.scrollToPosition(it.size - 1)
         })
     }
 
-    private fun sendMessage(message: ChatMessage, receiverId: Int) {
-        viewModel.sendChatMessage(ChatMessage(message="test", receiverId, 1))
-    }
-
-
-    private fun createDummyData() {
-        viewModel.sendChatMessage(ChatMessage("Dummy message", 1, 1))
+    private fun sendMessage(message: ChatMessage) {
+        viewModel.sendChatMessage(message)
     }
 
 }

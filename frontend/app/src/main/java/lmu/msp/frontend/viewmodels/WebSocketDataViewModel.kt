@@ -80,10 +80,10 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
 
         override fun receiveChatMessages(chatMessages: List<ChatMessage>) {
             liveDataListAddElementList(chatMessages, this@WebSocketDataViewModel.chatMessages)
-            chatSemaphore.acquire()
-            Log.i("TAG", "acquired")
-            liveDataListAddElementList(chatMessages, chatMessagesNew)
-            chatSemaphore.release()
+//            chatSemaphore.acquire()
+//            Log.i("TAG", "acquired")
+//            liveDataListAddElementList(chatMessages, chatMessagesNew)
+//            chatSemaphore.release()
         }
 
         override fun receiveDrawMessages(drawMessages: List<DrawMessage>) {
