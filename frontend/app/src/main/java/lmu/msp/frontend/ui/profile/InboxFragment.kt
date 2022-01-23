@@ -10,10 +10,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import lmu.msp.frontend.R
+import lmu.msp.frontend.api.PenAndPaperApiInterface
 import lmu.msp.frontend.databinding.FragmentInboxBinding
 import lmu.msp.frontend.helpers.TokenManager
 import lmu.msp.frontend.helpers.auth0.MessagesAdapter
+import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
 import lmu.msp.frontend.models.MessageModel
 import lmu.msp.frontend.viewmodels.MessagesViewModel
 
@@ -86,6 +90,7 @@ class InboxFragment: Fragment() {
         viewModel.lst.observe(requireActivity(), Observer {
             recyclerView.adapter = MessagesAdapter({position -> onListItemClick(position, it[position]) }, it)
         })
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

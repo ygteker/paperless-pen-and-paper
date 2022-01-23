@@ -11,11 +11,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import lmu.msp.frontend.HomeActivity
 import lmu.msp.frontend.api.PenAndPaperApiInterface
 import lmu.msp.frontend.databinding.FragmentComposeBinding
 import lmu.msp.frontend.helpers.TokenManager
 import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
 import lmu.msp.frontend.viewmodels.MessagesViewModel
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class ComposeFragment: Fragment() {
     companion object {
@@ -51,8 +53,18 @@ class ComposeFragment: Fragment() {
             val receiverId = receiverEditText.text.toString().toLong()
             val message = messageEditText.text.toString()
             Log.i("receiverId","\nReceiver id: $receiverId")
-            messageApi.sendMessage(receiverId, message)
+            messageApi.sendMessage(receiverId, message.toRequestBody())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError {
+                    Log.e("asdasdsa", "error ${it.message}")
+                    //TODO ERROR HANDLING
+                }
+                .doOnSuccess {
 
+                }
+                .subscribe()
+            requireActivity().supportFragmentManager.popBackStack()
         }
 
         return binding.root

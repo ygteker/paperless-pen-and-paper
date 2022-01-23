@@ -14,6 +14,7 @@ import lmu.msp.frontend.api.model.Campaign
 import lmu.msp.frontend.api.model.CampaignMember
 import lmu.msp.frontend.api.model.Message
 import lmu.msp.frontend.api.model.User
+import lmu.msp.frontend.models.MessageModel
 import okhttp3.RequestBody
 import retrofit2.http.*
 
@@ -74,9 +75,18 @@ interface PenAndPaperApiInterface {
 
     interface MessageApi {
         @POST(PATH_MAIL)
+        @Headers("Content-Type: text/plain")
         fun sendMessage(
             @Query("receiverId") receiverId: Long,
-            @Body message: String
+            @Body message: RequestBody
         ): Maybe<Message>
+
+        @DELETE(PATH_MAIL)
+        fun deleteMessage(
+            @Query("mailId") emailId: Int
+        ): Maybe<Message>
+
+        @GET(PATH_MAIL)
+        fun getMessages(): Maybe<Message>
     }
 }
