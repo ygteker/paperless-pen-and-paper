@@ -1,5 +1,6 @@
 package lmu.msp.frontend.ui.campaign
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -23,13 +24,16 @@ class CampaignActivity : AppCompatActivity() {
             commit()
         }
 
+        val intent = intent
+        val campaignId = intent.getSerializableExtra("campaignId").toString().toLong()
+        val titleString = intent.getSerializableExtra("titleString").toString()
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Campaign 1"
+        supportActionBar?.title = titleString
 
 
         val viewModel = ViewModelProvider(this).get(WebSocketDataViewModel::class.java)
-
-        viewModel.startWebSocket(1L)
+        viewModel.startWebSocket(campaignId)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

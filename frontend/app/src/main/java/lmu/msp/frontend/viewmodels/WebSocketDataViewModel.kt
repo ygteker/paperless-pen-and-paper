@@ -1,6 +1,7 @@
 package lmu.msp.frontend.viewmodels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -17,8 +18,11 @@ import lmu.msp.frontend.models.websocket.DrawMessage
 import lmu.msp.frontend.models.websocket.MessageType
 import okhttp3.WebSocket
 import java.util.*
+import java.util.concurrent.Semaphore
 
 class WebSocketDataViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val drawSemaphore = Semaphore(1)
     private val gson = Gson()
 
     private val webSocketProvider = WebSocketProvider(application)
@@ -29,13 +33,21 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
     private var webSocket: WebSocket? = null
 
     private val chatMessages = MutableLiveData<MutableList<ChatMessage>>(mutableListOf())
+
+    private val drawCanvasClear = MutableLiveData(false)
     private val drawMessages = MutableLiveData<MutableList<DrawMessage>>(mutableListOf())
+    private val drawMessagesNew = MutableLiveData<MutableList<DrawMessage>>(mutableListOf())
 
 
     fun getCampaignId(): LiveData<Long> = campaignId
 
+    fun getSemaphore() = drawSemaphore
+
+
+    fun getDrawCanvasClear() = drawCanvasClear
     fun getChatMessages(): LiveData<MutableList<ChatMessage>> = chatMessages
     fun getDrawMessages(): LiveData<MutableList<DrawMessage>> = drawMessages
+    fun getDrawMessagesNew(): LiveData<MutableList<DrawMessage>> = drawMessagesNew
 
     fun sendDrawMessageClear() {
         webSocket?.send(gson.toJson(BasicMessage(MessageType.DRAW_RESET)))
@@ -62,10 +74,15 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
 
         override fun receiveDrawMessages(drawMessages: List<DrawMessage>) {
             liveDataListAddElementList(drawMessages, this@WebSocketDataViewModel.drawMessages)
+            drawSemaphore.acquire()
+            Log.i("TAG", "acquired")
+            liveDataListAddElementList(drawMessages, drawMessagesNew)
+            drawSemaphore.release()
         }
 
         override fun receiveDrawMessageReset() {
             liveDataListClear(drawMessages)
+            drawCanvasClear.postValue(true)
         }
 
     }
