@@ -6,5 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 data class BaseMessage(
     val messageType: MessageType,
     val chatMessage: List<ChatMessage>? = null,
-    val drawMessage: List<DrawMessage>? = null
+    val drawMessage: List<DrawMessage>? = null,
+    val drawImage: DrawImage? = null
 )
