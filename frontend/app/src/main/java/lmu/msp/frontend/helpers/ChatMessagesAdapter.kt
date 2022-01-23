@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import lmu.msp.frontend.R
 import lmu.msp.frontend.models.websocket.ChatMessage
 
-class ChatMessagesAdapter (private val messages: ArrayList<ChatMessage>):
+class ChatMessagesAdapter (private val messages: MutableList<ChatMessage>):
     RecyclerView.Adapter<ChatMessagesAdapter.ViewHolder>(){
     inner class ViewHolder(
         itemView: View

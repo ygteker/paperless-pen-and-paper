@@ -23,6 +23,7 @@ import java.util.concurrent.Semaphore
 class WebSocketDataViewModel(application: Application) : AndroidViewModel(application) {
 
     private val drawSemaphore = Semaphore(1)
+    private val chatSemaphore = Semaphore(1)
     private val gson = Gson()
 
     private val webSocketProvider = WebSocketProvider(application)
@@ -33,6 +34,7 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
     private var webSocket: WebSocket? = null
 
     private val chatMessages = MutableLiveData<MutableList<ChatMessage>>(mutableListOf())
+    private val chatMessagesNew = MutableLiveData<MutableList<ChatMessage>>(mutableListOf())
 
     private val drawCanvasClear = MutableLiveData(false)
     private val drawMessages = MutableLiveData<MutableList<DrawMessage>>(mutableListOf())
@@ -46,6 +48,7 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
 
     fun getDrawCanvasClear() = drawCanvasClear
     fun getChatMessages(): LiveData<MutableList<ChatMessage>> = chatMessages
+    fun getChatMessagesNew(): LiveData<MutableList<ChatMessage>> = chatMessagesNew
     fun getDrawMessages(): LiveData<MutableList<DrawMessage>> = drawMessages
     fun getDrawMessagesNew(): LiveData<MutableList<DrawMessage>> = drawMessagesNew
 
@@ -66,10 +69,21 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
             webSocketProvider.start(campaignId, CampaignWebSocketListener(ImpWebSocketCallback()))
     }
 
+    fun sendChatMessage(chatMessage: ChatMessage) {
+        liveDataListAddElement(chatMessage, chatMessages)
+        webSocket?.send(gson.toJson(BasicMessage(MessageType.CHAT_MESSAGE, listOf(chatMessage))))
+
+    }
+
+
     private inner class ImpWebSocketCallback : WebSocketCallback {
 
         override fun receiveChatMessages(chatMessages: List<ChatMessage>) {
             liveDataListAddElementList(chatMessages, this@WebSocketDataViewModel.chatMessages)
+            chatSemaphore.acquire()
+            Log.i("TAG", "acquired")
+            liveDataListAddElementList(chatMessages, chatMessagesNew)
+            chatSemaphore.release()
         }
 
         override fun receiveDrawMessages(drawMessages: List<DrawMessage>) {
