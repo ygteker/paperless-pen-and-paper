@@ -1,6 +1,7 @@
 package lmu.msp.frontend.viewmodels
 
 import android.app.Application
+import android.graphics.BitmapFactory
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,12 +12,10 @@ import lmu.msp.frontend.helpers.liveDataListClear
 import lmu.msp.frontend.helpers.websockets.CampaignWebSocketListener
 import lmu.msp.frontend.helpers.websockets.WebSocketCallback
 import lmu.msp.frontend.helpers.websockets.WebSocketProvider
-import lmu.msp.frontend.models.websocket.BasicMessage
-import lmu.msp.frontend.models.websocket.ChatMessage
-import lmu.msp.frontend.models.websocket.DrawMessage
-import lmu.msp.frontend.models.websocket.MessageType
+import lmu.msp.frontend.models.websocket.*
 import okhttp3.WebSocket
 import java.util.*
+
 
 class WebSocketDataViewModel(application: Application) : AndroidViewModel(application) {
     private val gson = Gson()
@@ -54,6 +53,15 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
             webSocketProvider.start(campaignId, CampaignWebSocketListener(ImpWebSocketCallback()))
     }
 
+    fun sendImage(byteArray: ByteArray) {
+        webSocket?.send(
+            gson.toJson(
+                BasicMessage(MessageType.DRAW_IMAGE, null, null, DrawImage(byteArray))
+            )
+        )
+
+    }
+
     private inner class ImpWebSocketCallback : WebSocketCallback {
 
         override fun receiveChatMessages(chatMessages: List<ChatMessage>) {
@@ -66,6 +74,10 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
 
         override fun receiveDrawMessageReset() {
             liveDataListClear(drawMessages)
+        }
+
+        override fun receivedDrawImage(drawImage: DrawImage) {
+            val bmp = BitmapFactory.decodeByteArray(drawImage.image, 0, drawImage.image.size)
         }
 
     }

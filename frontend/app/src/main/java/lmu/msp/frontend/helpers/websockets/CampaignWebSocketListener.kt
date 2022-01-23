@@ -35,11 +35,12 @@ class CampaignWebSocketListener(private val webSocketCallback: WebSocketCallback
             MessageType.CONNECT -> {
                 webSocketCallback.receiveChatMessages(basicMessage.chatMessage!!)
                 webSocketCallback.receiveDrawMessages(basicMessage.drawMessage!!)
+                webSocketCallback.receivedDrawImage(basicMessage.drawImage!!)
             }
             MessageType.DISCONNECT -> TODO()
             MessageType.CHAT_MESSAGE -> webSocketCallback.receiveChatMessages(basicMessage.chatMessage!!)
             MessageType.DRAW_PATH -> webSocketCallback.receiveDrawMessages(basicMessage.drawMessage!!)
-            MessageType.DRAW_IMAGE -> TODO()
+            MessageType.DRAW_IMAGE -> webSocketCallback.receivedDrawImage(basicMessage.drawImage!!)
             MessageType.DRAW_RESET -> webSocketCallback.receiveDrawMessageReset()
         }
 
