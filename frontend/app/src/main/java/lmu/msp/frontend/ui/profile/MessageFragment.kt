@@ -8,11 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import lmu.msp.frontend.R
 import lmu.msp.frontend.databinding.FragmentMessageBinding
-import lmu.msp.frontend.databinding.FragmentProfileBinding
 import lmu.msp.frontend.helpers.TokenManager
 import lmu.msp.frontend.models.MessageModel
 import lmu.msp.frontend.viewmodels.MessagesViewModel
-import kotlin.math.log
 
 class MessageFragment: Fragment() {
 
@@ -25,7 +23,7 @@ class MessageFragment: Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_with_add_button, menu)
+        inflater.inflate(R.menu.menu_with_delete_button, menu)
     }
 
     override fun onAttach(context: Context) {

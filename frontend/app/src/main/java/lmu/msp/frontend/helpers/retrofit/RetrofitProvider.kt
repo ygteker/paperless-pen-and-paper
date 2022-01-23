@@ -26,6 +26,7 @@ class RetrofitProvider(context: Context) {
     private lateinit var campaignApi: PenAndPaperApiInterface.CampaignApi
     private lateinit var campaignMemberApi: PenAndPaperApiInterface.CampaignMemberApi
     private lateinit var inviteCampaignApi: PenAndPaperApiInterface.InviteCampaignApi
+    private lateinit var messageApi: PenAndPaperApiInterface.MessageApi
 
     private fun interceptorLogging() =
         HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC)
@@ -73,5 +74,13 @@ class RetrofitProvider(context: Context) {
                 .create(PenAndPaperApiInterface.InviteCampaignApi::class.java)
         }
         return inviteCampaignApi
+    }
+
+    fun getMessageApi(): PenAndPaperApiInterface.MessageApi {
+        if (!::messageApi.isInitialized) {
+            messageApi = createRetrofitWithRxJava(okHttpClient)
+                .create(PenAndPaperApiInterface.MessageApi::class.java)
+        }
+        return messageApi
     }
 }
