@@ -30,7 +30,7 @@ class TokenManager(context: Context) {
         credentialsManager.getCredentials(object :
             Callback<Credentials, CredentialsManagerException> {
             override fun onSuccess(result: Credentials) {
-                Log.d(TAG, "loaded token from credentials manager")
+                Log.d(TAG, "loaded token from credentials manager ${result.accessToken}")
                 token = result.accessToken
             }
 
