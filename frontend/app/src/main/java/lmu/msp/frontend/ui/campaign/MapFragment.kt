@@ -2,6 +2,7 @@ package lmu.msp.frontend.ui.campaign
 
 import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -13,6 +14,7 @@ import lmu.msp.frontend.databinding.FragmentMapBinding
 import lmu.msp.frontend.models.websocket.DrawMessage
 import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
 import java.io.ByteArrayOutputStream
+
 
 class MapFragment : Fragment(R.layout.fragment_map) {
 
@@ -38,13 +40,13 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             viewModel.sendDrawMessageClear()
         }
         background.setOnClickListener {
-            //canvas_bg.setImageResource(R.drawable.yawning)
-            val bmp = BitmapFactory.decodeResource(resources, R.drawable.yawning)
+            canvas_bg.setImageResource(R.drawable.yawning)
+
+            val bitmap = (canvas_bg.drawable as BitmapDrawable).bitmap
             val stream = ByteArrayOutputStream()
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, stream)
-            Log.i("test", "size: ${bmp.height}x${bmp.width}")
-            val byteArray: ByteArray = stream.toByteArray()
-            viewModel.sendImage(byteArray)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+
+            viewModel.sendImage(stream.toByteArray())
 
         }
 
@@ -130,6 +132,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         viewModel.getDrawImage().observe(viewLifecycleOwner, {
 
             if (it.imageBase64.isNotEmpty()) {
