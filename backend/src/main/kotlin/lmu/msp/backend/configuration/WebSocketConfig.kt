@@ -39,7 +39,7 @@ class WebSocketConfig(@Autowired private val campaignService: ICampaignService) 
     }
 
     @Bean
-    fun createServletServerContainerFactoryBean(): ServletServerContainerFactoryBean? {
+    fun createServletServerContainerFactoryBean(): ServletServerContainerFactoryBean {
         val container = ServletServerContainerFactoryBean()
         container.setMaxTextMessageBufferSize(32768000)
         container.setMaxBinaryMessageBufferSize(32768000)
