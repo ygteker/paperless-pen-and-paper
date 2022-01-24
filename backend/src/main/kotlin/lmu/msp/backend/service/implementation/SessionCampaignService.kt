@@ -56,6 +56,7 @@ class SessionCampaignService(
 
     private fun handleDrawImage(auth0Id: String, campaignId: Long, drawImage: DrawImage?) {
         if (drawImage != null) {
+            println("Recived an image ${drawImage.imageBase64}")
             campaignMap[campaignId]!!.drawImage = drawImage
             sessionService.sendToFiltered(
                 BaseMessage(MessageType.DRAW_PATH, null, null, drawImage),

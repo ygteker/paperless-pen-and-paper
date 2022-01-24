@@ -1,7 +1,7 @@
 package lmu.msp.frontend.viewmodels
 
 import android.app.Application
-import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -29,12 +29,14 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
 
     private val chatMessages = MutableLiveData<MutableList<ChatMessage>>(mutableListOf())
     private val drawMessages = MutableLiveData<MutableList<DrawMessage>>(mutableListOf())
+    private val drawImage = MutableLiveData<DrawImage>()
 
 
     fun getCampaignId(): LiveData<Long> = campaignId
 
     fun getChatMessages(): LiveData<MutableList<ChatMessage>> = chatMessages
     fun getDrawMessages(): LiveData<MutableList<DrawMessage>> = drawMessages
+    fun getDrawImage(): LiveData<DrawImage> = drawImage
 
     fun sendDrawMessageClear() {
         webSocket?.send(gson.toJson(BasicMessage(MessageType.DRAW_RESET)))
@@ -54,10 +56,12 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
     }
 
     fun sendImage(byteArray: ByteArray) {
+        val msg = gson.toJson(
+            BasicMessage(MessageType.DRAW_IMAGE, null, null, DrawImage.create(byteArray))
+        )
+        Log.i("tasdas", msg.length.toString() + "a")
         webSocket?.send(
-            gson.toJson(
-                BasicMessage(MessageType.DRAW_IMAGE, null, null, DrawImage(byteArray))
-            )
+            msg
         )
 
     }
@@ -77,7 +81,7 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
         }
 
         override fun receivedDrawImage(drawImage: DrawImage) {
-            val bmp = BitmapFactory.decodeByteArray(drawImage.image, 0, drawImage.image.size)
+            this@WebSocketDataViewModel.drawImage.postValue(drawImage)
         }
 
     }

@@ -58,13 +58,13 @@ class CampaignHandler() : TextWebSocketHandler() {
     @Throws(Exception::class)
     override fun handleTransportError(session: WebSocketSession, exception: Throwable) {
         super.handleTransportError(session, exception)
-        println("handleTransportError")
+        println("handleTransportError ${exception.message}")
     }
 
     @Throws(Exception::class)
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
         super.afterConnectionClosed(session, status)
-        println("afterConnectionClosed")
+        println("afterConnectionClosed ${status.reason}")
         sessionService.remove(session)
 
         val auth0Id = getAuth0IdFromAttributes(session.attributes)

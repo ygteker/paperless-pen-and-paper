@@ -1,9 +1,7 @@
 package lmu.msp.frontend.ui.campaign
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Path
+import android.graphics.*
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -16,8 +14,11 @@ import androidx.lifecycle.ViewModelProvider
 import lmu.msp.frontend.R
 import lmu.msp.frontend.models.websocket.DrawMessage
 import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
+import java.io.ByteArrayOutputStream
+
 
 class MapFragment : Fragment(R.layout.fragment_map) {
+    lateinit var canvas_bg: ImageView
 
     lateinit var viewModel: WebSocketDataViewModel
 
@@ -27,7 +28,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_map, container, false)
         val relativeLayout = view.findViewById<RelativeLayout>(R.id.canvas_layout)
-        val canvas_bg = view.findViewById<ImageView>(R.id.canvas_bg)
+        canvas_bg = view.findViewById<ImageView>(R.id.canvas_bg)
 
         val myCanvasView = MyCanvasView(view.context)
         relativeLayout.addView(myCanvasView)
@@ -43,11 +44,18 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
         }
         background.setOnClickListener {
-            canvas_bg.setImageResource(R.drawable.yawning)
+            //canvas_bg.setImageResource(R.drawable.yawning)
+            val bmp = BitmapFactory.decodeResource(resources, R.drawable.yawning)
+            val stream = ByteArrayOutputStream()
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            Log.i("test", "size: ${bmp.height}x${bmp.width}")
+            val byteArray: ByteArray = stream.toByteArray()
+            viewModel.sendImage(byteArray)
 
         }
 
         viewModel = ViewModelProvider(requireActivity()).get(WebSocketDataViewModel::class.java)
+
 
 
         viewModel.getDrawMessages().observe(viewLifecycleOwner, { drawMessages ->
@@ -67,6 +75,29 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         })
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.getDrawImage().observe(viewLifecycleOwner, {
+
+            if (it.imageBase64.isNotEmpty()) {
+                val byteArray = it.getByteArray()
+                if (byteArray.isNotEmpty()) {
+                    val bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+                    val height = canvas_bg.measuredHeight
+                    val width = canvas_bg.measuredWidth
+                    Log.d("asdsad", "HxW $height x $width")
+
+                    canvas_bg.setImageBitmap(
+                        Bitmap.createBitmap(
+                            bmp
+                        )
+                    )
+                }
+            }
+        })
+
     }
 
     private inner class MyCanvasView(context: Context) : View(context) {

@@ -13,6 +13,10 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import org.springframework.web.socket.server.HandshakeInterceptor
+import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean
+
+
+
 
 
 @Configuration
@@ -33,6 +37,15 @@ class WebSocketConfig() : WebSocketConfigurer {
     @Bean
     fun campaignHandler(): WebSocketHandler {
         return CampaignHandler()
+    }
+
+    @Bean
+    fun createServletServerContainerFactoryBean(): ServletServerContainerFactoryBean? {
+        val container = ServletServerContainerFactoryBean()
+        container.setMaxTextMessageBufferSize(32768000)
+        container.setMaxBinaryMessageBufferSize(32768000)
+        println("Websocket factory returned")
+        return container
     }
 
     /**

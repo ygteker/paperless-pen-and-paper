@@ -1,23 +1,16 @@
 package lmu.msp.frontend.models.websocket
 
 import com.google.gson.annotations.SerializedName
+import java.util.*
 
 data class DrawImage(
-    @SerializedName("color")
-    val image: ByteArray = ByteArray(0)
+    @SerializedName("imageBase64")
+    val imageBase64: String = ""
+
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as DrawImage
-
-        if (!image.contentEquals(other.image)) return false
-
-        return true
+    companion object {
+        fun create(byteArray: ByteArray) = DrawImage(Base64.getEncoder().encodeToString(byteArray))
     }
 
-    override fun hashCode(): Int {
-        return image.contentHashCode()
-    }
+    fun getByteArray(): ByteArray = Base64.getDecoder().decode(imageBase64)
 }

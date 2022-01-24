@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName
 class Constants {
     companion object {
         const val API_BASE_PATH = "https://msp-ws2122-5.mobile.ifi.lmu.de/api/v1/"
-        const val WS_BASE_PATH = "https://msp-ws2122-5.mobile.ifi.lmu.de/ws/campaign/"
-        //const val WS_BASE_PATH = "http://10.0.2.2:8080/ws/campaign/" //uncomment for local testing
+        //const val WS_BASE_PATH = "https://msp-ws2122-5.mobile.ifi.lmu.de/ws/campaign/"
+        const val WS_BASE_PATH = "http://10.0.2.2:8080/ws/campaign/" //uncomment for local testing
         //pen and paper api paths
         const val PATH_CAMPAIGN = "campaign"
         const val PATH_MEMBER = "$PATH_CAMPAIGN/member"
