@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".ui.home.HomeFragment"
+    android:padding="12dp">
 
     <TextView
         android:id="@+id/text_home"
@@ -17,5 +18,73 @@
         android:textAlignment="center"
         android:textSize="20sp" />
 
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/text_home">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <EditText
+                android:id="@+id/joinCampaignEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="CampaignID"
+                android:inputType="number" />
+
+            <EditText
+                android:id="@+id/joinCampaignCharacterText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Character Name"
+                android:inputType="text" />
+
+            <Button
+                android:id="@+id/joinCampaignButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Join Campaign" />
+
+            <EditText
+                android:id="@+id/createCampaignEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:maxLength="30"
+                android:hint="Campaign Name"
+                android:inputType="text" />
+
+            <Button
+                android:id="@+id/createCampaignButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Create Campaign" />
+
+            <EditText
+                android:id="@+id/deleteCampaignEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="CampaignID"
+                android:inputType="number" />
+
+            <Button
+                android:id="@+id/deleteCampaignButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Delete Campaign" />
+
+
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>

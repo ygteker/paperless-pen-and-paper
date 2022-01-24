@@ -14,27 +14,26 @@ import androidx.lifecycle.ViewModelProvider
 import lmu.msp.frontend.R
 import lmu.msp.frontend.models.websocket.DrawMessage
 import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
-import java.io.ByteArrayOutputStream
-
 
 class MapFragment : Fragment(R.layout.fragment_map) {
-    lateinit var canvas_bg: ImageView
 
     lateinit var viewModel: WebSocketDataViewModel
+    private var _binding: FragmentMapBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_map, container, false)
-        val relativeLayout = view.findViewById<RelativeLayout>(R.id.canvas_layout)
-        canvas_bg = view.findViewById<ImageView>(R.id.canvas_bg)
-
+        _binding = FragmentMapBinding.inflate(inflater, container, false)
+        val view = binding.root
+        val relativeLayout = binding.canvasLayout
+        val canvas_bg = binding.canvasBg
         val myCanvasView = MyCanvasView(view.context)
         relativeLayout.addView(myCanvasView)
-        val delete = view.findViewById<Button>(R.id.delete)
-        val draw = view.findViewById<Button>(R.id.draw)
-        val background = view.findViewById<Button>(R.id.background)
+        val delete = binding.delete
+        val drawColor = binding.color
+        val background = binding.background
         delete.setOnClickListener {
             myCanvasView.resetCanvasDrawing()
             viewModel.sendDrawMessageClear()
@@ -56,22 +55,79 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
         viewModel = ViewModelProvider(requireActivity()).get(WebSocketDataViewModel::class.java)
 
+        viewModel.getDrawMessagesNew().observe(viewLifecycleOwner, { drawMessages ->
+            viewModel.getSemaphore().acquire()
 
-
-        viewModel.getDrawMessages().observe(viewLifecycleOwner, { drawMessages ->
             drawMessages.forEach {
                 myCanvasView.drawFromServer(
                     DrawObject(
+                        it.color,
                         it.currentX,
                         it.eventX,
                         it.currentY,
                         it.eventY
                     )
                 )
-
-
             }
-            Log.i("draw", " ${drawMessages.size}")
+            Log.i("draw ing", " ${drawMessages.size}")
+            drawMessages.clear()
+            viewModel.getSemaphore().release()
+        })
+
+        viewModel.getDrawCanvasClear().observe(viewLifecycleOwner, {
+            if (it) {
+                myCanvasView.resetCanvasDrawing()
+                viewModel.getDrawCanvasClear().postValue(false)
+            }
+        })
+
+        viewModel.getDrawMessages().value?.forEach {
+            myCanvasView.drawFromServer(
+                DrawObject(
+                    it.color,
+                    it.currentX,
+                    it.eventX,
+                    it.currentY,
+                    it.eventY
+                )
+            )
+        }
+        drawColor.setOnClickListener(View.OnClickListener {
+            val popupMenu = PopupMenu(view.context, drawColor)
+
+            //To display the icons in the popup menu the following try catch method is required
+            try {
+                val fields = popupMenu.javaClass.declaredFields
+                for (field in fields) {
+                    if ("mPopup" == field.name) {
+                        field.isAccessible = true
+                        val menuPopupHelper = field[popupMenu]
+                        val classPopupHelper = Class.forName(
+                            menuPopupHelper
+                                .javaClass.name
+                        )
+                        val setForceIcons = classPopupHelper.getMethod(
+                            "setForceShowIcon", Boolean::class.javaPrimitiveType
+                        )
+                        setForceIcons.invoke(menuPopupHelper, true)
+                        break
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            popupMenu.menuInflater.inflate(R.menu.popup_color_picker, popupMenu.menu)
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.ibBlack -> myCanvasView.changeColor(Color.BLACK)
+                    R.id.ibBlue -> myCanvasView.changeColor(Color.BLUE)
+                    R.id.ibGreen -> myCanvasView.changeColor(Color.GREEN)
+                    R.id.ibRed -> myCanvasView.changeColor(Color.RED)
+                    R.id.ibYellow -> myCanvasView.changeColor(Color.YELLOW)
+                }
+                true
+            }
+            popupMenu.show()
         })
 
         return view
@@ -100,34 +156,33 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private inner class MyCanvasView(context: Context) : View(context) {
         private var extraCanvas: Canvas? = null
         private var path = Path()
         private var allStrokes = ArrayList<Stroke>()
         private val undonePaths = ArrayList<Path>()
-        private var strokeWidth = 12f
-        private val drawColor = ResourcesCompat.getColor(resources, R.color.black, null)
+        private var standardStrokeWidth = 12f
 
 
-        private val paint = Paint().apply {
-            color = drawColor
+        private var paint = Paint().apply {
             isAntiAlias = true
             isDither = true
             style = Paint.Style.STROKE
             strokeJoin = Paint.Join.ROUND
             strokeCap = Paint.Cap.ROUND
-            strokeWidth = 12f
+            strokeWidth = standardStrokeWidth
         }
-
 
         private var motionTouchEventX = 0f
         private var motionTouchEventY = 0f
-
         private var currentX = 0f
         private var currentY = 0f
-
         private val touchTolerance = ViewConfiguration.get(context).scaledTouchSlop
-
 
         override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
             super.onSizeChanged(width, height, oldWidth, oldHeight)
@@ -188,22 +243,23 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             allStrokes.add(Stroke(path, paint))
             extraCanvas?.drawPath(path, paint)
             path = Path()
+            createPaintObject(paint.color, paint.strokeWidth)
+            invalidate()
         }
 
-        var testDrawnObject: DrawObject = DrawObject(0f, 0f, 0f, 0f)
         private fun emitToServer() {
             val drawObject = DrawObject(
+                paint.color,
                 currentX / width,
                 motionTouchEventX / width,
                 currentY / height,
                 motionTouchEventY / height
             )
 
-            testDrawnObject = drawObject
 
             viewModel.sendDrawMessage(
                 DrawMessage(
-                    drawColor,
+                    drawObject.color,
                     drawObject.currentX,
                     drawObject.eventX,
                     drawObject.currentY,
@@ -219,10 +275,11 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             val y = drawObject.eventY * height
 
             val path = Path()
+            changeColor(drawObject.color)
             path.moveTo(mx, my)
             path.lineTo(x, y)
             allStrokes.add(Stroke(path, paint))
-            // path = Path()
+            createPaintObject(paint.color, paint.strokeWidth)
             invalidate()
         }
 
@@ -232,10 +289,23 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             invalidate()
         }
 
+        fun changeColor(color: Int) {
+            paint.color = color
+        }
+
+        private fun createPaintObject(color: Int, strokeWidth: Float) {
+            paint = Paint()
+            paint.isAntiAlias = true
+            paint.color = color
+            paint.style = Paint.Style.STROKE
+            paint.strokeJoin = Paint.Join.ROUND
+            paint.strokeWidth = strokeWidth
+        }
 
     }
 
     class DrawObject(
+        val color: Int,
         val currentX: Float,
         val eventX: Float,
         val currentY: Float,
@@ -243,5 +313,4 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     )
 
     class Stroke(val path: Path, val paint: Paint)
-
 }

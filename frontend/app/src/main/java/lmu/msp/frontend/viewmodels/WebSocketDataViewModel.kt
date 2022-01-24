@@ -15,9 +15,12 @@ import lmu.msp.frontend.helpers.websockets.WebSocketProvider
 import lmu.msp.frontend.models.websocket.*
 import okhttp3.WebSocket
 import java.util.*
-
+import java.util.concurrent.Semaphore
 
 class WebSocketDataViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val drawSemaphore = Semaphore(1)
+    private val chatSemaphore = Semaphore(1)
     private val gson = Gson()
 
     private val webSocketProvider = WebSocketProvider(application)
@@ -28,14 +31,24 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
     private var webSocket: WebSocket? = null
 
     private val chatMessages = MutableLiveData<MutableList<ChatMessage>>(mutableListOf())
+    private val chatMessagesNew = MutableLiveData<MutableList<ChatMessage>>(mutableListOf())
+
+    private val drawCanvasClear = MutableLiveData(false)
     private val drawMessages = MutableLiveData<MutableList<DrawMessage>>(mutableListOf())
+    private val drawMessagesNew = MutableLiveData<MutableList<DrawMessage>>(mutableListOf())
     private val drawImage = MutableLiveData<DrawImage>()
 
 
     fun getCampaignId(): LiveData<Long> = campaignId
 
+    fun getSemaphore() = drawSemaphore
+
+
+    fun getDrawCanvasClear() = drawCanvasClear
     fun getChatMessages(): LiveData<MutableList<ChatMessage>> = chatMessages
+    fun getChatMessagesNew(): LiveData<MutableList<ChatMessage>> = chatMessagesNew
     fun getDrawMessages(): LiveData<MutableList<DrawMessage>> = drawMessages
+    fun getDrawMessagesNew(): LiveData<MutableList<DrawMessage>> = drawMessagesNew
     fun getDrawImage(): LiveData<DrawImage> = drawImage
 
     fun sendDrawMessageClear() {
@@ -55,6 +68,13 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
             webSocketProvider.start(campaignId, CampaignWebSocketListener(ImpWebSocketCallback()))
     }
 
+    fun sendChatMessage(chatMessage: ChatMessage) {
+        liveDataListAddElement(chatMessage, chatMessages)
+        webSocket?.send(gson.toJson(BasicMessage(MessageType.CHAT_MESSAGE, listOf(chatMessage))))
+
+    }
+
+
     fun sendImage(byteArray: ByteArray) {
         val msg = gson.toJson(
             BasicMessage(MessageType.DRAW_IMAGE, null, null, DrawImage.create(byteArray))
@@ -70,14 +90,23 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
 
         override fun receiveChatMessages(chatMessages: List<ChatMessage>) {
             liveDataListAddElementList(chatMessages, this@WebSocketDataViewModel.chatMessages)
+//            chatSemaphore.acquire()
+//            Log.i("TAG", "acquired")
+//            liveDataListAddElementList(chatMessages, chatMessagesNew)
+//            chatSemaphore.release()
         }
 
         override fun receiveDrawMessages(drawMessages: List<DrawMessage>) {
             liveDataListAddElementList(drawMessages, this@WebSocketDataViewModel.drawMessages)
+            drawSemaphore.acquire()
+            Log.i("TAG", "acquired")
+            liveDataListAddElementList(drawMessages, drawMessagesNew)
+            drawSemaphore.release()
         }
 
         override fun receiveDrawMessageReset() {
             liveDataListClear(drawMessages)
+            drawCanvasClear.postValue(true)
         }
 
         override fun receivedDrawImage(drawImage: DrawImage) {

@@ -24,7 +24,10 @@
     <string name="title_messages">Messages</string>
     <string name="title_message">{sender_name}</string>
     <string name="delete_button_title">delete</string>
+    <string name="add_button_title">add</string>
     <string name="canvas_background">Canvas Background</string>
+    <string name="send_button_text">Send</string>
+    <string name="chat_send_button_text">Send</string>
 
 
     <string-array name="profile_list_items">

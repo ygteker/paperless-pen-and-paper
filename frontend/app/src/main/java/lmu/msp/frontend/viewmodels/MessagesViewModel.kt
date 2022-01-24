@@ -2,7 +2,9 @@ package lmu.msp.frontend.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import lmu.msp.frontend.api.PenAndPaperApiInterface
 import lmu.msp.frontend.helpers.auth0.ApiInterface
+import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
 import lmu.msp.frontend.models.Message
 import lmu.msp.frontend.models.MessageModel
 import retrofit2.Call
@@ -56,4 +58,5 @@ class MessagesViewModel: ViewModel() {
             }
         })
     }
+
 }

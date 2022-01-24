@@ -28,10 +28,10 @@
                 android:text="delete" />
 
             <Button
-                android:id="@+id/draw"
+                android:id="@+id/color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="draw" />
+                android:text="color" />
 
             <Button
                 android:id="@+id/background"

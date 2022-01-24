@@ -3,6 +3,9 @@
     <style name="SplashTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
+
+<!--    <style name="activityTheme" parent="z"-->
+
     <style name="buttonTheme" parent="@style/Widget.MaterialComponents.Button">
         <item name="android:elevation">4dp</item>
         <item name="cornerRadius">12dp</item>
@@ -10,6 +13,32 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/space_cadet</item>
         <item name="backgroundTint">@color/silver_pink</item>
+        <item name="android:textSize">@dimen/text_size</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:paddingTop">12dp</item>
+    </style>
+
+    <style name="darkButtonTheme" parent="@style/Widget.MaterialComponents.Button">
+        <item name="android:elevation">4dp</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/isabelline</item>
+        <item name="backgroundTint">@color/space_cadet</item>
+        <item name="android:textSize">@dimen/text_size</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:paddingTop">12dp</item>
+    </style>
+
+    <style name="diceButtons" parent="@style/Widget.MaterialComponents.Button">
+        <item name="android:elevation">4dp</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/isabelline</item>
+        <item name="backgroundTint">@color/space_cadet</item>
         <item name="android:textSize">@dimen/text_size</item>
         <item name="textAllCaps">false</item>
         <item name="android:paddingBottom">12dp</item>

@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/deleteButton"
+        android:id="@+id/addButton"
         app:showAsAction="always"
-        android:title="@string/delete_button_title"
+        android:title="@string/add_button_title"
         android:iconTint="@color/isabelline"
-        android:icon="@drawable/rubbish"/>
+        android:icon="@drawable/add_icon"/>
 
 </menu>
