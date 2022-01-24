@@ -1,8 +1,10 @@
 package lmu.msp.backend.configuration
 
+import lmu.msp.backend.service.ICampaignService
 import lmu.msp.backend.socket.CampaignHandler
 import lmu.msp.backend.utility.setAuth0IdToAttributes
 import lmu.msp.backend.utility.setCampaignIdToAttributes
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.server.ServerHttpRequest
@@ -16,12 +18,9 @@ import org.springframework.web.socket.server.HandshakeInterceptor
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean
 
 
-
-
-
 @Configuration
 @EnableWebSocket
-class WebSocketConfig() : WebSocketConfigurer {
+class WebSocketConfig(@Autowired private val campaignService: ICampaignService) : WebSocketConfigurer {
 
     /**
      * register websocket. every campaign uses another endpoint ("/1" "/2"...)
@@ -44,7 +43,6 @@ class WebSocketConfig() : WebSocketConfigurer {
         val container = ServletServerContainerFactoryBean()
         container.setMaxTextMessageBufferSize(32768000)
         container.setMaxBinaryMessageBufferSize(32768000)
-        println("Websocket factory returned")
         return container
     }
 
@@ -70,7 +68,7 @@ class WebSocketConfig() : WebSocketConfigurer {
                 val campaignId = getCampaignIdFromPath(request.uri.path) ?: return false
                 setCampaignIdToAttributes(attributes, campaignId)
 
-                return true //TODO disabled for easy testing campaignService.isMemberOrOwner(authentication.name, campaignId)
+                return campaignService.isMemberOrOwner(authentication.name, campaignId)
             }
 
             /**

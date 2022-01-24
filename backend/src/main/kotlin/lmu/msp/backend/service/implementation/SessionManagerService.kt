@@ -5,7 +5,6 @@ import lmu.msp.backend.service.ICampaignService
 import lmu.msp.backend.service.ISessionService
 import lmu.msp.backend.socket.model.BaseMessage
 import lmu.msp.backend.utility.getAuth0IdFromAttributes
-import lmu.msp.backend.utility.getAuth0IdFromAuthentication
 import lmu.msp.backend.utility.getCampaignIdFromAttributes
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -30,8 +29,7 @@ class SessionManagerService(@Autowired private val campaignService: ICampaignSer
         val campaignId = getCampaignIdFromAttributes(session.attributes)
 
         if (!campaignService.isMemberOrOwner(auth0Id, campaignId)) {
-            //TODO disabled for easy testing
-            //return false
+            return false
         }
 
         if (!sessionMap.containsKey(campaignId)) {
@@ -51,9 +49,9 @@ class SessionManagerService(@Autowired private val campaignService: ICampaignSer
         //since remove is only allowed to be called from a "logged in" session
         //sessionMap always contains the key
         //
-        //if (!sessionMap.containsKey(campaignId)) {
-        //    return false
-        //}
+        if (!sessionMap.containsKey(campaignId)) {
+            return false
+        }
 
         if (session == sessionMap[campaignId]!![auth0Id]) {
             sessionMap[campaignId]!!.remove(auth0Id)

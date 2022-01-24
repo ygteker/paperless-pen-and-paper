@@ -39,7 +39,7 @@ class SessionCampaignService(
     private fun handleDraw(auth0Id: String, campaignId: Long, drawMessages: List<DrawMessage>?) {
         if (drawMessages != null) {
             campaignMap[campaignId]!!.drawMessage.addAll(drawMessages)
-            //dont sent to yourself
+            //don't send to yourself
             sessionService.sendToFiltered(BaseMessage(MessageType.DRAW_PATH, null, drawMessages), campaignId, auth0Id)
         }
     }
