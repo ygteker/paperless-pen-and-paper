@@ -16,6 +16,7 @@ class WebSocketProvider(context: Context) {
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(interceptorAuth(context))
         .addInterceptor(interceptorLogging())
+        .cache(null)
         .build()
 
     private fun interceptorLogging() =

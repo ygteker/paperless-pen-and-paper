@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
+import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
@@ -21,6 +22,7 @@ import javax.persistence.EntityManager
 
 @AutoConfigureMockMvc
 @SpringBootTest
+@WebAppConfiguration
 internal class CampaignControllerTest(@Autowired private val mockMvc: MockMvc) {
 
     private val path = "/api/v1/campaign"

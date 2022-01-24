@@ -1,21 +1,20 @@
 package lmu.msp.frontend.ui.campaign
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Path
+import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.PopupMenu
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import lmu.msp.frontend.R
 import lmu.msp.frontend.databinding.FragmentMapBinding
 import lmu.msp.frontend.models.websocket.DrawMessage
 import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
-import java.lang.Exception
+import java.io.ByteArrayOutputStream
+
 
 class MapFragment : Fragment(R.layout.fragment_map) {
 
@@ -43,46 +42,17 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         background.setOnClickListener {
             canvas_bg.setImageResource(R.drawable.yawning)
 
+            val bitmap = (canvas_bg.drawable as BitmapDrawable).bitmap
+            val stream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+
+            viewModel.sendImage(stream.toByteArray())
+
         }
+
         viewModel = ViewModelProvider(requireActivity()).get(WebSocketDataViewModel::class.java)
 
-        viewModel.getDrawMessagesNew().observe(viewLifecycleOwner, { drawMessages ->
-            viewModel.getSemaphore().acquire()
 
-            drawMessages.forEach {
-                myCanvasView.drawFromServer(
-                    DrawObject(
-                        it.color,
-                        it.currentX,
-                        it.eventX,
-                        it.currentY,
-                        it.eventY
-                    )
-                )
-            }
-            Log.i("draw ing", " ${drawMessages.size}")
-            drawMessages.clear()
-            viewModel.getSemaphore().release()
-        })
-
-        viewModel.getDrawCanvasClear().observe(viewLifecycleOwner, {
-            if (it) {
-                myCanvasView.resetCanvasDrawing()
-                viewModel.getDrawCanvasClear().postValue(false)
-            }
-        })
-
-        viewModel.getDrawMessages().value?.forEach {
-            myCanvasView.drawFromServer(
-                DrawObject(
-                    it.color,
-                    it.currentX,
-                    it.eventX,
-                    it.currentY,
-                    it.eventY
-                )
-            )
-        }
         drawColor.setOnClickListener(View.OnClickListener {
             val popupMenu = PopupMenu(view.context, drawColor)
 
@@ -120,6 +90,54 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             }
             popupMenu.show()
         })
+
+        viewModel.getDrawCanvasClear().observe(viewLifecycleOwner, {
+            if (it) {
+                myCanvasView.resetCanvasDrawing()
+                viewModel.getDrawCanvasClear().postValue(false)
+            }
+        })
+
+        viewModel.getDrawMessages().value?.forEach {
+            myCanvasView.drawFromServer(
+                DrawObject(
+                    it.color,
+                    it.currentX,
+                    it.eventX,
+                    it.currentY,
+                    it.eventY
+                )
+            )
+        }
+
+        viewModel.getDrawImage().observe(viewLifecycleOwner, {
+            if (it.imageBase64.isNotEmpty()) {
+                val byteArray = it.getByteArray()
+                if (byteArray.isNotEmpty()) {
+                    val bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+                    binding.canvasBg.setImageBitmap(Bitmap.createBitmap(bmp))
+                }
+            }
+        })
+
+        viewModel.getDrawMessagesNew().observe(viewLifecycleOwner, { drawMessages ->
+            viewModel.getSemaphore().acquire()
+
+            drawMessages.forEach {
+                myCanvasView.drawFromServer(
+                    DrawObject(
+                        it.color,
+                        it.currentX,
+                        it.eventX,
+                        it.currentY,
+                        it.eventY
+                    )
+                )
+            }
+            drawMessages.clear()
+            viewModel.getSemaphore().release()
+        })
+
         return view
     }
 

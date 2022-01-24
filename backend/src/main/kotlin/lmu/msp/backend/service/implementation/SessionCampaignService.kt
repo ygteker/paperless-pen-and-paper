@@ -36,11 +36,11 @@ class SessionCampaignService(
 
     }
 
-    private fun handleDraw(auth0Id: String,campaignId: Long, drawMessages: List<DrawMessage>?) {
+    private fun handleDraw(auth0Id: String, campaignId: Long, drawMessages: List<DrawMessage>?) {
         if (drawMessages != null) {
             campaignMap[campaignId]!!.drawMessage.addAll(drawMessages)
-            //dont sent to yourself
-            sessionService.sendToFiltered(BaseMessage(MessageType.DRAW_PATH, null, drawMessages), campaignId,auth0Id)
+            //don't send to yourself
+            sessionService.sendToFiltered(BaseMessage(MessageType.DRAW_PATH, null, drawMessages), campaignId, auth0Id)
         }
     }
 
@@ -54,6 +54,18 @@ class SessionCampaignService(
             ?: emptyList()
 
 
+    private fun handleDrawImage(auth0Id: String, campaignId: Long, drawImage: DrawImage?) {
+        if (drawImage != null) {
+            println("Recived an image ${drawImage.imageBase64}")
+            campaignMap[campaignId]!!.drawImage = drawImage
+            sessionService.sendToFiltered(
+                BaseMessage(MessageType.DRAW_IMAGE, null, null, drawImage),
+                campaignId,
+                auth0Id
+            )
+        }
+    }
+
     override fun handleMessage(auth0Id: String, campaignId: Long, baseMessage: BaseMessage) {
         if (!campaignMap.containsKey(campaignId)) {
             campaignMap[campaignId] = CampaignStorage()
@@ -63,8 +75,8 @@ class SessionCampaignService(
             MessageType.CONNECT -> return //this message type is only send from the server to a newly connected client
             MessageType.DISCONNECT -> TODO()
             MessageType.CHAT_MESSAGE -> handleChatMessage(auth0Id, campaignId, baseMessage.chatMessage)
-            MessageType.DRAW_PATH -> handleDraw(auth0Id,campaignId, baseMessage.drawMessage)
-            MessageType.DRAW_IMAGE -> TODO()
+            MessageType.DRAW_PATH -> handleDraw(auth0Id, campaignId, baseMessage.drawMessage)
+            MessageType.DRAW_IMAGE -> handleDrawImage(auth0Id, campaignId, baseMessage.drawImage)
             MessageType.DRAW_RESET -> handleResetDraw(campaignId)
         }
     }
@@ -74,8 +86,9 @@ class SessionCampaignService(
 
         val messages = filteredBasedMessages(campaignId, user)
         val paths = campaignMap[campaignId]?.drawMessage ?: emptyList()
+        val image = campaignMap[campaignId]?.drawImage ?: DrawImage()
 
-        val baseMessage = BaseMessage(MessageType.CONNECT, messages, paths)
+        val baseMessage = BaseMessage(MessageType.CONNECT, messages, paths, image)
 
         sessionService.sendTo(baseMessage, campaignId, auth0Id)
     }
