@@ -52,43 +52,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
         viewModel = ViewModelProvider(requireActivity()).get(WebSocketDataViewModel::class.java)
 
-        viewModel.getDrawMessagesNew().observe(viewLifecycleOwner, { drawMessages ->
-            viewModel.getSemaphore().acquire()
 
-            drawMessages.forEach {
-                myCanvasView.drawFromServer(
-                    DrawObject(
-                        it.color,
-                        it.currentX,
-                        it.eventX,
-                        it.currentY,
-                        it.eventY
-                    )
-                )
-            }
-            Log.i("draw ing", " ${drawMessages.size}")
-            drawMessages.clear()
-            viewModel.getSemaphore().release()
-        })
-
-        viewModel.getDrawCanvasClear().observe(viewLifecycleOwner, {
-            if (it) {
-                myCanvasView.resetCanvasDrawing()
-                viewModel.getDrawCanvasClear().postValue(false)
-            }
-        })
-
-        viewModel.getDrawMessages().value?.forEach {
-            myCanvasView.drawFromServer(
-                DrawObject(
-                    it.color,
-                    it.currentX,
-                    it.eventX,
-                    it.currentY,
-                    it.eventY
-                )
-            )
-        }
         drawColor.setOnClickListener(View.OnClickListener {
             val popupMenu = PopupMenu(view.context, drawColor)
 
@@ -127,14 +91,26 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             popupMenu.show()
         })
 
-        return view
-    }
+        viewModel.getDrawCanvasClear().observe(viewLifecycleOwner, {
+            if (it) {
+                myCanvasView.resetCanvasDrawing()
+                viewModel.getDrawCanvasClear().postValue(false)
+            }
+        })
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        viewModel.getDrawMessages().value?.forEach {
+            myCanvasView.drawFromServer(
+                DrawObject(
+                    it.color,
+                    it.currentX,
+                    it.eventX,
+                    it.currentY,
+                    it.eventY
+                )
+            )
+        }
 
         viewModel.getDrawImage().observe(viewLifecycleOwner, {
-
             if (it.imageBase64.isNotEmpty()) {
                 val byteArray = it.getByteArray()
                 if (byteArray.isNotEmpty()) {
@@ -144,6 +120,25 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             }
         })
 
+        viewModel.getDrawMessagesNew().observe(viewLifecycleOwner, { drawMessages ->
+            viewModel.getSemaphore().acquire()
+
+            drawMessages.forEach {
+                myCanvasView.drawFromServer(
+                    DrawObject(
+                        it.color,
+                        it.currentX,
+                        it.eventX,
+                        it.currentY,
+                        it.eventY
+                    )
+                )
+            }
+            drawMessages.clear()
+            viewModel.getSemaphore().release()
+        })
+
+        return view
     }
 
     override fun onDestroyView() {

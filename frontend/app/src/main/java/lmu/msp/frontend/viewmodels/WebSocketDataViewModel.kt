@@ -76,12 +76,15 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
 
 
     fun sendImage(byteArray: ByteArray) {
-        val msg = gson.toJson(
-            BasicMessage(MessageType.DRAW_IMAGE, null, null, DrawImage.create(byteArray))
-        )
-        Log.i("tasdas", msg.length.toString() + "a")
         webSocket?.send(
-            msg
+            gson.toJson(
+                BasicMessage(
+                    MessageType.DRAW_IMAGE,
+                    null,
+                    null,
+                    DrawImage.create(byteArray)
+                )
+            )
         )
 
     }
@@ -99,7 +102,6 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
         override fun receiveDrawMessages(drawMessages: List<DrawMessage>) {
             liveDataListAddElementList(drawMessages, this@WebSocketDataViewModel.drawMessages)
             drawSemaphore.acquire()
-            Log.i("TAG", "acquired")
             liveDataListAddElementList(drawMessages, drawMessagesNew)
             drawSemaphore.release()
         }
