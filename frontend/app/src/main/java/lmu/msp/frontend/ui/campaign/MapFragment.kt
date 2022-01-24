@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
@@ -80,11 +79,11 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             popupMenu.menuInflater.inflate(R.menu.popup_color_picker, popupMenu.menu)
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
-                    R.id.ibBlack -> myCanvasView.changeColor(Color.BLACK)
-                    R.id.ibBlue -> myCanvasView.changeColor(Color.BLUE)
-                    R.id.ibGreen -> myCanvasView.changeColor(Color.GREEN)
-                    R.id.ibRed -> myCanvasView.changeColor(Color.RED)
-                    R.id.ibYellow -> myCanvasView.changeColor(Color.YELLOW)
+                    R.id.ibBlack -> myCanvasView.changeCurrentColor(Color.BLACK)
+                    R.id.ibBlue -> myCanvasView.changeCurrentColor(Color.BLUE)
+                    R.id.ibGreen -> myCanvasView.changeCurrentColor(Color.GREEN)
+                    R.id.ibRed -> myCanvasView.changeCurrentColor(Color.RED)
+                    R.id.ibYellow -> myCanvasView.changeCurrentColor(Color.YELLOW)
                 }
                 true
             }
@@ -150,8 +149,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         private var extraCanvas: Canvas? = null
         private var path = Path()
         private var allStrokes = ArrayList<Stroke>()
-        private val undonePaths = ArrayList<Path>()
         private var standardStrokeWidth = 12f
+        private var currentColor = Color.BLACK
 
 
         private var paint = Paint().apply {
@@ -161,13 +160,14 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             strokeJoin = Paint.Join.ROUND
             strokeCap = Paint.Cap.ROUND
             strokeWidth = standardStrokeWidth
+            color = currentColor
         }
 
         private var motionTouchEventX = 0f
         private var motionTouchEventY = 0f
         private var currentX = 0f
         private var currentY = 0f
-        private val touchTolerance = ViewConfiguration.get(context).scaledTouchSlop
+        private val touchTolerance = 30
 
         override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
             super.onSizeChanged(width, height, oldWidth, oldHeight)
@@ -196,7 +196,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         }
 
         private fun touchStart() {
-            undonePaths.clear()
             path.reset()
             path.moveTo(motionTouchEventX, motionTouchEventY)
             currentX = motionTouchEventX
@@ -223,9 +222,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         }
 
         private fun touchUp() {
-            emitToServer()
             path.lineTo(currentX, currentY)
             allStrokes.add(Stroke(path, paint))
+            emitToServer()
             extraCanvas?.drawPath(path, paint)
             path = Path()
             createPaintObject(paint.color, paint.strokeWidth)
@@ -260,11 +259,11 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             val y = drawObject.eventY * height
 
             val path = Path()
-            changeColor(drawObject.color)
+            changePaintColor(drawObject.color)
             path.moveTo(mx, my)
             path.lineTo(x, y)
             allStrokes.add(Stroke(path, paint))
-            createPaintObject(paint.color, paint.strokeWidth)
+            createPaintObject(currentColor, paint.strokeWidth)
             invalidate()
         }
 
@@ -274,7 +273,11 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             invalidate()
         }
 
-        fun changeColor(color: Int) {
+        fun changePaintColor(color: Int) {
+            paint.color = color
+        }
+        fun changeCurrentColor(color: Int) {
+            currentColor = color
             paint.color = color
         }
 
