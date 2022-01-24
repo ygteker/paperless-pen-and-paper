@@ -59,7 +59,7 @@ class SessionCampaignService(
             println("Recived an image ${drawImage.imageBase64}")
             campaignMap[campaignId]!!.drawImage = drawImage
             sessionService.sendToFiltered(
-                BaseMessage(MessageType.DRAW_PATH, null, null, drawImage),
+                BaseMessage(MessageType.DRAW_IMAGE, null, null, drawImage),
                 campaignId,
                 auth0Id
             )

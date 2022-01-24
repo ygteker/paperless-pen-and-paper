@@ -5,15 +5,14 @@ import android.graphics.*
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import androidx.core.content.res.ResourcesCompat
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import lmu.msp.frontend.R
+import lmu.msp.frontend.databinding.FragmentMapBinding
 import lmu.msp.frontend.models.websocket.DrawMessage
 import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
+import java.io.ByteArrayOutputStream
 
 class MapFragment : Fragment(R.layout.fragment_map) {
 
@@ -37,10 +36,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         delete.setOnClickListener {
             myCanvasView.resetCanvasDrawing()
             viewModel.sendDrawMessageClear()
-        }
-        draw.setOnClickListener {
-            myCanvasView.drawFromServer(myCanvasView.testDrawnObject)
-
         }
         background.setOnClickListener {
             //canvas_bg.setImageResource(R.drawable.yawning)
@@ -141,15 +136,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 val byteArray = it.getByteArray()
                 if (byteArray.isNotEmpty()) {
                     val bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-                    val height = canvas_bg.measuredHeight
-                    val width = canvas_bg.measuredWidth
-                    Log.d("asdsad", "HxW $height x $width")
-
-                    canvas_bg.setImageBitmap(
-                        Bitmap.createBitmap(
-                            bmp
-                        )
-                    )
+                    binding.canvasBg.setImageBitmap(Bitmap.createBitmap(bmp))
                 }
             }
         })
