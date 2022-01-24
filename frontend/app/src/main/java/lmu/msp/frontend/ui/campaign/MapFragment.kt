@@ -1,10 +1,17 @@
 package lmu.msp.frontend.ui.campaign
 
+import android.app.Activity.RESULT_OK
+import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.*
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -12,9 +19,11 @@ import lmu.msp.frontend.R
 import lmu.msp.frontend.databinding.FragmentMapBinding
 import lmu.msp.frontend.models.websocket.DrawMessage
 import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
+import permissions.dispatcher.*
 import java.io.ByteArrayOutputStream
+import java.util.jar.Manifest
 
-
+@RuntimePermissions
 class MapFragment : Fragment(R.layout.fragment_map) {
 
     lateinit var viewModel: WebSocketDataViewModel
@@ -38,8 +47,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             myCanvasView.resetCanvasDrawing()
             viewModel.sendDrawMessageClear()
         }
+
         background.setOnClickListener {
-            canvas_bg.setImageResource(R.drawable.yawning)
+            pickBackgroundPictureWithPermissionCheck()
 
             val bitmap = (canvas_bg.drawable as BitmapDrawable).bitmap
             val stream = ByteArrayOutputStream()
@@ -138,6 +148,43 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         })
 
         return view
+    }
+    @NeedsPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+    fun pickBackgroundPicture(){
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(intent, 3)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK ) {
+            binding.canvasBg.setImageURI(data?.data)
+        }
+    }
+
+    @OnShowRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+    fun showRationaleForReadExternalStorage(request: PermissionRequest) {
+        showRationaleDialog(R.string.permission_read_external_rationale, request)
+    }
+
+    @OnPermissionDenied(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+    fun onCameraDenied() {
+        Toast.makeText(context,R.string.permission_read_external_denied, Toast.LENGTH_SHORT).show()
+    }
+
+    @OnNeverAskAgain(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+    fun onCameraNeverAskAgain() {
+        Toast.makeText(context, R.string.permission_read_external_never_ask_again, Toast.LENGTH_SHORT).show()
+    }
+
+
+    private fun showRationaleDialog(@StringRes messageResId: Int, request: PermissionRequest) {
+        AlertDialog.Builder(context)
+            .setPositiveButton(R.string.button_allow) { _, _ -> request.proceed() }
+            .setNegativeButton(R.string.button_deny) { _, _ -> request.cancel() }
+            .setCancelable(false)
+            .setMessage(messageResId)
+            .show()
     }
 
     override fun onDestroyView() {

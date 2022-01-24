@@ -28,6 +28,12 @@
     <string name="canvas_background">Canvas Background</string>
     <string name="send_button_text">Send</string>
     <string name="chat_send_button_text">Send</string>
+    <string name="button_allow">Allow</string>
+    <string name="button_deny">Deny</string>
+    <string name="permission_read_external_rationale">Storage permission is needed to pick a picture</string>
+    <string name="permission_read_external_denied">Storage permission was denied. Please consider granting it in order pick a picture</string>
+    <string name="permission_read_external_never_ask_again">Storage permission was denied with never ask again</string>
+
 
 
     <string-array name="profile_list_items">
