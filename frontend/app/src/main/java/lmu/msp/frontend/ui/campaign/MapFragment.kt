@@ -8,14 +8,11 @@ import android.graphics.Path
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Button
-import android.widget.ImageView
 import android.widget.PopupMenu
-import android.widget.RelativeLayout
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import lmu.msp.frontend.R
+import lmu.msp.frontend.databinding.FragmentMapBinding
 import lmu.msp.frontend.models.websocket.DrawMessage
 import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
 import java.lang.Exception
@@ -23,32 +20,31 @@ import java.lang.Exception
 class MapFragment : Fragment(R.layout.fragment_map) {
 
     lateinit var viewModel: WebSocketDataViewModel
+    private var _binding: FragmentMapBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_map, container, false)
-        val relativeLayout = view.findViewById<RelativeLayout>(R.id.canvas_layout)
-        val canvas_bg = view.findViewById<ImageView>(R.id.canvas_bg)
-
+        _binding = FragmentMapBinding.inflate(inflater, container, false)
+        val view = binding.root
+        val relativeLayout = binding.canvasLayout
+        val canvas_bg = binding.canvasBg
         val myCanvasView = MyCanvasView(view.context)
         relativeLayout.addView(myCanvasView)
-        val delete = view.findViewById<Button>(R.id.delete)
-        val drawColor = view.findViewById<Button>(R.id.color)
-        val background = view.findViewById<Button>(R.id.background)
+        val delete = binding.delete
+        val drawColor = binding.color
+        val background = binding.background
         delete.setOnClickListener {
             myCanvasView.resetCanvasDrawing()
             viewModel.sendDrawMessageClear()
         }
-
         background.setOnClickListener {
             canvas_bg.setImageResource(R.drawable.yawning)
 
         }
-
         viewModel = ViewModelProvider(requireActivity()).get(WebSocketDataViewModel::class.java)
-
 
         viewModel.getDrawMessagesNew().observe(viewLifecycleOwner, { drawMessages ->
             viewModel.getSemaphore().acquire()
@@ -63,7 +59,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                         it.eventY
                     )
                 )
-
             }
             Log.i("draw ing", " ${drawMessages.size}")
             drawMessages.clear()
@@ -75,7 +70,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 myCanvasView.resetCanvasDrawing()
                 viewModel.getDrawCanvasClear().postValue(false)
             }
-
         })
 
         viewModel.getDrawMessages().value?.forEach {
@@ -86,7 +80,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                     it.eventX,
                     it.currentY,
                     it.eventY
-
                 )
             )
         }
@@ -130,13 +123,17 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         return view
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private inner class MyCanvasView(context: Context) : View(context) {
         private var extraCanvas: Canvas? = null
         private var path = Path()
         private var allStrokes = ArrayList<Stroke>()
         private val undonePaths = ArrayList<Path>()
         private var standardStrokeWidth = 12f
-        private val drawColor = Color.BLACK
 
 
         private var paint = Paint().apply {
@@ -148,15 +145,11 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             strokeWidth = standardStrokeWidth
         }
 
-
         private var motionTouchEventX = 0f
         private var motionTouchEventY = 0f
-
         private var currentX = 0f
         private var currentY = 0f
-
         private val touchTolerance = ViewConfiguration.get(context).scaledTouchSlop
-
 
         override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
             super.onSizeChanged(width, height, oldWidth, oldHeight)
@@ -254,8 +247,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             path.lineTo(x, y)
             allStrokes.add(Stroke(path, paint))
             createPaintObject(paint.color, paint.strokeWidth)
-            println("color"+ paint.color)
-            // path = Path()
             invalidate()
         }
 
@@ -268,6 +259,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         fun changeColor(color: Int) {
             paint.color = color
         }
+
         private fun createPaintObject(color: Int, strokeWidth: Float) {
             paint = Paint()
             paint.isAntiAlias = true
@@ -288,5 +280,4 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     )
 
     class Stroke(val path: Path, val paint: Paint)
-
 }
