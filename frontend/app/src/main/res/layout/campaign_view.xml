@@ -9,15 +9,15 @@
         android:layout_width="300dp"
         android:layout_height="400dp"
         android:layout_margin="20dp"
-        android:elevation="10dp"
-        app:cardCornerRadius="10dp">
+        android:elevation="12dp"
+        app:cardBackgroundColor="@color/heliotrope_gray"
+        app:cardCornerRadius="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
 
-            >
+            android:orientation="vertical">
 
 
             <TextView
@@ -26,7 +26,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="6dp"
-                android:textSize="20sp">
+                android:fontFamily="@font/nunito"
+                android:textColor="@color/space_cadet"
+                android:textSize="20sp"
+                android:textStyle="bold">
 
             </TextView>
 
@@ -34,7 +37,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+
+                >
 
 
                 <TextView
@@ -43,8 +48,11 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="6dp"
+                    android:fontFamily="@font/nunito"
                     android:text="Campaign Id:"
-                    android:textSize="20sp" />
+                    android:textColor="@color/space_cadet"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/id_campaign"
@@ -52,7 +60,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="6dp"
-                    android:textSize="20sp">
+                    android:fontFamily="@font/nunito"
+                    android:textColor="@color/space_cadet"
+                    android:textSize="20sp"
+                    android:textStyle="bold">
 
                 </TextView>
             </LinearLayout>
@@ -64,6 +75,8 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:padding="6dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent"
                 app:srcCompat="@drawable/placeholder_camping">
 
@@ -72,10 +85,14 @@
 
             <Button
                 android:id="@+id/cardButton"
-                style="@style/buttonTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Start" />
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginBottom="6dp"
+                android:text="Start Campaign"
+                android:theme="@style/diceButtons" />
 
 
         </LinearLayout>
