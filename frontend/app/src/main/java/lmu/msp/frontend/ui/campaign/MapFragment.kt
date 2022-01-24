@@ -2,6 +2,7 @@ package lmu.msp.frontend.ui.campaign
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
@@ -16,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import lmu.msp.frontend.R
 import lmu.msp.frontend.models.websocket.DrawMessage
 import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
+import java.lang.Exception
 
 class MapFragment : Fragment(R.layout.fragment_map) {
 
@@ -32,16 +35,13 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         val myCanvasView = MyCanvasView(view.context)
         relativeLayout.addView(myCanvasView)
         val delete = view.findViewById<Button>(R.id.delete)
-        val draw = view.findViewById<Button>(R.id.draw)
+        val drawColor = view.findViewById<Button>(R.id.color)
         val background = view.findViewById<Button>(R.id.background)
         delete.setOnClickListener {
             myCanvasView.resetCanvasDrawing()
             viewModel.sendDrawMessageClear()
         }
-        draw.setOnClickListener {
-            myCanvasView.drawFromServer(myCanvasView.testDrawnObject)
 
-        }
         background.setOnClickListener {
             canvas_bg.setImageResource(R.drawable.yawning)
 
@@ -56,6 +56,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             drawMessages.forEach {
                 myCanvasView.drawFromServer(
                     DrawObject(
+                        it.color,
                         it.currentX,
                         it.eventX,
                         it.currentY,
@@ -80,13 +81,52 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         viewModel.getDrawMessages().value?.forEach {
             myCanvasView.drawFromServer(
                 DrawObject(
+                    it.color,
                     it.currentX,
                     it.eventX,
                     it.currentY,
                     it.eventY
+
                 )
             )
         }
+        drawColor.setOnClickListener(View.OnClickListener {
+            val popupMenu = PopupMenu(view.context, drawColor)
+
+            //To display the icons in the popup menu the following try catch method is required
+            try {
+                val fields = popupMenu.javaClass.declaredFields
+                for (field in fields) {
+                    if ("mPopup" == field.name) {
+                        field.isAccessible = true
+                        val menuPopupHelper = field[popupMenu]
+                        val classPopupHelper = Class.forName(
+                            menuPopupHelper
+                                .javaClass.name
+                        )
+                        val setForceIcons = classPopupHelper.getMethod(
+                            "setForceShowIcon", Boolean::class.javaPrimitiveType
+                        )
+                        setForceIcons.invoke(menuPopupHelper, true)
+                        break
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            popupMenu.menuInflater.inflate(R.menu.popup_color_picker, popupMenu.menu)
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.ibBlack -> myCanvasView.changeColor(Color.BLACK)
+                    R.id.ibBlue -> myCanvasView.changeColor(Color.BLUE)
+                    R.id.ibGreen -> myCanvasView.changeColor(Color.GREEN)
+                    R.id.ibRed -> myCanvasView.changeColor(Color.RED)
+                    R.id.ibYellow -> myCanvasView.changeColor(Color.YELLOW)
+                }
+                true
+            }
+            popupMenu.show()
+        })
         return view
     }
 
@@ -95,18 +135,17 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         private var path = Path()
         private var allStrokes = ArrayList<Stroke>()
         private val undonePaths = ArrayList<Path>()
-        private var strokeWidth = 12f
-        private val drawColor = ResourcesCompat.getColor(resources, R.color.black, null)
+        private var standardStrokeWidth = 12f
+        private val drawColor = Color.BLACK
 
 
-        private val paint = Paint().apply {
-            color = drawColor
+        private var paint = Paint().apply {
             isAntiAlias = true
             isDither = true
             style = Paint.Style.STROKE
             strokeJoin = Paint.Join.ROUND
             strokeCap = Paint.Cap.ROUND
-            strokeWidth = 12f
+            strokeWidth = standardStrokeWidth
         }
 
 
@@ -178,22 +217,23 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             allStrokes.add(Stroke(path, paint))
             extraCanvas?.drawPath(path, paint)
             path = Path()
+            createPaintObject(paint.color, paint.strokeWidth)
+            invalidate()
         }
 
-        var testDrawnObject: DrawObject = DrawObject(0f, 0f, 0f, 0f)
         private fun emitToServer() {
             val drawObject = DrawObject(
+                paint.color,
                 currentX / width,
                 motionTouchEventX / width,
                 currentY / height,
                 motionTouchEventY / height
             )
 
-            testDrawnObject = drawObject
 
             viewModel.sendDrawMessage(
                 DrawMessage(
-                    drawColor,
+                    drawObject.color,
                     drawObject.currentX,
                     drawObject.eventX,
                     drawObject.currentY,
@@ -209,9 +249,12 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             val y = drawObject.eventY * height
 
             val path = Path()
+            changeColor(drawObject.color)
             path.moveTo(mx, my)
             path.lineTo(x, y)
             allStrokes.add(Stroke(path, paint))
+            createPaintObject(paint.color, paint.strokeWidth)
+            println("color"+ paint.color)
             // path = Path()
             invalidate()
         }
@@ -222,10 +265,22 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             invalidate()
         }
 
+        fun changeColor(color: Int) {
+            paint.color = color
+        }
+        private fun createPaintObject(color: Int, strokeWidth: Float) {
+            paint = Paint()
+            paint.isAntiAlias = true
+            paint.color = color
+            paint.style = Paint.Style.STROKE
+            paint.strokeJoin = Paint.Join.ROUND
+            paint.strokeWidth = strokeWidth
+        }
 
     }
 
     class DrawObject(
+        val color: Int,
         val currentX: Float,
         val eventX: Float,
         val currentY: Float,
