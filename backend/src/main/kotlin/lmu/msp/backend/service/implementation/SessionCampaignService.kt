@@ -69,6 +69,7 @@ class SessionCampaignService(
     private fun handleGroupMessage(auth0Id: String, campaignId: Long, groupMessage: List<GroupMessage>?) {
         groupMessage?.forEach {
             val message = GroupMessage(userService.getUserByAuth0Id(auth0Id).id, it.message)
+            campaignMap[campaignId]!!.groupMessage.add(message)
             sessionService.sendTo(BaseMessage(MessageType.GROUP_MESSAGE, null, null, listOf(message), null), campaignId)
         }
     }
