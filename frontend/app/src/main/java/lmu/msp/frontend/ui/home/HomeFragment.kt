@@ -156,7 +156,7 @@ class HomeFragment : Fragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError {
                     Log.e(TAG, "error ${it.message}")
-                    //TODO ERROR HANDLING
+//TODO ERROR HANDLING
                 }
                 .doOnSuccess {
                     Toast.makeText(context, "Join Campaign Success", Toast.LENGTH_SHORT).show()
