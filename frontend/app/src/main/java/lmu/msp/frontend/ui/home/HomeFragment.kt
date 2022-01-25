@@ -53,13 +53,7 @@ class HomeFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
-        joinCampaignButton = view.findViewById(R.id.joinCampaignButton)
-        createCampaignButton = view.findViewById(R.id.createCampaignButton)
-        deleteCampaignButton = view.findViewById(R.id.deleteCampaignButton)
-        joinCampaignEditText = view.findViewById(R.id.joinCampaignEditText)
-        joinCampaignCharacterText = view.findViewById(R.id.joinCampaignCharacterText)
-        createCampaignEditText = view.findViewById(R.id.createCampaignEditText)
-        deleteCampaignEditText = view.findViewById(R.id.deleteCampaignEditText)
+        findViews(view)
 
         joinCampaignButton.setOnClickListener { joinCampaign() }
         createCampaignButton.setOnClickListener { createCampaign() }
@@ -78,50 +72,97 @@ class HomeFragment : Fragment() {
 
     }
 
+    private fun findViews(view: View) {
+        joinCampaignButton = view.findViewById(R.id.joinCampaignButton)
+        createCampaignButton = view.findViewById(R.id.createCampaignButton)
+        deleteCampaignButton = view.findViewById(R.id.deleteCampaignButton)
+        joinCampaignEditText = view.findViewById(R.id.joinCampaignEditText)
+        joinCampaignCharacterText = view.findViewById(R.id.joinCampaignCharacterText)
+        createCampaignEditText = view.findViewById(R.id.createCampaignEditText)
+        deleteCampaignEditText = view.findViewById(R.id.deleteCampaignEditText)
+    }
+
     private fun deleteCampaign() {
-        campaignApi.deleteCampaign(deleteCampaignEditText.text.toString().toLong())
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnError {
-                Log.e(TAG, "error ${it.message}")
-                //TODO ERROR HANDLING
-            }
-            .doOnSuccess {
-                Toast.makeText(context, "Deleted Campaign", Toast.LENGTH_SHORT).show()
-            }
-            .subscribe()
+        if (deleteCampaignEditText.text.isNullOrBlank()) {
+            Toast.makeText(
+                context,
+                "Please specify which campaign you would like to delete!",
+                Toast.LENGTH_LONG
+            ).show()
+            deleteCampaignEditText.setError("Must not be empty!")
+        } else {
+            campaignApi.deleteCampaign(deleteCampaignEditText.text.toString().toLong())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError {
+                    Log.e(TAG, "error ${it.message}")
+                    //TODO ERROR HANDLING
+                }
+                .doOnSuccess {
+                    Toast.makeText(context, "Deleted Campaign", Toast.LENGTH_SHORT).show()
+                }
+                .subscribe()
+        }
     }
 
     private fun createCampaign() {
-        campaignApi.createCampaign(createCampaignEditText.text.toString().toRequestBody())
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnError {
-                Log.e(TAG, "error ${it.message}")
-                //TODO ERROR HANDLING
-            }
-            .doOnSuccess {
-                Toast.makeText(context, "Created Campaign", Toast.LENGTH_SHORT).show()
-                Log.d(TAG, createCampaignEditText.text.toString())
-            }
-            .subscribe()
+        if (createCampaignEditText.text.isNullOrBlank()) {
+            Toast.makeText(
+                context,
+                "Please specify the name of the campaign you would like to create!",
+                Toast.LENGTH_LONG
+            ).show()
+            createCampaignEditText.setError("Must not be empty!")
+        } else {
+            campaignApi.createCampaign(createCampaignEditText.text.toString().toRequestBody())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError {
+                    Log.e(TAG, "error ${it.message}")
+                    //TODO ERROR HANDLING
+                }
+                .doOnSuccess {
+                    Toast.makeText(context, "Created Campaign", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, createCampaignEditText.text.toString())
+                }
+                .subscribe()
+        }
     }
 
     private fun joinCampaign() {
-        inviteCampaignApi.acceptInvite(
-            joinCampaignEditText.text.toString().toLong(),
-            joinCampaignCharacterText.text.toString()
-        )
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnError {
-                Log.e(TAG, "error ${it.message}")
-                //TODO ERROR HANDLING
+        if (joinCampaignEditText.text.isNullOrBlank() || joinCampaignCharacterText.text.isNullOrBlank()) {
+
+            if (joinCampaignEditText.text.isNullOrBlank()) {
+                joinCampaignEditText.setError("Must not be empty!")
+                Toast.makeText(
+                    context,
+                    "Please specify which campaign you would like to join!",
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                joinCampaignCharacterText.setError("Must not be empty!")
+                Toast.makeText(
+                    context,
+                    "Please specify the characters name you would like to join the campaign with!",
+                    Toast.LENGTH_LONG
+                ).show()
             }
-            .doOnSuccess {
-                Toast.makeText(context, "Join Campaign Success", Toast.LENGTH_SHORT).show()
-            }
-            .subscribe()
+        } else {
+            inviteCampaignApi.acceptInvite(
+                joinCampaignEditText.text.toString().toLong(),
+                joinCampaignCharacterText.text.toString()
+            )
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError {
+                    Log.e(TAG, "error ${it.message}")
+                    //TODO ERROR HANDLING
+                }
+                .doOnSuccess {
+                    Toast.makeText(context, "Join Campaign Success", Toast.LENGTH_SHORT).show()
+                }
+                .subscribe()
+        }
     }
 
 
