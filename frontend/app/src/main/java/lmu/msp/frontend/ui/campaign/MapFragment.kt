@@ -6,22 +6,20 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.*
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.github.dhaval2404.imagepicker.ImagePicker
 import lmu.msp.frontend.R
 import lmu.msp.frontend.databinding.FragmentMapBinding
 import lmu.msp.frontend.models.websocket.DrawMessage
 import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
 import permissions.dispatcher.*
 import java.io.ByteArrayOutputStream
-import java.util.jar.Manifest
 
 @RuntimePermissions
 class MapFragment : Fragment(R.layout.fragment_map) {
@@ -49,13 +47,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         }
 
         background.setOnClickListener {
-            pickBackgroundPictureWithPermissionCheck()
-
-            val bitmap = (canvas_bg.drawable as BitmapDrawable).bitmap
-            val stream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-
-            viewModel.sendImage(stream.toByteArray())
+            pickBackgroundPicture()
 
         }
 
@@ -149,32 +141,38 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
         return view
     }
+
     @NeedsPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-    fun pickBackgroundPicture(){
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startActivityForResult(intent, 3)
+    fun pickBackgroundPicture() {
+        ImagePicker.with(this)
+            .crop()                    //Crop image(Optional), Check Customization for more option
+            .compress(1024)            //Final image size will be less than 1 MB(Optional)
+            .maxResultSize(
+                1080,
+                1080
+            )    //Final image resolution will be less than 1080 x 1080(Optional)
+            .galleryOnly()
+            .start()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK ) {
-            binding.canvasBg.setImageURI(data?.data)
+        when (resultCode) {
+            RESULT_OK -> {
+                binding.canvasBg.setImageURI(data?.data)
+                val bitmap = (binding.canvasBg.drawable as BitmapDrawable).bitmap
+                val stream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+
+                viewModel.sendImage(stream.toByteArray())
+            }
+            ImagePicker.RESULT_ERROR -> {
+                Toast.makeText(context, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
+            }
+            else -> {
+                Toast.makeText(context, "Task Cancelled", Toast.LENGTH_SHORT).show()
+            }
         }
-    }
-
-    @OnShowRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-    fun showRationaleForReadExternalStorage(request: PermissionRequest) {
-        showRationaleDialog(R.string.permission_read_external_rationale, request)
-    }
-
-    @OnPermissionDenied(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-    fun onCameraDenied() {
-        Toast.makeText(context,R.string.permission_read_external_denied, Toast.LENGTH_SHORT).show()
-    }
-
-    @OnNeverAskAgain(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-    fun onCameraNeverAskAgain() {
-        Toast.makeText(context, R.string.permission_read_external_never_ask_again, Toast.LENGTH_SHORT).show()
     }
 
 
@@ -323,6 +321,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         fun changePaintColor(color: Int) {
             paint.color = color
         }
+
         fun changeCurrentColor(color: Int) {
             currentColor = color
             paint.color = color

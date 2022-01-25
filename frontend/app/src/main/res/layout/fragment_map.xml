@@ -5,11 +5,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.campaign.MapFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="This is the Map Fragment, you can draw below" />
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -25,19 +20,19 @@
                 android:id="@+id/delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="delete" />
+                android:text="@string/delete" />
 
             <Button
                 android:id="@+id/color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="color" />
+                android:text="@string/color" />
 
             <Button
                 android:id="@+id/background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="background" />
+                android:text="@string/image" />
         </LinearLayout>
 
         <RelativeLayout
