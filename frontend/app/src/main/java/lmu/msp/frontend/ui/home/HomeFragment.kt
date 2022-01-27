@@ -26,6 +26,7 @@ import lmu.msp.frontend.helpers.TokenManager
 import lmu.msp.frontend.helpers.auth0.PAuthenticator
 import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
 import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.HttpException
 
 class HomeFragment : Fragment() {
     companion object {
@@ -63,9 +64,6 @@ class HomeFragment : Fragment() {
         campaignApi = RetrofitProvider(view.context).getCampaignApi()
         inviteCampaignApi = RetrofitProvider(view.context).getInviteCampaignApi()
 
-
-        var user = sharedViewModel.testString
-        Log.i(TAG, user)
         //viewModel.getUser().observe(viewLifecycleOwner, { Log.i(TAG, "new user ${it.id}") })
 
         return view
@@ -155,8 +153,12 @@ class HomeFragment : Fragment() {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError {
-                    Log.e(TAG, "error ${it.message}")
-//TODO ERROR HANDLING
+                    try {
+
+                    } catch (it: HttpException) {
+                        Log.e(TAG, "error ${it.message}")
+                    }
+
                 }
                 .doOnSuccess {
                     Toast.makeText(context, "Join Campaign Success", Toast.LENGTH_SHORT).show()
