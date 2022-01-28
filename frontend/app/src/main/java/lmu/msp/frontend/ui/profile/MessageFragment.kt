@@ -14,7 +14,6 @@ import lmu.msp.frontend.databinding.FragmentMessageBinding
 import lmu.msp.frontend.helpers.MessagesAdapter
 import lmu.msp.frontend.helpers.TokenManager
 import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
-import lmu.msp.frontend.models.MessageModel
 import lmu.msp.frontend.viewmodels.MessagesViewModel
 
 class MessageFragment: Fragment() {
@@ -23,7 +22,6 @@ class MessageFragment: Fragment() {
     private val binding get() = _binding!!
     private lateinit var viewModel: MessagesViewModel
     private lateinit var tokenManager: TokenManager
-    private var messageModel: MessageModel? = null
     private lateinit var messageApi: PenAndPaperApiInterface.MessageApi
 
 

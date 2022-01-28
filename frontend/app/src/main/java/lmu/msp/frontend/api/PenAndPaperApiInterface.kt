@@ -14,7 +14,6 @@ import lmu.msp.frontend.api.model.Campaign
 import lmu.msp.frontend.api.model.CampaignMember
 import lmu.msp.frontend.api.model.Message
 import lmu.msp.frontend.api.model.User
-import lmu.msp.frontend.models.MessageModel
 import okhttp3.RequestBody
 import retrofit2.http.*
 

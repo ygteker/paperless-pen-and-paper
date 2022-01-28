@@ -16,7 +16,6 @@ import lmu.msp.frontend.api.PenAndPaperApiInterface
 import lmu.msp.frontend.databinding.FragmentComposeBinding
 import lmu.msp.frontend.helpers.TokenManager
 import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
-import lmu.msp.frontend.models.MessageModel
 import lmu.msp.frontend.viewmodels.MessagesViewModel
 import okhttp3.RequestBody.Companion.toRequestBody
 
