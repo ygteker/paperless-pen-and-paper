@@ -83,10 +83,10 @@ interface PenAndPaperApiInterface {
 
         @DELETE(PATH_MAIL)
         fun deleteMessage(
-            @Query("mailId") emailId: Int
-        ): Maybe<Message>
+            @Query("mailId") emailId: Long
+        ): Maybe<Boolean>
 
         @GET(PATH_MAIL)
-        fun getMessages(): Maybe<Message>
+        fun getMessages(): Single<List<Message>>
     }
 }

@@ -16,6 +16,7 @@ import lmu.msp.frontend.api.PenAndPaperApiInterface
 import lmu.msp.frontend.databinding.FragmentComposeBinding
 import lmu.msp.frontend.helpers.TokenManager
 import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
+import lmu.msp.frontend.models.MessageModel
 import lmu.msp.frontend.viewmodels.MessagesViewModel
 import okhttp3.RequestBody.Companion.toRequestBody
 
@@ -38,6 +39,12 @@ class ComposeFragment: Fragment() {
         tokenManager = activity?.applicationContext?.let { TokenManager(it) }!!
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        messageApi = RetrofitProvider(requireContext()).getMessageApi()
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -57,11 +64,11 @@ class ComposeFragment: Fragment() {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError {
-                    Log.e("asdasdsa", "error ${it.message}")
+                    Log.e("send_message", "error ${it.message}")
                     //TODO ERROR HANDLING
                 }
                 .doOnSuccess {
-
+                    viewModel.add(it)
                 }
                 .subscribe()
             requireActivity().supportFragmentManager.popBackStack()

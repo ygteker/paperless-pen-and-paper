@@ -14,12 +14,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import lmu.msp.frontend.R
 import lmu.msp.frontend.api.PenAndPaperApiInterface
+import lmu.msp.frontend.api.model.Message
 import lmu.msp.frontend.databinding.FragmentInboxBinding
 import lmu.msp.frontend.helpers.TokenManager
-import lmu.msp.frontend.helpers.auth0.MessagesAdapter
+import lmu.msp.frontend.helpers.MessagesAdapter
 import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
-import lmu.msp.frontend.models.MessageModel
 import lmu.msp.frontend.viewmodels.MessagesViewModel
+import okhttp3.internal.notify
 
 class InboxFragment: Fragment() {
     private lateinit var viewManager: LinearLayoutManager
@@ -28,6 +29,8 @@ class InboxFragment: Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewModel: MessagesViewModel
     private lateinit var tokenManager: TokenManager
+    private lateinit var messageApi: PenAndPaperApiInterface.MessageApi
+    private lateinit var messagesAdapter: MessagesAdapter
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -38,7 +41,6 @@ class InboxFragment: Fragment() {
         super.onAttach(context)
         tokenManager = activity?.applicationContext?.let { TokenManager(it) }!!
         viewModel = ViewModelProvider(requireActivity()).get(MessagesViewModel::class.java)
-        viewModel.getMessages("Bearer " + tokenManager.load())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,9 +56,24 @@ class InboxFragment: Fragment() {
         _binding = FragmentInboxBinding.inflate(inflater, container, false)
         viewManager = LinearLayoutManager(requireActivity())
         recyclerView = binding.inboxList
+        messageApi = RetrofitProvider(requireContext()).getMessageApi()
+        messageApi.getMessages()
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnError {
+                Log.e("error", "error ${it.message}")
+            }
+            .doOnSuccess {
+                messagesAdapter = MessagesAdapter({position -> onListItemClick(position, it[position]) }, it.toMutableList())
+                recyclerView.adapter = messagesAdapter
+                Log.i("list",   "size: ${it.size} ${it.toString()}")
+                viewModel.clearList()
+                viewModel.add(it)
+            }
+            .subscribe()
+
 
         initialiseAdapter()
-        observeData()
         return binding.root
     }
 
@@ -65,13 +82,15 @@ class InboxFragment: Fragment() {
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.title_messages)
     }
 
-    private fun onListItemClick(position: Int, messageModel: MessageModel) {
+    private fun onListItemClick(position: Int, message: Message) {
 
         val messageFragment: Fragment = MessageFragment()
         val bundle = Bundle()
 
         bundle.putInt("pos", position)
-        bundle.putParcelable("messageModel", messageModel)
+        bundle.putLong("id", message.id!!)
+        bundle.putLong("sender", message.sender!!)
+        bundle.putString("message", message.message)
         messageFragment.arguments = bundle
 
         requireActivity().supportFragmentManager
@@ -84,13 +103,6 @@ class InboxFragment: Fragment() {
 
     private fun initialiseAdapter() {
         recyclerView.layoutManager = viewManager
-    }
-
-    private fun observeData() {
-        viewModel.lst.observe(requireActivity(), Observer {
-            recyclerView.adapter = MessagesAdapter({position -> onListItemClick(position, it[position]) }, it)
-        })
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

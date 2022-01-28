@@ -1,4 +1,4 @@
-package lmu.msp.frontend.helpers.auth0
+package lmu.msp.frontend.helpers
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,16 +7,17 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import lmu.msp.frontend.R
-import lmu.msp.frontend.models.MessageModel
+import lmu.msp.frontend.api.model.Message
 
-class MessagesAdapter(private val onItemClicked: (position: Int) -> Unit, private val messages: ArrayList<MessageModel>) :
+class MessagesAdapter(private val onItemClicked: (position: Int) -> Unit, private var messages: MutableList<Message>) :
     RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
+
 
     inner class ViewHolder(
         itemView: View,
         private val onItemClicked: (position: Int) -> Unit
     ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        val messageTitle = itemView.findViewById<TextView>(R.id.from)
+        val messageSender = itemView.findViewById<TextView>(R.id.from)
         val messageSummary = itemView.findViewById<TextView>(R.id.summary)
         val avatar = itemView.findViewById<ImageView>(R.id.senderAvatar)
 
@@ -31,7 +32,7 @@ class MessagesAdapter(private val onItemClicked: (position: Int) -> Unit, privat
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessagesAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val context = parent.context
         val inflater = LayoutInflater.from(context)
 
@@ -40,14 +41,14 @@ class MessagesAdapter(private val onItemClicked: (position: Int) -> Unit, privat
         return ViewHolder(messagesView, onItemClicked)
     }
 
-    override fun onBindViewHolder(holder: MessagesAdapter.ViewHolder, position: Int) {
-        val message: MessageModel = messages.get(position)
-        val title = holder.messageTitle
-        title.text = message.title
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val message: Message = messages.get(position)
+        val sender = holder.messageSender
+        sender.text = message.sender.toString()
 
         val summary = holder.messageSummary
         //TODO display only 2 rows of the message in the summary
-        summary.text = message.content
+        summary.text = message.message
 
         val avatar = holder.avatar
         avatar.setImageResource(R.drawable.logo)
@@ -56,6 +57,12 @@ class MessagesAdapter(private val onItemClicked: (position: Int) -> Unit, privat
 
     override fun getItemCount(): Int {
         return messages.size
+    }
+
+    fun submitList(newMessages: List<Message>) {
+        messages.clear()
+        messages.addAll(newMessages)
+        notifyDataSetChanged()
     }
 
 }
