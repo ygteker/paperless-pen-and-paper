@@ -6,16 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.activityViewModels
 import lmu.msp.frontend.R
-import lmu.msp.frontend.viewmodels.CampaignActivityViewModel
 
 
 class QRFragment : Fragment() {
 
     private lateinit var TextViewQRCampaignId: TextView
     private var campaignId = 0L
-    val sharedViewModel: CampaignActivityViewModel by activityViewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,7 +23,7 @@ class QRFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_q_r, container, false)
 
         TextViewQRCampaignId = view.findViewById(R.id.TextViewQRCampaignId)
-        campaignId = sharedViewModel.campaignId.value!!
+        campaignId = (activity as CampaignActivity).getCampaignId()
 
         TextViewQRCampaignId.text = campaignId.toString()
 

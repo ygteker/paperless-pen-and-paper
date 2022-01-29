@@ -1,7 +1,6 @@
 package lmu.msp.frontend.ui.campaign
 
 import android.content.ContentValues
-import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,10 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -24,7 +21,6 @@ import lmu.msp.frontend.api.model.CampaignMember
 import lmu.msp.frontend.helpers.TokenManager
 import lmu.msp.frontend.helpers.auth0.PAuthenticator
 import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
-import lmu.msp.frontend.viewmodels.CampaignActivityViewModel
 
 class UserFragment : Fragment() {
 
@@ -44,7 +40,6 @@ class UserFragment : Fragment() {
     private lateinit var campaignMemberApi: PenAndPaperApiInterface.CampaignMemberApi
     private lateinit var auth: PAuthenticator
 
-    val sharedViewModel: CampaignActivityViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,7 +67,7 @@ class UserFragment : Fragment() {
         userAdapter = UserAdapter(newArrayList)
         newRecyclerView.adapter = userAdapter
 
-        campaignId = sharedViewModel.campaignId.value!!
+        campaignId = (activity as CampaignActivity).getCampaignId()
 
         fetchMembers()
 
