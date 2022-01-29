@@ -51,7 +51,7 @@
             <Button
                 android:id="@+id/joinCampaignButton"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:text="Join Campaign" />
 
             <EditText
@@ -66,7 +66,7 @@
             <Button
                 android:id="@+id/createCampaignButton"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:text="Create Campaign" />
 
             <EditText
@@ -80,7 +80,7 @@
             <Button
                 android:id="@+id/deleteCampaignButton"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:text="Delete Campaign" />
 
 
