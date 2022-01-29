@@ -14,7 +14,6 @@ import lmu.msp.frontend.api.model.Campaign
 import lmu.msp.frontend.api.model.CampaignMember
 import lmu.msp.frontend.api.model.Message
 import lmu.msp.frontend.api.model.User
-import lmu.msp.frontend.models.MessageModel
 import okhttp3.RequestBody
 import retrofit2.http.*
 
@@ -24,6 +23,10 @@ interface PenAndPaperApiInterface {
 
         @GET(PATH_USER)
         fun getUser(): Single<User>
+
+        @GET("user/{id}/avatar")
+        fun getAvatar(): Single<ByteArray>
+
     }
 
     interface CampaignApi {
@@ -83,10 +86,10 @@ interface PenAndPaperApiInterface {
 
         @DELETE(PATH_MAIL)
         fun deleteMessage(
-            @Query("mailId") emailId: Int
-        ): Maybe<Message>
+            @Query("mailId") emailId: Long
+        ): Maybe<Boolean>
 
         @GET(PATH_MAIL)
-        fun getMessages(): Maybe<Message>
+        fun getMessages(): Single<List<Message>>
     }
 }

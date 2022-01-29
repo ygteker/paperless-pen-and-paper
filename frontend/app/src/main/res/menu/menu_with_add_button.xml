@@ -2,10 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/refreshButton"
+        app:showAsAction="always"
+        android:title="@string/refresh_button_title"
+        android:iconTint="@color/isabelline"
+        android:icon="@drawable/refresh_icon" />
+
+    <item
         android:id="@+id/addButton"
         app:showAsAction="always"
         android:title="@string/add_button_title"
         android:iconTint="@color/isabelline"
         android:icon="@drawable/add_icon"/>
-
 </menu>

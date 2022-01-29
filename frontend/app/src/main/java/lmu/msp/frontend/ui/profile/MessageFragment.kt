@@ -6,10 +6,14 @@ import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import lmu.msp.frontend.R
+import lmu.msp.frontend.api.PenAndPaperApiInterface
 import lmu.msp.frontend.databinding.FragmentMessageBinding
+import lmu.msp.frontend.helpers.MessagesAdapter
 import lmu.msp.frontend.helpers.TokenManager
-import lmu.msp.frontend.models.MessageModel
+import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
 import lmu.msp.frontend.viewmodels.MessagesViewModel
 
 class MessageFragment: Fragment() {
@@ -18,7 +22,7 @@ class MessageFragment: Fragment() {
     private val binding get() = _binding!!
     private lateinit var viewModel: MessagesViewModel
     private lateinit var tokenManager: TokenManager
-    private var messageModel: MessageModel? = null
+    private lateinit var messageApi: PenAndPaperApiInterface.MessageApi
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -35,6 +39,7 @@ class MessageFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        messageApi = RetrofitProvider(requireContext()).getMessageApi()
     }
 
     override fun onCreateView(
@@ -45,9 +50,7 @@ class MessageFragment: Fragment() {
 
         _binding = FragmentMessageBinding.inflate(inflater, container, false)
 
-        val pos: Int? = arguments?.getInt("pos")
-        messageModel = arguments?.getParcelable<MessageModel>("messageModel")
-        binding.messageText.text = pos.toString() + "\n" + messageModel?.content + "Message id: " + messageModel?.id
+        binding.messageText.text = arguments?.getString("message")
 
         return binding.root
     }
@@ -56,7 +59,15 @@ class MessageFragment: Fragment() {
         return when (item.itemId) {
             R.id.deleteButton -> {
                 Log.i("deleteButtonTrigger", "Delete button clicked!!!")
-                viewModel.deleteMessage("Bearer " + tokenManager.load(), messageModel!!)
+                messageApi.deleteMessage(arguments?.getLong("id")!!)
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnError {
+                    }
+                    .doOnSuccess {
+                        Log.i("delete_success", "deleted")
+                    }
+                    .subscribe()
                 requireActivity().supportFragmentManager.popBackStack()
                 true
             }

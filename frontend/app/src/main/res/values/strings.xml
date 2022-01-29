@@ -36,6 +36,7 @@
     <string name="image">Image</string>
     <string name="color">Color</string>
     <string name="delete">Delete</string>
+    <string name="refresh_button_title">refresh</string>
 
 
     <string-array name="profile_list_items">
