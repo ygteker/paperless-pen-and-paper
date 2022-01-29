@@ -23,6 +23,10 @@ interface PenAndPaperApiInterface {
 
         @GET(PATH_USER)
         fun getUser(): Single<User>
+
+        @GET("user/{id}/avatar")
+        fun getAvatar(): Single<ByteArray>
+
     }
 
     interface CampaignApi {

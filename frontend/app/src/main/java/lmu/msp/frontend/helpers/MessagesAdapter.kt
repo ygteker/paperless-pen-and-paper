@@ -1,5 +1,6 @@
 package lmu.msp.frontend.helpers
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,7 +52,6 @@ class MessagesAdapter(private val onItemClicked: (position: Int) -> Unit, privat
         summary.text = message.message
 
         val avatar = holder.avatar
-        avatar.setImageResource(R.drawable.logo)
         //TODO fetch avatar from server and add to imageview
     }
 

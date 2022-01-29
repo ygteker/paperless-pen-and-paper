@@ -72,7 +72,6 @@ class InboxFragment: Fragment() {
             }
             .subscribe()
 
-
         initialiseAdapter()
         return binding.root
     }
