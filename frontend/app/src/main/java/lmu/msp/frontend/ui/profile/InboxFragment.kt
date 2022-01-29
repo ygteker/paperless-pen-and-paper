@@ -39,8 +39,10 @@ class InboxFragment: Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        Log.i("attach", "reattached")
         tokenManager = activity?.applicationContext?.let { TokenManager(it) }!!
         viewModel = ViewModelProvider(requireActivity()).get(MessagesViewModel::class.java)
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,7 +114,15 @@ class InboxFragment: Fragment() {
                     .replace(R.id.fragmentPlaceholder, ComposeFragment(), "COMPOSE")
                     .addToBackStack("COMPOSE")
                     .commit()
+                return true
+            }
 
+            R.id.refreshButton -> {
+                Log.i("refreshed", "refreshed")
+                requireActivity().supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fragmentPlaceholder, InboxFragment(), "INBOX")
+                    .commit()
                 return true
             }
             else -> super.onOptionsItemSelected(item)
