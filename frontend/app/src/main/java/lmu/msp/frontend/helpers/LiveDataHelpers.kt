@@ -26,6 +26,12 @@ fun <T> liveDataListAddElement(element: T, liveData: MutableLiveData<MutableList
     liveData.postValue(data)
 }
 
+fun <T> liveDataRemoveElement(element: T, liveData: MutableLiveData<MutableList<T>>) {
+    val data = liveData.value ?: mutableListOf()
+    data.remove(element)
+    liveData.postValue(data)
+}
+
 /**
  * add all elements to the mutable live data list
  *
