@@ -16,6 +16,7 @@ import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
 class CampaignActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCampaignBinding
+    private var campaignId: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +30,7 @@ class CampaignActivity : AppCompatActivity() {
         }
 
         val intent = intent
-        val campaignId = intent.getSerializableExtra("campaignId").toString().toLong()
+        campaignId = intent.getSerializableExtra("campaignId").toString().toLong()
         val titleString = intent.getSerializableExtra("titleString").toString()
 
         val campaignActivityViewModel: CampaignActivityViewModel =
@@ -42,6 +43,7 @@ class CampaignActivity : AppCompatActivity() {
         supportActionBar?.title = titleString
 
 
+
         val viewModel = ViewModelProvider(this).get(WebSocketDataViewModel::class.java)
         viewModel.startWebSocket(campaignId)
     }
@@ -49,7 +51,13 @@ class CampaignActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
+
                 val currentFragment = supportFragmentManager.findFragmentByTag("tools")
+
+                val bundle = Bundle()
+                bundle.putLong("campaignId",campaignId)
+                currentFragment!!.arguments = bundle
+
                 if (currentFragment != null && currentFragment.isVisible) {
                     finish()
                 } else {
@@ -61,3 +69,4 @@ class CampaignActivity : AppCompatActivity() {
     }
 
 }
+
