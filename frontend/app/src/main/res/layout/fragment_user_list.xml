@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/userListRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/userListRecyclerView"
+        android:layout_margin="6dp">
+
+        <EditText
+            android:id="@+id/editText_CharacterName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="New Character Name"
+            android:inputType="textPersonName"
+            android:text="" />
+
+        <Button
+            android:id="@+id/changeCharacterNameButton"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_below="@+id/editText_CharacterName"
+            android:text="Change Your Character Name" />
+
+        <EditText
+            android:id="@+id/editText_DeleteUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/changeCharacterNameButton"
+            android:ems="10"
+            android:hint="User Id To Delete"
+            android:inputType="number"
+            android:text="" />
+
+        <Button
+            android:id="@+id/deleterUserButton"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_below="@+id/editText_DeleteUser"
+            android:text="Remove User" />
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

@@ -1,12 +1,16 @@
 package lmu.msp.frontend.ui.campaign
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import lmu.msp.frontend.R
 import lmu.msp.frontend.databinding.ActivityCampaignBinding
+import lmu.msp.frontend.viewmodels.CampaignActivityViewModel
+import lmu.msp.frontend.viewmodels.UserViewModel
 import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
 
 class CampaignActivity : AppCompatActivity() {
@@ -27,6 +31,12 @@ class CampaignActivity : AppCompatActivity() {
         val intent = intent
         val campaignId = intent.getSerializableExtra("campaignId").toString().toLong()
         val titleString = intent.getSerializableExtra("titleString").toString()
+
+        val campaignActivityViewModel: CampaignActivityViewModel =
+            ViewModelProvider(this).get(CampaignActivityViewModel::class.java)
+        campaignActivityViewModel.setCampaignId(campaignId)
+
+
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = titleString

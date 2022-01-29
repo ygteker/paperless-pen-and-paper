@@ -11,8 +11,6 @@ class UserViewModel : ViewModel() {
     private var _userData = MutableLiveData<User>()
     val userData: MutableLiveData<User> = _userData
 
-    val testString = "LoremIpsum"
-
     fun setUser(user: User) {
         _userData.value = user
     }

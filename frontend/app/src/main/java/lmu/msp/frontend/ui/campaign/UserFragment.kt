@@ -1,0 +1,188 @@
+package lmu.msp.frontend.ui.campaign
+
+import android.content.ContentValues
+import android.content.ContentValues.TAG
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import lmu.msp.frontend.R
+import lmu.msp.frontend.api.PenAndPaperApiInterface
+import lmu.msp.frontend.api.model.Campaign
+import lmu.msp.frontend.api.model.CampaignMember
+import lmu.msp.frontend.helpers.TokenManager
+import lmu.msp.frontend.helpers.auth0.PAuthenticator
+import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
+import lmu.msp.frontend.viewmodels.CampaignActivityViewModel
+
+class UserFragment : Fragment() {
+
+
+    private lateinit var editText_CharacterName: EditText
+    private lateinit var editText_DeleteUser: EditText
+    private lateinit var changeCharacterNameButton: Button
+    private lateinit var deleterUserButton: Button
+
+    private lateinit var newRecyclerView: RecyclerView
+    private lateinit var newArrayList: ArrayList<campaignUsers>
+    private lateinit var userAdapter: UserAdapter
+
+    private var campaignId = 0L
+
+    private lateinit var campaignApi: PenAndPaperApiInterface.CampaignApi
+    private lateinit var campaignMemberApi: PenAndPaperApiInterface.CampaignMemberApi
+    private lateinit var auth: PAuthenticator
+
+    val sharedViewModel: CampaignActivityViewModel by activityViewModels()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_user_list, container, false)
+
+        editText_CharacterName = view.findViewById(R.id.editText_CharacterName)
+        editText_DeleteUser = view.findViewById(R.id.editText_DeleteUser)
+        changeCharacterNameButton = view.findViewById(R.id.changeCharacterNameButton)
+        deleterUserButton = view.findViewById(R.id.deleterUserButton)
+        changeCharacterNameButton.setOnClickListener { changeCharacterName() }
+        deleterUserButton.setOnClickListener { deleteUserFromCampaign() }
+
+        auth = PAuthenticator(view.context, TokenManager(view.context))
+        campaignApi = RetrofitProvider(view.context).getCampaignApi()
+        campaignMemberApi = RetrofitProvider(view.context).getCampaignMemberApi()
+
+        newRecyclerView = view.findViewById(R.id.userListRecyclerView)
+        val layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        newRecyclerView.layoutManager = layoutManager
+        newArrayList = arrayListOf<campaignUsers>()
+        userAdapter = UserAdapter(newArrayList)
+        newRecyclerView.adapter = userAdapter
+
+        campaignId = sharedViewModel.campaignId.value!!
+
+        fetchMembers()
+
+        return view
+    }
+
+    private fun deleteUserFromCampaign() {
+        if (editText_DeleteUser.text.isNullOrBlank()) {
+            Toast.makeText(
+                context,
+                "Please specify the user you want to remove from the campaign!",
+                Toast.LENGTH_LONG
+            ).show()
+            editText_DeleteUser.setError("Must not be empty!")
+        } else {
+            campaignMemberApi.removeMember(campaignId, editText_DeleteUser.text.toString().toLong())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError {
+                    Log.e(ContentValues.TAG, "error ${it.message}")
+                    //TODO ERROR HANDLING
+                }
+                .doOnSuccess {
+                    Toast.makeText(context, "Removed user from the campaign!", Toast.LENGTH_SHORT)
+                        .show()
+                    userAdapter.notifyDataSetChanged()
+                }
+                .subscribe()
+        }
+    }
+
+    private fun changeCharacterName() {
+        if (editText_CharacterName.text.isNullOrBlank()) {
+            Toast.makeText(
+                context,
+                "Please specify what you want to change your name to!",
+                Toast.LENGTH_LONG
+            ).show()
+            editText_CharacterName.setError("Must not be empty!")
+        } else {
+            campaignMemberApi.updateMember(campaignId, editText_CharacterName.text.toString())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError {
+                    Log.e(ContentValues.TAG, "error ${it.message}")
+                    //TODO ERROR HANDLING
+                }
+                .doOnSuccess {
+                    Toast.makeText(context, "Changed Character Name ", Toast.LENGTH_SHORT).show()
+                    userAdapter.notifyDataSetChanged()
+                }
+                .subscribe()
+        }
+    }
+
+    private fun fetchMembers() {
+        var campaignMemberFromApi: List<CampaignMember>
+        var campaignFromApi: Campaign
+
+        campaignApi.getCampaign(campaignId)
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnError {
+                Log.e(ContentValues.TAG, "error ${it.message}")
+                //TODO ERROR HANDLING
+            }
+            .doOnSuccess {
+                campaignFromApi = it
+                fillDungeonMaster(campaignFromApi)
+            }
+            .subscribe()
+
+        campaignMemberApi.getMembers(campaignId)
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnError {
+                Log.e(ContentValues.TAG, "error ${it.message}")
+                //TODO ERROR HANDLING
+            }
+            .doOnSuccess {
+
+                campaignMemberFromApi = it
+                if (campaignMemberFromApi.isNotEmpty()) {
+                    fillUsers(campaignMemberFromApi)
+                }
+
+            }
+            .subscribe()
+    }
+
+    private fun fillDungeonMaster(campaignFromApi: Campaign?) {
+        newArrayList.clear()
+        val dmData =
+            campaignUsers(campaignFromApi?.owner.toString(), "Dungeon Master")
+        newArrayList.add(dmData)
+        userAdapter.notifyDataSetChanged()
+    }
+
+    private fun fillUsers(campaignMemberFromApi: List<CampaignMember>) {
+        var characterNames = arrayListOf<String>()
+        var userIds = arrayListOf<String>()
+        campaignMemberFromApi.forEach {
+            characterNames.add(it.characterName)
+            userIds.add(it.user.toString())
+        }
+
+        for (i in userIds.indices) {
+            val data = campaignUsers(userIds[i], characterNames[i])
+            newArrayList.add(data)
+        }
+        userAdapter.notifyDataSetChanged()
+    }
+}
