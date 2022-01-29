@@ -6,13 +6,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import lmu.msp.frontend.R
+import lmu.msp.frontend.api.model.GeneralChatMessage
 import lmu.msp.frontend.models.websocket.ChatMessage
-import lmu.msp.frontend.ui.campaign.CampaignActivity
 
-class ChatMessagesAdapter (private val messages: LiveData<MutableList<ChatMessage>>, private val activity: FragmentActivity):
+class ChatMessagesAdapter (private val messages: MutableLiveData<MutableList<GeneralChatMessage>>, private val activity: FragmentActivity):
     RecyclerView.Adapter<ChatMessagesAdapter.ViewHolder>(){
     inner class ViewHolder(
         itemView: View
@@ -32,15 +33,12 @@ class ChatMessagesAdapter (private val messages: LiveData<MutableList<ChatMessag
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        var message: ChatMessage
-//        val sender = holder.sender
+        var message: GeneralChatMessage
         val chatBubble = holder.chatBubble
 
         messages.observe(activity, Observer {
             message = it.get(position)
-//            sender.text = message.senderId.toString()
             chatBubble.text = message.message
-//            notifyItemChanged(position)
         })
     }
 
@@ -50,5 +48,10 @@ class ChatMessagesAdapter (private val messages: LiveData<MutableList<ChatMessag
             size = it.size
         })
         return size
+    }
+
+    fun submitMessageList(newMessages: List<GeneralChatMessage>) {
+        liveDataListAddElementList(newMessages, messages)
+        notifyDataSetChanged()
     }
 }
