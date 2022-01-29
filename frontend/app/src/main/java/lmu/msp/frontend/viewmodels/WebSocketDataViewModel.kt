@@ -1,7 +1,6 @@
 package lmu.msp.frontend.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -39,17 +38,22 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
     private val drawImage = MutableLiveData<DrawImage>()
 
 
+    private val groupMessages = MutableLiveData<MutableList<GroupMessage>>(mutableListOf())
+
+
     fun getCampaignId(): LiveData<Long> = campaignId
 
     fun getSemaphore() = drawSemaphore
 
 
     fun getDrawCanvasClear() = drawCanvasClear
+
     fun getChatMessages(): LiveData<MutableList<ChatMessage>> = chatMessages
     fun getChatMessagesNew(): LiveData<MutableList<ChatMessage>> = chatMessagesNew
     fun getDrawMessages(): LiveData<MutableList<DrawMessage>> = drawMessages
     fun getDrawMessagesNew(): LiveData<MutableList<DrawMessage>> = drawMessagesNew
     fun getDrawImage(): LiveData<DrawImage> = drawImage
+    fun getGroupMessages(): LiveData<MutableList<GroupMessage>> = groupMessages
 
     fun sendDrawMessageClear() {
         webSocket?.send(gson.toJson(BasicMessage(MessageType.DRAW_RESET)))
@@ -58,7 +62,14 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
 
     fun sendDrawMessage(drawMessage: DrawMessage) {
         liveDataListAddElement(drawMessage, drawMessages)
-        webSocket?.send(gson.toJson(BasicMessage(MessageType.DRAW_PATH, null, listOf(drawMessage))))
+        webSocket?.send(
+            gson.toJson(
+                BasicMessage(
+                    MessageType.DRAW_PATH,
+                    drawMessage = listOf(drawMessage)
+                )
+            )
+        )
     }
 
     fun startWebSocket(campaignId: Long) {
@@ -71,7 +82,18 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
     fun sendChatMessage(chatMessage: ChatMessage) {
         liveDataListAddElement(chatMessage, chatMessages)
         webSocket?.send(gson.toJson(BasicMessage(MessageType.CHAT_MESSAGE, listOf(chatMessage))))
+    }
 
+    fun sendGroupMessage(groupMessage: GroupMessage) {
+        liveDataListAddElement(groupMessage, groupMessages)
+        webSocket?.send(
+            gson.toJson(
+                BasicMessage(
+                    MessageType.GROUP_MESSAGE,
+                    groupMessage = listOf(groupMessage)
+                )
+            )
+        )
     }
 
 
@@ -80,9 +102,7 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
             gson.toJson(
                 BasicMessage(
                     MessageType.DRAW_IMAGE,
-                    null,
-                    null,
-                    DrawImage.create(byteArray)
+                    drawImage = DrawImage.create(byteArray)
                 )
             )
         )
@@ -97,6 +117,10 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
 //            Log.i("TAG", "acquired")
 //            liveDataListAddElementList(chatMessages, chatMessagesNew)
 //            chatSemaphore.release()
+        }
+
+        override fun receiveGroupMessages(groupMessage: List<GroupMessage>) {
+            liveDataListAddElementList(groupMessage, this@WebSocketDataViewModel.groupMessages)
         }
 
         override fun receiveDrawMessages(drawMessages: List<DrawMessage>) {

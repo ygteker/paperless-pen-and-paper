@@ -59,12 +59,21 @@ class SessionCampaignService(
             println("Recived an image ${drawImage.imageBase64}")
             campaignMap[campaignId]!!.drawImage = drawImage
             sessionService.sendToFiltered(
-                BaseMessage(MessageType.DRAW_IMAGE, null, null, drawImage),
+                BaseMessage(MessageType.DRAW_IMAGE, null, null, null, drawImage),
                 campaignId,
                 auth0Id
             )
         }
     }
+
+    private fun handleGroupMessage(auth0Id: String, campaignId: Long, groupMessage: List<GroupMessage>?) {
+        groupMessage?.forEach {
+            val message = GroupMessage(userService.getUserByAuth0Id(auth0Id).id, it.message)
+            campaignMap[campaignId]!!.groupMessage.add(message)
+            sessionService.sendTo(BaseMessage(MessageType.GROUP_MESSAGE, null, null, listOf(message), null), campaignId)
+        }
+    }
+
 
     override fun handleMessage(auth0Id: String, campaignId: Long, baseMessage: BaseMessage) {
         if (!campaignMap.containsKey(campaignId)) {
@@ -78,6 +87,9 @@ class SessionCampaignService(
             MessageType.DRAW_PATH -> handleDraw(auth0Id, campaignId, baseMessage.drawMessage)
             MessageType.DRAW_IMAGE -> handleDrawImage(auth0Id, campaignId, baseMessage.drawImage)
             MessageType.DRAW_RESET -> handleResetDraw(campaignId)
+            MessageType.GROUP_MESSAGE -> handleGroupMessage(auth0Id, campaignId, baseMessage.groupMessage)
+            MessageType.INITIATIVE_ADD -> TODO()
+            MessageType.INITIATIVE_REST -> TODO()
         }
     }
 
@@ -86,9 +98,10 @@ class SessionCampaignService(
 
         val messages = filteredBasedMessages(campaignId, user)
         val paths = campaignMap[campaignId]?.drawMessage ?: emptyList()
+        val groupMessage = campaignMap[campaignId]?.groupMessage ?: emptyList()
         val image = campaignMap[campaignId]?.drawImage ?: DrawImage()
 
-        val baseMessage = BaseMessage(MessageType.CONNECT, messages, paths, image)
+        val baseMessage = BaseMessage(MessageType.CONNECT, messages, paths, groupMessage, image)
 
         sessionService.sendTo(baseMessage, campaignId, auth0Id)
     }

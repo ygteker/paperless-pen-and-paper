@@ -36,12 +36,16 @@ class CampaignWebSocketListener(private val webSocketCallback: WebSocketCallback
                 webSocketCallback.receiveChatMessages(basicMessage.chatMessage!!)
                 webSocketCallback.receiveDrawMessages(basicMessage.drawMessage!!)
                 webSocketCallback.receivedDrawImage(basicMessage.drawImage!!)
+                webSocketCallback.receiveGroupMessages(basicMessage.groupMessage!!)
             }
             MessageType.DISCONNECT -> TODO()
             MessageType.CHAT_MESSAGE -> webSocketCallback.receiveChatMessages(basicMessage.chatMessage!!)
             MessageType.DRAW_PATH -> webSocketCallback.receiveDrawMessages(basicMessage.drawMessage!!)
             MessageType.DRAW_IMAGE -> webSocketCallback.receivedDrawImage(basicMessage.drawImage!!)
             MessageType.DRAW_RESET -> webSocketCallback.receiveDrawMessageReset()
+            MessageType.GROUP_MESSAGE -> webSocketCallback.receiveGroupMessages(basicMessage.groupMessage!!)
+            MessageType.INITIATIVE_ADD -> TODO()
+            MessageType.INITIATIVE_REST -> TODO()
         }
 
         Log.i(TAG, text)

@@ -1,20 +1,27 @@
 package lmu.msp.frontend.ui.campaign
 
+import android.app.Activity.RESULT_OK
+import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.github.dhaval2404.imagepicker.ImagePicker
 import lmu.msp.frontend.R
 import lmu.msp.frontend.databinding.FragmentMapBinding
 import lmu.msp.frontend.models.websocket.DrawMessage
 import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
+import permissions.dispatcher.*
 import java.io.ByteArrayOutputStream
 
-
+@RuntimePermissions
 class MapFragment : Fragment(R.layout.fragment_map) {
 
     lateinit var viewModel: WebSocketDataViewModel
@@ -38,14 +45,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             myCanvasView.resetCanvasDrawing()
             viewModel.sendDrawMessageClear()
         }
+
         background.setOnClickListener {
-            canvas_bg.setImageResource(R.drawable.yawning)
-
-            val bitmap = (canvas_bg.drawable as BitmapDrawable).bitmap
-            val stream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-
-            viewModel.sendImage(stream.toByteArray())
+            pickBackgroundPicture()
 
         }
 
@@ -138,6 +140,49 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         })
 
         return view
+    }
+
+    @NeedsPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+    fun pickBackgroundPicture() {
+        ImagePicker.with(this)
+            .crop()                    //Crop image(Optional), Check Customization for more option
+            .compress(1024)            //Final image size will be less than 1 MB(Optional)
+            .maxResultSize(
+                1080,
+                1080
+            )    //Final image resolution will be less than 1080 x 1080(Optional)
+            .galleryOnly()
+            .start()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (resultCode) {
+            RESULT_OK -> {
+                binding.canvasBg.setImageURI(data?.data)
+                val bitmap = (binding.canvasBg.drawable as BitmapDrawable).bitmap
+                val stream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+
+                viewModel.sendImage(stream.toByteArray())
+            }
+            ImagePicker.RESULT_ERROR -> {
+                Toast.makeText(context, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
+            }
+            else -> {
+                Toast.makeText(context, "Task Cancelled", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+    private fun showRationaleDialog(@StringRes messageResId: Int, request: PermissionRequest) {
+        AlertDialog.Builder(context)
+            .setPositiveButton(R.string.button_allow) { _, _ -> request.proceed() }
+            .setNegativeButton(R.string.button_deny) { _, _ -> request.cancel() }
+            .setCancelable(false)
+            .setMessage(messageResId)
+            .show()
     }
 
     override fun onDestroyView() {
@@ -276,6 +321,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         fun changePaintColor(color: Int) {
             paint.color = color
         }
+
         fun changeCurrentColor(color: Int) {
             currentColor = color
             paint.color = color
