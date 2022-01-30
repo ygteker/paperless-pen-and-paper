@@ -1,6 +1,7 @@
 package lmu.msp.frontend.helpers
 
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +20,7 @@ class ChatMessagesAdapter (private val messages: MutableLiveData<MutableList<Gen
     inner class ViewHolder(
         itemView: View
     ) : RecyclerView.ViewHolder(itemView){
-//        val sender = itemView.findViewById<TextView>(R.id.sender)
+        val sender = itemView.findViewById<TextView>(R.id.senderTextView)
         val chatBubble = itemView.findViewById<TextView>(R.id.message)
     }
 
@@ -36,10 +37,16 @@ class ChatMessagesAdapter (private val messages: MutableLiveData<MutableList<Gen
 
         var message: GeneralChatMessage
         val chatBubble = holder.chatBubble
+        val senderLabel = holder.sender
 
         messages.observe(activity, Observer {
             message = it.get(position)
             chatBubble.text = message.message
+            senderLabel.text = message.from + ": "
+            if (message.self) {
+                chatBubble.foregroundGravity = Gravity.END
+                senderLabel.foregroundGravity = Gravity.END
+            }
         })
     }
 

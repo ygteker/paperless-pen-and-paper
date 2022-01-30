@@ -77,6 +77,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
             }
             .doOnSuccess {
                 loggedInUser = it
+
             }
             .subscribe()
 
@@ -92,7 +93,11 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
             .subscribe()
 
         binding.sendButton.setOnClickListener {
-            sendMessage(binding.chatBox.text.toString())
+            val chatBox = binding.chatBox
+            if (!chatBox.text.isBlank()) {
+                sendMessage(chatBox.text.toString())
+                chatBox.text.clear()
+            }
         }
         observeData()
         return binding.root
@@ -103,7 +108,11 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
             if (it.size > 0) {
                 Log.i("Group message", "Group message: ${it[it.size - 1].message}")
                 val newMessage = it[it.size - 1]
-                val messageToSubmit = GeneralChatMessage(newMessage.senderId.toString(), newMessage.message, ChatType.GROUP)
+//                Log.i("loggedInUser", loggedInUser.toString())
+                val messageToSubmit = GeneralChatMessage(newMessage.senderId.toString(), newMessage.message, ChatType.GROUP, false)
+                if (newMessage.senderId == loggedInUser.id) {
+                    messageToSubmit.self = true
+                }
                 chatMessagesAdapter.submitMessage(messageToSubmit)
                 chatView.scrollToPosition(chatMessagesAdapter.itemCount - 1)
             }
@@ -115,7 +124,12 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
                 val newMessage = it[it.size - 1]
                 val messageToSubmit = newMessage.message?.let { it1 ->
                     GeneralChatMessage(newMessage.senderId.toString(),
-                        it1, ChatType.PERSONAL)
+                        it1, ChatType.PERSONAL, false)
+                }
+                if (newMessage.senderId?.equals(loggedInUser.id) == true) {
+                    if (messageToSubmit != null) {
+                        messageToSubmit.self = true
+                    }
                 }
                 chatMessagesAdapter.submitMessage(messageToSubmit!!)
                 chatView.scrollToPosition((chatMessagesAdapter.itemCount - 1))
