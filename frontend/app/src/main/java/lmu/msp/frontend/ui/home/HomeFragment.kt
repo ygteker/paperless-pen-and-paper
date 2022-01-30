@@ -86,15 +86,11 @@ class HomeFragment : Fragment() {
             campaignApi.deleteCampaign(deleteCampaignEditText.text.toString().toLong())
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError {
-                    Log.e(TAG, "error ${it.message}")
-                    //TODO ERROR HANDLING
-                }
                 .doOnSuccess {
                     Toast.makeText(context, "Deleted Campaign", Toast.LENGTH_SHORT).show()
                 }
                 .subscribe()
-
+            //TODO ERROR HANDLING
         }
     }
 
@@ -110,16 +106,13 @@ class HomeFragment : Fragment() {
             campaignApi.createCampaign(createCampaignEditText.text.toString().toRequestBody())
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError {
-                    Log.e(TAG, "error ${it.message}")
-                    //TODO ERROR HANDLING
-                }
                 .doOnSuccess {
                     Toast.makeText(context, "Created Campaign", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, createCampaignEditText.text.toString())
                 }
 
                 .subscribe()
+            //TODO Error Handling
         }
     }
 

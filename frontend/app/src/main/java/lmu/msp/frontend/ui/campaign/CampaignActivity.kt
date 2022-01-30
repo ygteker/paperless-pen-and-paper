@@ -28,7 +28,7 @@ class CampaignActivity : AppCompatActivity() {
     private lateinit var auth: PAuthenticator
 
     private lateinit var user: User
-    private lateinit var campaignMemberFromApi: List<CampaignMember>
+    private lateinit var campaignMembersFromApi: List<CampaignMember>
     private var campaignId: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,9 +44,8 @@ class CampaignActivity : AppCompatActivity() {
 
         auth = PAuthenticator(this, TokenManager(this))
         userApi = RetrofitProvider(applicationContext).getUserApi()
+        campaignMemberApi = RetrofitProvider(applicationContext).getCampaignMemberApi()
         fetchUser()
-        fetchMembers()
-
 
         val intent = intent
         campaignId = intent.getSerializableExtra("campaignId").toString().toLong()
@@ -64,7 +63,7 @@ class CampaignActivity : AppCompatActivity() {
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSuccess {
-                campaignMemberFromApi = it
+                campaignMembersFromApi = it
             }
             .subscribe(
                 //TODO ERROR HANDLING
@@ -77,6 +76,7 @@ class CampaignActivity : AppCompatActivity() {
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSuccess {
                 user = it
+                fetchMembers()
             }
             .subscribe(
                 //TODO ERROR HANDLING
@@ -87,11 +87,12 @@ class CampaignActivity : AppCompatActivity() {
         return campaignId
     }
 
-    fun getUser(): User{
+    fun getUser(): User {
         return user
     }
-    fun getCampaignMemberList(): List<CampaignMember>{
-        return campaignMemberFromApi
+
+    fun getCampaignMemberList(): List<CampaignMember> {
+        return campaignMembersFromApi
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -101,7 +102,7 @@ class CampaignActivity : AppCompatActivity() {
                 val currentFragment = supportFragmentManager.findFragmentByTag("tools")
 
                 val bundle = Bundle()
-                bundle.putLong("campaignId",campaignId)
+                bundle.putLong("campaignId", campaignId)
                 currentFragment!!.arguments = bundle
 
                 if (currentFragment != null && currentFragment.isVisible) {

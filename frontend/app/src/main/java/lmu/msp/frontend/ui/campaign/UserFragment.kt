@@ -49,7 +49,7 @@ class UserFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_user_list, container, false)
 
-        RxJavaPlugins.setErrorHandler{it.printStackTrace()}
+        RxJavaPlugins.setErrorHandler { it.printStackTrace() }
 
         editText_CharacterName = view.findViewById(R.id.editText_CharacterName)
         editText_DeleteUser = view.findViewById(R.id.editText_DeleteUser)
@@ -89,16 +89,13 @@ class UserFragment : Fragment() {
             campaignMemberApi.removeMember(campaignId, editText_DeleteUser.text.toString().toLong())
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError {
-                    Log.e(ContentValues.TAG, "error ${it.message}")
-                    //TODO ERROR HANDLING
-                }
                 .doOnSuccess {
                     Toast.makeText(context, "Removed user from the campaign!", Toast.LENGTH_SHORT)
                         .show()
                     userAdapter.notifyDataSetChanged()
                 }
                 .subscribe()
+            //TODO ERROR HANDLING
         }
     }
 
@@ -122,8 +119,8 @@ class UserFragment : Fragment() {
                     Toast.makeText(context, "Changed Character Name ", Toast.LENGTH_SHORT).show()
                     userAdapter.notifyDataSetChanged()
                 }
-                .subscribe{campaignMemberList,error->
-
+                .subscribe { campaignMemberList, error ->
+                    //TODO ERRORHANDLING
                 }.dispose()
         }
     }
@@ -135,23 +132,16 @@ class UserFragment : Fragment() {
         campaignApi.getCampaign(campaignId)
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnError {
-                Log.e(ContentValues.TAG, "error ${it.message}")
-                //TODO ERROR HANDLING
-            }
             .doOnSuccess {
                 campaignFromApi = it
                 fillDungeonMaster(campaignFromApi)
             }
             .subscribe()
+        //TODO ERROR HANDLING
 
         campaignMemberApi.getMembers(campaignId)
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnError {
-                Log.e(ContentValues.TAG, "error ${it.message}")
-                //TODO ERROR HANDLING
-            }
             .doOnSuccess {
 
                 campaignMemberFromApi = it
@@ -161,6 +151,7 @@ class UserFragment : Fragment() {
 
             }
             .subscribe()
+        //TODO ERROR HANDLING
     }
 
     private fun fillDungeonMaster(campaignFromApi: Campaign?) {
