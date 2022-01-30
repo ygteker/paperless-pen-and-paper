@@ -91,7 +91,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
                 val newMessage = it[it.size - 1]
 //                Log.i("loggedInUser", loggedInUser.toString())
                 val messageToSubmit = GeneralChatMessage(newMessage.senderId.toString(), newMessage.message, ChatType.GROUP, false)
-                if (newMessage.senderId.toInt() == loggedInUser.id) {
+                if (newMessage.senderId.toInt() == loggedInUser.id.toInt()) {
                     messageToSubmit.self = true
                 }
                 chatMessagesAdapter.submitMessage(messageToSubmit)
@@ -124,7 +124,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
             val charName = message.split(" ")[0].removePrefix("@")
             for (user in members) {
                 if (user.equals(charName)) {
-                    viewModel.sendChatMessage(ChatMessage(message, user.id.toInt(), loggedInUser.id))
+                    viewModel.sendChatMessage(ChatMessage(message, user.id.toInt(), loggedInUser.id.toInt()))
                 } else {
                     Toast.makeText(requireContext(), "USER NOT FOUND", Toast.LENGTH_LONG).show()
                 }
