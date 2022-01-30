@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="6dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <ImageView
+                android:id="@+id/rec_avatar"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                tools:srcCompat="@tools:sample/avatars"
+                android:layout_margin="6dp"/>
+
+            <TextView
+                android:id="@+id/static_user_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/rec_avatar"
+                android:textSize="20sp"
+                android:text="Id:"
+                android:layout_margin="6dp"/>
+
+            <TextView
+                android:id="@+id/rec_user_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="empty"
+                android:textSize="20sp"
+                android:layout_toRightOf="@+id/static_user_id"
+                android:layout_margin="6dp"/>
+
+            <TextView
+                android:id="@+id/static_char_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Character name:"
+                android:textSize="20sp"
+                android:layout_below="@+id/static_user_id"
+                android:layout_toRightOf="@+id/rec_avatar"
+                android:layout_margin="6dp"/>
+            <TextView
+                android:id="@+id/rec_character_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="empty"
+                android:layout_toRightOf="@+id/static_char_name"
+                android:layout_below="@+id/static_user_id"
+                android:layout_margin="6dp"/>
+
+
+        </RelativeLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</RelativeLayout>

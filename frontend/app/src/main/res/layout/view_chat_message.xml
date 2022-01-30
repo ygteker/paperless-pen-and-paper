@@ -8,12 +8,12 @@
     android:layout_marginBottom="12dp"
     android:padding="6dp">
 
-    <ImageView
-        android:id="@+id/avatar"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:src="@drawable/logo" />
+    <TextView
+        android:id="@+id/senderTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sender:"/>
+
 
     <TextView
         android:id="@+id/message"

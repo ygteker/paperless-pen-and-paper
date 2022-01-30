@@ -1,13 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.campaign.QRFragment">
 
     <TextView
+        android:id="@+id/TextViewQR"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello this is the QR fragment" />
+        android:layout_height="80dp"
+        android:text="Others need to enter this campaign ID to join:"
+        android:textAlignment="center"
+        android:layout_centerVertical="true"
+        android:textSize="30sp"
+        />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/TextViewQRCampaignId"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_below="@+id/TextViewQR"
+        android:textAlignment="center"
+        android:layout_centerVertical="true"
+        android:textSize="40sp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="emtpy" />
+
+</RelativeLayout>

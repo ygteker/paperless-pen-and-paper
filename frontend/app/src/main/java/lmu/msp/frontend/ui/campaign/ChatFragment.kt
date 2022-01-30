@@ -1,5 +1,6 @@
 package lmu.msp.frontend.ui.campaign
 
+import android.content.ContentValues
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -7,15 +8,26 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import lmu.msp.frontend.R
+import lmu.msp.frontend.api.PenAndPaperApiInterface
+import lmu.msp.frontend.api.model.CampaignMember
+import lmu.msp.frontend.api.model.ChatType
+import lmu.msp.frontend.api.model.GeneralChatMessage
+import lmu.msp.frontend.api.model.User
 import lmu.msp.frontend.databinding.FragmentChatBinding
 import lmu.msp.frontend.helpers.ChatMessagesAdapter
+import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
 import lmu.msp.frontend.models.websocket.ChatMessage
-import lmu.msp.frontend.viewmodels.CampaignViewModel
+import lmu.msp.frontend.models.websocket.GroupMessage
 import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
 
 
@@ -27,6 +39,10 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
     private lateinit var viewManager: LinearLayoutManager
     private lateinit var viewModel: WebSocketDataViewModel
     private lateinit var chatMessagesAdapter: ChatMessagesAdapter
+    private lateinit var userApi: PenAndPaperApiInterface.UserApi
+    private lateinit var memberApi: PenAndPaperApiInterface.CampaignMemberApi
+    private lateinit var loggedInUser: User
+    private lateinit var members: List<CampaignMember>
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -41,30 +57,77 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
         _binding = FragmentChatBinding.inflate(inflater, container, false)
         chatView = binding.chatView
         viewManager = LinearLayoutManager(requireActivity())
-        viewManager.stackFromEnd = true
+        viewManager.isSmoothScrollbarEnabled = true
         chatView.layoutManager = viewManager
-        chatMessagesAdapter = ChatMessagesAdapter(viewModel.getChatMessages(), requireActivity())
+        chatMessagesAdapter = ChatMessagesAdapter(MutableLiveData(), requireActivity())
         chatView.adapter = chatMessagesAdapter
+        userApi = RetrofitProvider(requireContext()).getUserApi()
+        memberApi = RetrofitProvider(requireContext()).getCampaignMemberApi()
+
+        loggedInUser = (activity as CampaignActivity).getUser()
+        members = (activity as CampaignActivity).getCampaignMemberList()
 
         binding.sendButton.setOnClickListener {
-            val textToSend = binding.chatBox.text.toString()
-            sendMessage(ChatMessage(textToSend, 2, 1))
-            binding.chatBox.setText("")
+            val chatBox = binding.chatBox
+            if (!chatBox.text.isBlank()) {
+                sendMessage(chatBox.text.toString())
+                chatBox.text.clear()
+            }
         }
         observeData()
         return binding.root
     }
 
     private fun observeData() {
+        viewModel.getGroupMessages().observe(requireActivity(), Observer{
+            if (it.size > 0) {
+                Log.i("Group message", "Group message: ${it[it.size - 1].message}")
+                val newMessage = it[it.size - 1]
+//                Log.i("loggedInUser", loggedInUser.toString())
+                val messageToSubmit = GeneralChatMessage(newMessage.senderId.toString(), newMessage.message, ChatType.GROUP, false)
+                if (newMessage.senderId.toInt() == loggedInUser.id.toInt()) {
+                    messageToSubmit.self = true
+                }
+                chatMessagesAdapter.submitMessage(messageToSubmit)
+                chatView.scrollToPosition(chatMessagesAdapter.itemCount - 1)
+            }
+        })
 
-        viewModel.getChatMessages().observe(requireActivity(), Observer {
-            chatMessagesAdapter.notifyItemChanged(it.size - 1)
-            chatView.scrollToPosition(it.size - 1)
+        viewModel.getChatMessages().observe(requireActivity(), {
+            if (it.size > 0) {
+                Log.i("Personal message", "Personal message: ${it[it.size - 1].message}")
+                val newMessage = it[it.size - 1]
+                val messageToSubmit = newMessage.message?.let { it1 ->
+                    GeneralChatMessage(newMessage.senderId.toString(),
+                        it1, ChatType.PERSONAL, false)
+                }
+                if (newMessage.senderId?.equals(loggedInUser.id) == true) {
+                    if (messageToSubmit != null) {
+                        messageToSubmit.self = true
+                    }
+                }
+                chatMessagesAdapter.submitMessage(messageToSubmit!!)
+                chatView.scrollToPosition((chatMessagesAdapter.itemCount - 1))
+            }
         })
     }
 
-    private fun sendMessage(message: ChatMessage) {
-        viewModel.sendChatMessage(message)
+    private fun sendMessage(message: String) {
+        val  regex = "^@\\w+".toRegex()
+        if (regex.containsMatchIn(message)) {
+            val charName = message.split(" ")[0].removePrefix("@")
+            for (user in members) {
+                if (user.characterName == charName) {
+                    viewModel.sendChatMessage(ChatMessage(message, user.id.toInt(), loggedInUser.id.toInt()))
+                } else {
+                    Toast.makeText(requireContext(), "USER NOT FOUND", Toast.LENGTH_LONG).show()
+                }
+            }
+
+        } else {
+           viewModel.sendGroupMessage(GroupMessage(loggedInUser.id.toLong(), message))
+        }
+
     }
 
 }

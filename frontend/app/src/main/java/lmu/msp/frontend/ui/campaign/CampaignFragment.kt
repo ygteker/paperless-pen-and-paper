@@ -99,14 +99,6 @@ class CampaignFragment : Fragment() {
             viewLifecycleOwner,
             { userData ->
                 userFromViewModel = userData
-                Log.d(
-                    TAG,
-                    "This is the campaignOwner: " + userFromViewModel.campaignOwner.toString()
-                )
-                Log.d(
-                    TAG,
-                    "This is the campaignMember: " + userFromViewModel.campaignMember.toString()
-                )
 
                 userFromViewModel.campaignOwner.forEach {
                     campaignIds.add(it.id.toString())
@@ -122,6 +114,7 @@ class CampaignFragment : Fragment() {
     }
 
     private fun fillCampaigns() {
+        newArrayList.clear()
         for (i in titleStrings.indices) {
             val data = campaigns(titleStrings[i], campaignIds[i])
             newArrayList.add(data)

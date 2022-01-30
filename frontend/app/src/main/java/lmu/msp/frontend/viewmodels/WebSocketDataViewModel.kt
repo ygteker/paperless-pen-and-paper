@@ -79,7 +79,7 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
             webSocketProvider.start(campaignId, CampaignWebSocketListener(ImpWebSocketCallback()))
     }
 
-    fun sendChatMessage(chatMessage: ChatMessage) {
+    fun     sendChatMessage(chatMessage: ChatMessage) {
         liveDataListAddElement(chatMessage, chatMessages)
         webSocket?.send(gson.toJson(BasicMessage(MessageType.CHAT_MESSAGE, listOf(chatMessage))))
     }
