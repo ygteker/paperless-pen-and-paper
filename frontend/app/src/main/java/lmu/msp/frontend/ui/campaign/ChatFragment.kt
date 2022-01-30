@@ -117,7 +117,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
         if (regex.containsMatchIn(message)) {
             val charName = message.split(" ")[0].removePrefix("@")
             for (user in members) {
-                if (user.equals(charName)) {
+                if (user.characterName == charName) {
                     viewModel.sendChatMessage(ChatMessage(message, user.id.toInt(), loggedInUser.id.toInt()))
                 } else {
                     Toast.makeText(requireContext(), "USER NOT FOUND", Toast.LENGTH_LONG).show()
