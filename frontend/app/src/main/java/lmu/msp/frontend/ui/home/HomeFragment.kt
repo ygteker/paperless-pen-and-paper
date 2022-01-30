@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import lmu.msp.frontend.viewmodels.UserViewModel
@@ -34,6 +35,7 @@ class HomeFragment : Fragment() {
     private lateinit var joinCampaignCharacterText: EditText
     private lateinit var createCampaignEditText: EditText
     private lateinit var deleteCampaignEditText: EditText
+    private val disposables = CompositeDisposable()
 
     private lateinit var campaignApi: PenAndPaperApiInterface.CampaignApi
     private lateinit var inviteCampaignApi: PenAndPaperApiInterface.InviteCampaignApi
@@ -49,6 +51,8 @@ class HomeFragment : Fragment() {
 
         findViews(view)
 
+        RxJavaPlugins.setErrorHandler { it.printStackTrace() }
+
         joinCampaignButton.setOnClickListener { joinCampaign() }
         createCampaignButton.setOnClickListener { createCampaign() }
         deleteCampaignButton.setOnClickListener { deleteCampaign() }
@@ -57,11 +61,7 @@ class HomeFragment : Fragment() {
         campaignApi = RetrofitProvider(view.context).getCampaignApi()
         inviteCampaignApi = RetrofitProvider(view.context).getInviteCampaignApi()
 
-        //viewModel.getUser().observe(viewLifecycleOwner, { Log.i(TAG, "new user ${it.id}") })
-        RxJavaPlugins.setErrorHandler(Timber::e)
-
         return view
-
     }
 
     private fun findViews(view: View) {
@@ -142,20 +142,24 @@ class HomeFragment : Fragment() {
                 ).show()
             }
         } else {
-            inviteCampaignApi.acceptInvite(
+            disposables.add(inviteCampaignApi.acceptInvite(
                 joinCampaignEditText.text.toString().toLong(),
                 joinCampaignCharacterText.text.toString()
             )
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError {
-                        Log.e(TAG, "error ${it.message}")
-                }
                 .doOnSuccess {
                     Toast.makeText(context, "Join Campaign Success", Toast.LENGTH_SHORT).show()
                 }
-                .subscribe ()
+                .subscribe { campaignMembers, error ->
+                    error.printStackTrace()
+                    //TODO ERROR HANDLING
+                })
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        disposables.dispose()
+    }
 }

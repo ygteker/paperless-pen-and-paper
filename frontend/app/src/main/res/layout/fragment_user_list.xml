@@ -4,55 +4,59 @@
     android:layout_height="match_parent">
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/userListRecyclerView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="6dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/userListRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="6dp">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/userListRecyclerView"
-        android:layout_margin="6dp">
+        </androidx.recyclerview.widget.RecyclerView>
 
-        <EditText
-            android:id="@+id/editText_CharacterName"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="New Character Name"
-            android:inputType="textPersonName"
-            android:text="" />
+            android:orientation="vertical"
+            android:padding="6dp">
 
-        <Button
-            android:id="@+id/changeCharacterNameButton"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_below="@+id/editText_CharacterName"
-            android:text="Change Your Character Name" />
+            <EditText
+                android:id="@+id/editText_CharacterName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="New Character Name"
+                android:inputType="textPersonName"
+                android:text="" />
 
-        <EditText
-            android:id="@+id/editText_DeleteUser"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/changeCharacterNameButton"
-            android:ems="10"
-            android:hint="User Id To Delete"
-            android:inputType="number"
-            android:text="" />
+            <Button
+                android:id="@+id/changeCharacterNameButton"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="Change Your Character Name" />
 
-        <Button
-            android:id="@+id/deleterUserButton"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_below="@+id/editText_DeleteUser"
-            android:text="Remove User" />
+            <EditText
+                android:id="@+id/editText_DeleteUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="User Id To Delete"
+                android:inputType="number"
+                android:text="" />
+
+            <Button
+                android:id="@+id/deleterUserButton"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="Remove User" />
 
 
-    </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
 
 
 </RelativeLayout>

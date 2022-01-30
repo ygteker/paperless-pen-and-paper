@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import lmu.msp.frontend.R
 import lmu.msp.frontend.api.PenAndPaperApiInterface
@@ -47,6 +48,8 @@ class UserFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_user_list, container, false)
+
+        RxJavaPlugins.setErrorHandler{it.printStackTrace()}
 
         editText_CharacterName = view.findViewById(R.id.editText_CharacterName)
         editText_DeleteUser = view.findViewById(R.id.editText_DeleteUser)
@@ -113,13 +116,15 @@ class UserFragment : Fragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError {
                     Log.e(ContentValues.TAG, "error ${it.message}")
-                    //TODO ERROR HANDLING
+
                 }
                 .doOnSuccess {
                     Toast.makeText(context, "Changed Character Name ", Toast.LENGTH_SHORT).show()
                     userAdapter.notifyDataSetChanged()
                 }
-                .subscribe()
+                .subscribe{campaignMemberList,error->
+
+                }.dispose()
         }
     }
 
@@ -161,7 +166,7 @@ class UserFragment : Fragment() {
     private fun fillDungeonMaster(campaignFromApi: Campaign?) {
         newArrayList.clear()
         val dmData =
-            campaignUsers(campaignFromApi?.owner.toString(), "Dungeon Master")
+            campaignUsers(campaignFromApi?.owner.toString(), "Game Master")
         newArrayList.add(dmData)
         userAdapter.notifyDataSetChanged()
     }

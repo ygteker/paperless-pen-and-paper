@@ -7,7 +7,8 @@
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="6dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -16,8 +17,8 @@
 
             <ImageView
                 android:id="@+id/rec_avatar"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 tools:srcCompat="@tools:sample/avatars"
                 android:layout_margin="6dp"/>
 
@@ -26,6 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/rec_avatar"
+                android:textSize="20sp"
                 android:text="Id:"
                 android:layout_margin="6dp"/>
 
@@ -34,6 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="empty"
+                android:textSize="20sp"
                 android:layout_toRightOf="@+id/static_user_id"
                 android:layout_margin="6dp"/>
 
@@ -42,6 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Character name:"
+                android:textSize="20sp"
                 android:layout_below="@+id/static_user_id"
                 android:layout_toRightOf="@+id/rec_avatar"
                 android:layout_margin="6dp"/>
@@ -49,6 +53,7 @@
                 android:id="@+id/rec_character_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="20sp"
                 android:text="empty"
                 android:layout_toRightOf="@+id/static_char_name"
                 android:layout_below="@+id/static_user_id"
