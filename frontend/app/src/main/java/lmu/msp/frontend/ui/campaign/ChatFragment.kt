@@ -112,6 +112,13 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
         viewModel.getChatMessages().observe(requireActivity(), {
             if (it.size > 0) {
                 Log.i("Personal message", "Personal message: ${it[it.size - 1].message}")
+                val newMessage = it[it.size - 1]
+                val messageToSubmit = newMessage.message?.let { it1 ->
+                    GeneralChatMessage(newMessage.senderId.toString(),
+                        it1, ChatType.PERSONAL)
+                }
+                chatMessagesAdapter.submitMessage(messageToSubmit!!)
+                chatView.scrollToPosition((chatMessagesAdapter.itemCount - 1))
             }
         })
     }
