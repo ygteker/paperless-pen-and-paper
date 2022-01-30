@@ -28,7 +28,7 @@ class CampaignActivity : AppCompatActivity() {
     private lateinit var auth: PAuthenticator
 
     private lateinit var user: User
-    private lateinit var campaignMembersFromApi: List<CampaignMember>
+    private var campaignMembersFromApi: List<CampaignMember> = emptyList()
     private var campaignId: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
