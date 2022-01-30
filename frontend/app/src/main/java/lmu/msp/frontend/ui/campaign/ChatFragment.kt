@@ -28,8 +28,6 @@ import lmu.msp.frontend.helpers.ChatMessagesAdapter
 import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
 import lmu.msp.frontend.models.websocket.ChatMessage
 import lmu.msp.frontend.models.websocket.GroupMessage
-import lmu.msp.frontend.models.websocket.MessageType
-import lmu.msp.frontend.viewmodels.CampaignActivityViewModel
 import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
 
 
@@ -45,9 +43,6 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
     private lateinit var memberApi: PenAndPaperApiInterface.CampaignMemberApi
     private lateinit var loggedInUser: User
     private lateinit var members: List<CampaignMember>
-    val sharedViewModel: CampaignActivityViewModel by activityViewModels()
-    private var campaignId: Long = 0
-
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -66,12 +61,11 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
         chatView.layoutManager = viewManager
         chatMessagesAdapter = ChatMessagesAdapter(MutableLiveData(), requireActivity())
         chatView.adapter = chatMessagesAdapter
-        campaignId = sharedViewModel.campaignId.value!!
         userApi = RetrofitProvider(requireContext()).getUserApi()
         memberApi = RetrofitProvider(requireContext()).getCampaignMemberApi()
 
         loggedInUser = (activity as CampaignActivity).getUser()
-        memebers = (activity as CampaignActivity).getCampaignMemberList()
+        members = (activity as CampaignActivity).getCampaignMemberList()
 
         binding.sendButton.setOnClickListener {
             val chatBox = binding.chatBox

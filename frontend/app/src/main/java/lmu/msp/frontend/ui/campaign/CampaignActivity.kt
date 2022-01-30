@@ -18,6 +18,7 @@ import lmu.msp.frontend.helpers.TokenManager
 import lmu.msp.frontend.helpers.auth0.PAuthenticator
 import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
 import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
+import okhttp3.internal.wait
 
 class CampaignActivity : AppCompatActivity() {
 
@@ -44,6 +45,7 @@ class CampaignActivity : AppCompatActivity() {
 
         auth = PAuthenticator(this, TokenManager(this))
         userApi = RetrofitProvider(applicationContext).getUserApi()
+        campaignMemberApi = RetrofitProvider(applicationContext).getCampaignMemberApi()
         fetchUser()
         fetchMembers()
 
@@ -90,6 +92,7 @@ class CampaignActivity : AppCompatActivity() {
     fun getUser(): User{
         return user
     }
+
     fun getCampaignMemberList(): List<CampaignMember>{
         return campaignMemberFromApi
     }
