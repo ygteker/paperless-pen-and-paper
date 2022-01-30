@@ -1,10 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--@author Valentin Scheibe-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.campaign.DiceFragment">
+    android:background="@color/independence"
+    tools:context=".ui.campaign.DiceFragment"
+    android:padding="12dp">
 
 
     <ScrollView
@@ -36,6 +38,7 @@
                         android:ems="10"
                         android:inputType="number"
                         android:text=""
+                        android:textColor="@color/isabelline"
                         tools:ignore="SpeakableTextPresentCheck" />
 
 
@@ -44,7 +47,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="d20" />
+                        android:text="d20"
+                        android:textColor="@color/isabelline" />
 
 
                 </LinearLayout>
@@ -58,21 +62,24 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Result:" />
+                        android:text="Result:"
+                        android:textColor="@color/isabelline" />
 
                     <TextView
                         android:id="@+id/resultD20"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="" />
+                        android:text=""
+                        android:textColor="@color/isabelline" />
                 </LinearLayout>
 
                 <Button
                     android:id="@+id/rollDiceButtonD20"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Roll Dice!"></Button>
+                    android:text="Roll Dice!"
+                    android:textColor="@color/isabelline" />
 
             </LinearLayout>
 
@@ -95,7 +102,8 @@
                         android:layout_weight="1"
                         android:ems="10"
                         android:inputType="number"
-                        android:text="" />
+                        android:text=""
+                        android:textColor="@color/isabelline" />
 
 
                     <TextView
@@ -103,7 +111,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="d12" />
+                        android:text="d12"
+                        android:textColor="@color/isabelline" />
 
 
                 </LinearLayout>
@@ -117,21 +126,24 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Result:" />
+                        android:text="Result:"
+                        android:textColor="@color/isabelline" />
 
                     <TextView
                         android:id="@+id/resultD12"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="" />
+                        android:text=""
+                        android:textColor="@color/isabelline" />
                 </LinearLayout>
 
                 <Button
                     android:id="@+id/rollDiceButtonD12"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Roll Dice!"></Button>
+                    android:text="Roll Dice!"
+                    android:textColor="@color/isabelline" />
 
             </LinearLayout>
 
@@ -154,7 +166,8 @@
                         android:layout_weight="1"
                         android:ems="10"
                         android:inputType="number"
-                        android:text="" />
+                        android:text=""
+                        android:textColor="@color/isabelline" />
 
 
                     <TextView
@@ -162,7 +175,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="d10" />
+                        android:text="d10"
+                        android:textColor="@color/isabelline" />
 
 
                 </LinearLayout>
@@ -176,21 +190,24 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Result:" />
+                        android:text="Result:"
+                        android:textColor="@color/isabelline" />
 
                     <TextView
                         android:id="@+id/resultD10"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="" />
+                        android:text=""
+                        android:textColor="@color/isabelline" />
                 </LinearLayout>
 
                 <Button
                     android:id="@+id/rollDiceButtonD10"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Roll Dice!"></Button>
+                    android:text="Roll Dice!"
+                    android:textColor="@color/isabelline" />
 
             </LinearLayout>
 
@@ -213,7 +230,8 @@
                         android:layout_weight="1"
                         android:ems="10"
                         android:inputType="number"
-                        android:text="" />
+                        android:text=""
+                        android:textColor="@color/isabelline" />
 
 
                     <TextView
@@ -221,7 +239,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="d8" />
+                        android:text="d8"
+                        android:textColor="@color/isabelline" />
 
 
                 </LinearLayout>
@@ -235,21 +254,24 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Result:" />
+                        android:text="Result:"
+                        android:textColor="@color/isabelline" />
 
                     <TextView
                         android:id="@+id/resultD8"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="" />
+                        android:text=""
+                        android:textColor="@color/isabelline" />
                 </LinearLayout>
 
                 <Button
                     android:id="@+id/rollDiceButtonD8"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Roll Dice!"></Button>
+                    android:text="Roll Dice!"
+                    android:textColor="@color/isabelline" />
 
             </LinearLayout>
 
@@ -272,7 +294,8 @@
                         android:layout_weight="1"
                         android:ems="10"
                         android:inputType="number"
-                        android:text="" />
+                        android:text=""
+                        android:textColor="@color/isabelline" />
 
 
                     <TextView
@@ -280,7 +303,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="d6" />
+                        android:text="d6"
+                        android:textColor="@color/isabelline" />
 
 
                 </LinearLayout>
@@ -294,21 +318,24 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Result:" />
+                        android:text="Result:"
+                        android:textColor="@color/isabelline" />
 
                     <TextView
                         android:id="@+id/resultD6"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="" />
+                        android:text=""
+                        android:textColor="@color/isabelline" />
                 </LinearLayout>
 
                 <Button
                     android:id="@+id/rollDiceButtonD6"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Roll Dice!"></Button>
+                    android:text="Roll Dice!"
+                    android:textColor="@color/isabelline" />
 
             </LinearLayout>
 
@@ -331,7 +358,8 @@
                         android:layout_weight="1"
                         android:ems="10"
                         android:inputType="number"
-                        android:text="" />
+                        android:text=""
+                        android:textColor="@color/isabelline" />
 
 
                     <TextView
@@ -339,7 +367,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="d4" />
+                        android:text="d4"
+                        android:textColor="@color/isabelline" />
 
 
                 </LinearLayout>
@@ -353,21 +382,23 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Result:" />
+                        android:text="Result:"
+                        android:textColor="@color/isabelline" />
 
                     <TextView
                         android:id="@+id/resultD4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="" />
+                        android:text=""
+                        android:textColor="@color/isabelline" />
                 </LinearLayout>
 
                 <Button
                     android:id="@+id/rollDiceButtonD4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Roll Dice!"></Button>
+                    android:text="Roll Dice!" />
 
             </LinearLayout>
 

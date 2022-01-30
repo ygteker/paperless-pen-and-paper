@@ -11,21 +11,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Frontend">
-
+        <activity
+            android:name=".diceRolling.DiceActivity"
+            android:exported="false"
+            android:parentActivityName=".HomeActivity"/>
         <activity
             android:name=".HomeActivity"
             android:exported="true"
             android:label="@string/title_activity_home"
-            android:screenOrientation="portrait">
-
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".ui.campaign.CampaignActivity"
             android:exported="true"
-            android:screenOrientation="portrait">
-
-        </activity>
-
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".LoginActivity"
             android:exported="true"
@@ -40,19 +38,13 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:screenOrientation="portrait">
-
-        </activity>
-
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".RegisterActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".ui.profile.MessagesActivity"
-            android:screenOrientation="portrait">
-
-        </activity>
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

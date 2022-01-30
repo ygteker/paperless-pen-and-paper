@@ -8,6 +8,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import lmu.msp.frontend.R
 
+/**
+ * @author Valentin Scheibe
+ */
+//TODO Avatar implementieren
 class UserAdapter(private val userList: ArrayList<campaignUsers>) :
     RecyclerView.Adapter<UserAdapter.ViewHolder>() {
 
@@ -30,7 +34,7 @@ class UserAdapter(private val userList: ArrayList<campaignUsers>) :
         val currentItem = userList[position]
         holder.rec_user_id.text = currentItem.userId
         holder.rec_character_name.text = currentItem.characterName
-
+        holder.rec_avatar.setImageResource(R.drawable.logo)
     }
 
     override fun getItemCount(): Int {

@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.jakewharton.retrofit2.adapter.rxjava2.HttpException
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.plugins.RxJavaPlugins
@@ -17,12 +18,22 @@ import io.reactivex.schedulers.Schedulers
 import lmu.msp.frontend.viewmodels.UserViewModel
 import lmu.msp.frontend.R
 import lmu.msp.frontend.api.PenAndPaperApiInterface
+import lmu.msp.frontend.diceRolling.DiceFragmentAnimated
 import lmu.msp.frontend.helpers.TokenManager
 import lmu.msp.frontend.helpers.auth0.PAuthenticator
 import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
 import okhttp3.RequestBody.Companion.toRequestBody
 import timber.log.Timber
+import android.app.Activity
+import android.content.Intent
+import androidx.fragment.app.FragmentManager
+import lmu.msp.frontend.diceRolling.DiceActivity
+import lmu.msp.frontend.ui.campaign.CampaignActivity
 
+
+/**
+ * @author Valentin Scheibe
+ */
 class HomeFragment : Fragment() {
     companion object {
         private const val TAG = "HomeFragment"
@@ -31,6 +42,7 @@ class HomeFragment : Fragment() {
     private lateinit var joinCampaignButton: Button
     private lateinit var createCampaignButton: Button
     private lateinit var deleteCampaignButton: Button
+    private lateinit var navigateToRollDiceButton:Button
     private lateinit var joinCampaignEditText: EditText
     private lateinit var joinCampaignCharacterText: EditText
     private lateinit var createCampaignEditText: EditText
@@ -51,11 +63,10 @@ class HomeFragment : Fragment() {
 
         findViews(view)
 
-        RxJavaPlugins.setErrorHandler { it.printStackTrace() }
-
         joinCampaignButton.setOnClickListener { joinCampaign() }
         createCampaignButton.setOnClickListener { createCampaign() }
         deleteCampaignButton.setOnClickListener { deleteCampaign() }
+        navigateToRollDiceButton.setOnClickListener { loadDiceFragment(view) }
 
         auth = PAuthenticator(view.context, TokenManager(view.context))
         campaignApi = RetrofitProvider(view.context).getCampaignApi()
@@ -64,10 +75,16 @@ class HomeFragment : Fragment() {
         return view
     }
 
+    private fun loadDiceFragment(view: View) {
+        val intent = Intent(view.context, DiceActivity::class.java)
+        view.context.startActivity(intent)
+    }
+
     private fun findViews(view: View) {
         joinCampaignButton = view.findViewById(R.id.joinCampaignButton)
         createCampaignButton = view.findViewById(R.id.createCampaignButton)
         deleteCampaignButton = view.findViewById(R.id.deleteCampaignButton)
+        navigateToRollDiceButton = view.findViewById(R.id.navigateToRollDiceButton)
         joinCampaignEditText = view.findViewById(R.id.joinCampaignEditText)
         joinCampaignCharacterText = view.findViewById(R.id.joinCampaignCharacterText)
         createCampaignEditText = view.findViewById(R.id.createCampaignEditText)
@@ -83,14 +100,30 @@ class HomeFragment : Fragment() {
             ).show()
             deleteCampaignEditText.setError("Must not be empty!")
         } else {
-            campaignApi.deleteCampaign(deleteCampaignEditText.text.toString().toLong())
+            disposables.add(campaignApi.deleteCampaign(
+                deleteCampaignEditText.text.toString().toLong()
+            )
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess {
                     Toast.makeText(context, "Deleted Campaign", Toast.LENGTH_SHORT).show()
+                    deleteCampaignEditText.text.clear()
                 }
-                .subscribe()
-            //TODO ERROR HANDLING
+                .subscribe { campaignMembers, error ->
+                    if (error != null) {
+                        val httpException: HttpException = error as HttpException
+                        when (httpException.code()) {
+                            404 -> Toast.makeText(context, "404 Not Found", Toast.LENGTH_SHORT)
+                                .show()
+                            401 -> Toast.makeText(
+                                context,
+                                "401 Unauthorized",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } else {
+                    }
+                })
         }
     }
 
@@ -103,16 +136,31 @@ class HomeFragment : Fragment() {
             ).show()
             createCampaignEditText.setError("Must not be empty!")
         } else {
-            campaignApi.createCampaign(createCampaignEditText.text.toString().toRequestBody())
+            disposables.add(campaignApi.createCampaign(
+                createCampaignEditText.text.toString().toRequestBody()
+            )
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess {
                     Toast.makeText(context, "Created Campaign", Toast.LENGTH_SHORT).show()
-                    Log.d(TAG, createCampaignEditText.text.toString())
+                    createCampaignEditText.text.clear()
                 }
 
-                .subscribe()
-            //TODO Error Handling
+                .subscribe { campaignMembers, error ->
+                    if (error != null) {
+                        val httpException: HttpException = error as HttpException
+                        when (httpException.code()) {
+                            404 -> Toast.makeText(context, "404 Not Found", Toast.LENGTH_SHORT)
+                                .show()
+                            401 -> Toast.makeText(
+                                context,
+                                "401 Unauthorized",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } else {
+                    }
+                })
         }
     }
 
@@ -143,10 +191,23 @@ class HomeFragment : Fragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess {
                     Toast.makeText(context, "Join Campaign Success", Toast.LENGTH_SHORT).show()
+                    joinCampaignEditText.text.clear()
+                    joinCampaignCharacterText.text.clear()
                 }
                 .subscribe { campaignMembers, error ->
-                    error.printStackTrace()
-                    //TODO ERROR HANDLING
+                    if (error == null) {
+                    } else {
+                        val httpException: HttpException = error as HttpException
+                        when (httpException.code()) {
+                            404 -> Toast.makeText(context, "404 Not Found", Toast.LENGTH_SHORT)
+                                .show()
+                            401 -> Toast.makeText(
+                                context,
+                                "401 Unauthorized",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
                 })
         }
     }

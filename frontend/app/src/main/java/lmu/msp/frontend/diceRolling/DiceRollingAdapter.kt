@@ -7,7 +7,9 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import lmu.msp.frontend.R
 import lmu.msp.frontend.ui.campaign.campaigns
-
+/**
+ * @author Valentin Scheibe
+ */
 class DiceRollingAdapter(private val diceList: ArrayList<diceData>) :
     RecyclerView.Adapter<DiceRollingAdapter.ViewHolder>() {
 

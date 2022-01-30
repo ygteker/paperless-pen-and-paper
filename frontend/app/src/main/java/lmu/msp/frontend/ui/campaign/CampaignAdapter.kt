@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.imageview.ShapeableImageView
 import lmu.msp.frontend.R
 
-
+/**
+ * @author Valentin Scheibe
+ */
 class CampaignAdapter(private val campaignList: ArrayList<campaigns>) :
     RecyclerView.Adapter<CampaignAdapter.CampaignViewHolder>() {
 
