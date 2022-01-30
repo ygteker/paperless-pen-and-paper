@@ -69,28 +69,9 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
         campaignId = sharedViewModel.campaignId.value!!
         userApi = RetrofitProvider(requireContext()).getUserApi()
         memberApi = RetrofitProvider(requireContext()).getCampaignMemberApi()
-        userApi.getUser()
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnError {
-                Log.e(ContentValues.TAG, "error ${it.message}")
-            }
-            .doOnSuccess {
-                loggedInUser = it
 
-            }
-            .subscribe()
-
-        memberApi.getMembers(campaignId)
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnError {
-                Log.e(ContentValues.TAG, "error ${it.message}")
-            }
-            .doOnSuccess {
-                members = it
-            }
-            .subscribe()
+        loggedInUser = (activity as CampaignActivity).getUser()
+        memebers = (activity as CampaignActivity).getCampaignMemberList()
 
         binding.sendButton.setOnClickListener {
             val chatBox = binding.chatBox
@@ -110,7 +91,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
                 val newMessage = it[it.size - 1]
 //                Log.i("loggedInUser", loggedInUser.toString())
                 val messageToSubmit = GeneralChatMessage(newMessage.senderId.toString(), newMessage.message, ChatType.GROUP, false)
-                if (newMessage.senderId == loggedInUser.id) {
+                if (newMessage.senderId.toInt() == loggedInUser.id) {
                     messageToSubmit.self = true
                 }
                 chatMessagesAdapter.submitMessage(messageToSubmit)
@@ -143,14 +124,14 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
             val charName = message.split(" ")[0].removePrefix("@")
             for (user in members) {
                 if (user.equals(charName)) {
-                    viewModel.sendChatMessage(ChatMessage(message, user.id.toInt(), loggedInUser.id.toInt()))
+                    viewModel.sendChatMessage(ChatMessage(message, user.id.toInt(), loggedInUser.id))
                 } else {
                     Toast.makeText(requireContext(), "USER NOT FOUND", Toast.LENGTH_LONG).show()
                 }
             }
 
         } else {
-           viewModel.sendGroupMessage(GroupMessage(loggedInUser.id, message))
+           viewModel.sendGroupMessage(GroupMessage(loggedInUser.id.toLong(), message))
         }
 
     }
