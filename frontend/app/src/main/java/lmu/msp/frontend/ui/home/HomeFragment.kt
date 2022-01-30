@@ -3,37 +3,31 @@ package lmu.msp.frontend.ui.home
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
-import lmu.msp.frontend.HomeActivity
 import lmu.msp.frontend.viewmodels.UserViewModel
 import lmu.msp.frontend.R
 import lmu.msp.frontend.api.PenAndPaperApiInterface
-import lmu.msp.frontend.api.model.User
 import lmu.msp.frontend.helpers.TokenManager
 import lmu.msp.frontend.helpers.auth0.PAuthenticator
 import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
 import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.HttpException
+import timber.log.Timber
 
 class HomeFragment : Fragment() {
     companion object {
         private const val TAG = "HomeFragment"
     }
 
-    val sharedViewModel: UserViewModel by activityViewModels()
     private lateinit var joinCampaignButton: Button
     private lateinit var createCampaignButton: Button
     private lateinit var deleteCampaignButton: Button
@@ -41,6 +35,7 @@ class HomeFragment : Fragment() {
     private lateinit var joinCampaignCharacterText: EditText
     private lateinit var createCampaignEditText: EditText
     private lateinit var deleteCampaignEditText: EditText
+    private val disposables = CompositeDisposable()
 
     private lateinit var campaignApi: PenAndPaperApiInterface.CampaignApi
     private lateinit var inviteCampaignApi: PenAndPaperApiInterface.InviteCampaignApi
@@ -56,6 +51,8 @@ class HomeFragment : Fragment() {
 
         findViews(view)
 
+        RxJavaPlugins.setErrorHandler { it.printStackTrace() }
+
         joinCampaignButton.setOnClickListener { joinCampaign() }
         createCampaignButton.setOnClickListener { createCampaign() }
         deleteCampaignButton.setOnClickListener { deleteCampaign() }
@@ -64,10 +61,7 @@ class HomeFragment : Fragment() {
         campaignApi = RetrofitProvider(view.context).getCampaignApi()
         inviteCampaignApi = RetrofitProvider(view.context).getInviteCampaignApi()
 
-        //viewModel.getUser().observe(viewLifecycleOwner, { Log.i(TAG, "new user ${it.id}") })
-
         return view
-
     }
 
     private fun findViews(view: View) {
@@ -100,6 +94,7 @@ class HomeFragment : Fragment() {
                     Toast.makeText(context, "Deleted Campaign", Toast.LENGTH_SHORT).show()
                 }
                 .subscribe()
+
         }
     }
 
@@ -123,6 +118,7 @@ class HomeFragment : Fragment() {
                     Toast.makeText(context, "Created Campaign", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, createCampaignEditText.text.toString())
                 }
+
                 .subscribe()
         }
     }
@@ -146,31 +142,24 @@ class HomeFragment : Fragment() {
                 ).show()
             }
         } else {
-            inviteCampaignApi.acceptInvite(
+            disposables.add(inviteCampaignApi.acceptInvite(
                 joinCampaignEditText.text.toString().toLong(),
                 joinCampaignCharacterText.text.toString()
             )
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError {
-                    try {
-
-                    } catch (it: HttpException) {
-                        Log.e(TAG, "error ${it.message}")
-                    }
-
-                }
                 .doOnSuccess {
                     Toast.makeText(context, "Join Campaign Success", Toast.LENGTH_SHORT).show()
                 }
-                .subscribe()
+                .subscribe { campaignMembers, error ->
+                    error.printStackTrace()
+                    //TODO ERROR HANDLING
+                })
         }
     }
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onDestroy() {
+        super.onDestroy()
+        disposables.dispose()
     }
-
-
 }

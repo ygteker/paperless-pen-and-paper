@@ -41,11 +41,15 @@ class ToolsFragment : Fragment() {
         toolsList.adapter = arrayAdapter
         toolsList.setOnItemClickListener { _, view, position, id ->
             val fragmentManager = parentFragmentManager.beginTransaction()
+            val chatFragment = ChatFragment()
+            val bundle = this.arguments
+            chatFragment!!.arguments = bundle
             when (position) {
                 0 -> fragmentManager.replace(R.id.fragment, MapFragment()).addToBackStack(null)
                 1 -> fragmentManager.replace(R.id.fragment, DiceFragment()).addToBackStack(null)
-                2 -> fragmentManager.replace(R.id.fragment, ChatFragment()).addToBackStack(null)
-                3 -> fragmentManager.replace(R.id.fragment, DiceFragmentAnimated()).addToBackStack(null)
+                2 -> fragmentManager.replace(R.id.fragment, chatFragment).addToBackStack(null)
+                3 -> fragmentManager.replace(R.id.fragment, DiceFragmentAnimated())
+                    .addToBackStack(null)
                 4 -> fragmentManager.replace(R.id.fragment, UserFragment())
                     .addToBackStack(null)
             }

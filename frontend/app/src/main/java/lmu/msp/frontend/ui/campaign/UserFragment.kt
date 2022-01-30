@@ -1,7 +1,6 @@
 package lmu.msp.frontend.ui.campaign
 
 import android.content.ContentValues
-import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,13 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import lmu.msp.frontend.R
 import lmu.msp.frontend.api.PenAndPaperApiInterface
@@ -24,7 +22,6 @@ import lmu.msp.frontend.api.model.CampaignMember
 import lmu.msp.frontend.helpers.TokenManager
 import lmu.msp.frontend.helpers.auth0.PAuthenticator
 import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
-import lmu.msp.frontend.viewmodels.CampaignActivityViewModel
 
 class UserFragment : Fragment() {
 
@@ -44,7 +41,6 @@ class UserFragment : Fragment() {
     private lateinit var campaignMemberApi: PenAndPaperApiInterface.CampaignMemberApi
     private lateinit var auth: PAuthenticator
 
-    val sharedViewModel: CampaignActivityViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,6 +48,8 @@ class UserFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_user_list, container, false)
+
+        RxJavaPlugins.setErrorHandler{it.printStackTrace()}
 
         editText_CharacterName = view.findViewById(R.id.editText_CharacterName)
         editText_DeleteUser = view.findViewById(R.id.editText_DeleteUser)
@@ -72,7 +70,7 @@ class UserFragment : Fragment() {
         userAdapter = UserAdapter(newArrayList)
         newRecyclerView.adapter = userAdapter
 
-        campaignId = sharedViewModel.campaignId.value!!
+        campaignId = (activity as CampaignActivity).getCampaignId()
 
         fetchMembers()
 
@@ -118,13 +116,15 @@ class UserFragment : Fragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError {
                     Log.e(ContentValues.TAG, "error ${it.message}")
-                    //TODO ERROR HANDLING
+
                 }
                 .doOnSuccess {
                     Toast.makeText(context, "Changed Character Name ", Toast.LENGTH_SHORT).show()
                     userAdapter.notifyDataSetChanged()
                 }
-                .subscribe()
+                .subscribe{campaignMemberList,error->
+
+                }.dispose()
         }
     }
 
@@ -166,7 +166,7 @@ class UserFragment : Fragment() {
     private fun fillDungeonMaster(campaignFromApi: Campaign?) {
         newArrayList.clear()
         val dmData =
-            campaignUsers(campaignFromApi?.owner.toString(), "Dungeon Master")
+            campaignUsers(campaignFromApi?.owner.toString(), "Game Master")
         newArrayList.add(dmData)
         userAdapter.notifyDataSetChanged()
     }
