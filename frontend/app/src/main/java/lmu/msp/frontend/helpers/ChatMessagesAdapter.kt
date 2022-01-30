@@ -1,5 +1,6 @@
 package lmu.msp.frontend.helpers
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,7 +52,15 @@ class ChatMessagesAdapter (private val messages: MutableLiveData<MutableList<Gen
     }
 
     fun submitMessageList(newMessages: List<GeneralChatMessage>) {
+        Log.i("Submit", "Element submitted")
+        liveDataListClear(messages)
         liveDataListAddElementList(newMessages, messages)
+        notifyDataSetChanged()
+    }
+
+    fun submitMessage(newMessage: GeneralChatMessage) {
+        liveDataListClear(messages)
+        liveDataListAddElement(newMessage, messages)
         notifyDataSetChanged()
     }
 }

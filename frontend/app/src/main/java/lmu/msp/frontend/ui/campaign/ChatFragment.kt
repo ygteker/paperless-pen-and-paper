@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -26,6 +28,8 @@ import lmu.msp.frontend.helpers.ChatMessagesAdapter
 import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
 import lmu.msp.frontend.models.websocket.ChatMessage
 import lmu.msp.frontend.models.websocket.GroupMessage
+import lmu.msp.frontend.models.websocket.MessageType
+import lmu.msp.frontend.viewmodels.CampaignActivityViewModel
 import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
 
 
@@ -41,7 +45,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
     private lateinit var memberApi: PenAndPaperApiInterface.CampaignMemberApi
     private lateinit var loggedInUser: User
     private lateinit var members: List<CampaignMember>
-    private lateinit var campaignApi: PenAndPaperApiInterface.CampaignApi
+    val sharedViewModel: CampaignActivityViewModel by activityViewModels()
+    private var campaignId: Long = 0
 
 
     override fun onAttach(context: Context) {
@@ -57,10 +62,11 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
         _binding = FragmentChatBinding.inflate(inflater, container, false)
         chatView = binding.chatView
         viewManager = LinearLayoutManager(requireActivity())
-        viewManager.stackFromEnd = true
+        viewManager.isSmoothScrollbarEnabled = true
         chatView.layoutManager = viewManager
         chatMessagesAdapter = ChatMessagesAdapter(MutableLiveData(), requireActivity())
         chatView.adapter = chatMessagesAdapter
+        campaignId = sharedViewModel.campaignId.value!!
         userApi = RetrofitProvider(requireContext()).getUserApi()
         memberApi = RetrofitProvider(requireContext()).getCampaignMemberApi()
         userApi.getUser()
@@ -74,7 +80,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
             }
             .subscribe()
 
-        memberApi.getMembers(16)
+        memberApi.getMembers(campaignId)
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnError {
@@ -94,16 +100,18 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
 
     private fun observeData() {
         viewModel.getGroupMessages().observe(requireActivity(), Observer{
-            val newMessages: MutableList<GeneralChatMessage> = mutableListOf()
-            for (newMessage in it) {
-                newMessages.add(GeneralChatMessage(newMessage.senderId.toString(), newMessage.message, ChatType.GROUP))
+            if (it.size > 0) {
+                Log.i("Group message", "Group message: ${it[it.size - 1].message}")
+                val newMessage = it[it.size - 1]
+                val messageToSubmit = GeneralChatMessage(newMessage.senderId.toString(), newMessage.message, ChatType.GROUP)
+                chatMessagesAdapter.submitMessage(messageToSubmit)
+                chatView.scrollToPosition(chatMessagesAdapter.itemCount - 1)
             }
         })
 
         viewModel.getChatMessages().observe(requireActivity(), {
-            val newMessages: MutableList<GeneralChatMessage> = mutableListOf()
-            for (newMessage in it) {
-                newMessages.add(GeneralChatMessage(newMessage.senderId.toString(), newMessage.message!!, ChatType.PERSONAL))
+            if (it.size > 0) {
+                Log.i("Personal message", "Personal message: ${it[it.size - 1].message}")
             }
         })
     }
@@ -112,7 +120,13 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
         val  regex = "^@\\w+".toRegex()
         if (regex.containsMatchIn(message)) {
             val charName = message.split(" ")[0].removePrefix("@")
-            Log.i("CharName", charName)
+            for (user in members) {
+                if (user.equals(charName)) {
+                    viewModel.sendChatMessage(ChatMessage(message, user.id.toInt(), loggedInUser.id.toInt()))
+                } else {
+                    Toast.makeText(requireContext(), "USER NOT FOUND", Toast.LENGTH_LONG).show()
+                }
+            }
 
         } else {
            viewModel.sendGroupMessage(GroupMessage(loggedInUser.id, message))

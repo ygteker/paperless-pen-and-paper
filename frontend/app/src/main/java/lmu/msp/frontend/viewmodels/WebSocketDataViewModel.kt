@@ -80,12 +80,12 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
     }
 
     fun sendChatMessage(chatMessage: ChatMessage) {
-        liveDataListAddElement(chatMessage, chatMessages)
+//        liveDataListAddElement(chatMessage, chatMessages)
         webSocket?.send(gson.toJson(BasicMessage(MessageType.CHAT_MESSAGE, listOf(chatMessage))))
     }
 
     fun sendGroupMessage(groupMessage: GroupMessage) {
-        liveDataListAddElement(groupMessage, groupMessages)
+//        liveDataListAddElement(groupMessage, groupMessages)
         webSocket?.send(
             gson.toJson(
                 BasicMessage(
