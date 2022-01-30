@@ -155,7 +155,6 @@ class UserFragment : Fragment() {
     }
 
     private fun fillDungeonMaster(campaignFromApi: Campaign?) {
-        newArrayList.clear()
         val dmData =
             campaignUsers(campaignFromApi?.owner.toString(), "Game Master")
         newArrayList.add(dmData)
