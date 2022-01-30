@@ -1,44 +1,46 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--@author Valentin Scheibe-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/independence"
+    android:id="@+id/animatedDiceContainer"
     android:padding="12dp">
 
 
     <LinearLayout
+        android:id="@+id/Linear1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:id="@+id/Linear1"
-        >
+        android:orientation="vertical">
 
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rollDiceRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                >
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rollDiceRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-            </androidx.recyclerview.widget.RecyclerView>
-
+        </androidx.recyclerview.widget.RecyclerView>
 
 
         <LinearLayout
             android:id="@+id/Linear2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
+
 
             <TextView
                 android:id="@+id/resultTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Result: "
+                android:textColor="@color/isabelline"
                 android:textSize="20sp"
                 android:textStyle="bold" />
+
+
 
             <LinearLayout
                 android:id="@+id/layoutD4D6D8"
@@ -115,6 +117,15 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/removeAllDiceButton"
+                style="@style/diceButtons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:textSize="20sp"
+                android:text="Remove All Dice" />
+
+            <Button
                 android:id="@+id/rollDiceButtonAll"
                 style="@style/diceButtons"
                 android:layout_width="match_parent"
@@ -123,6 +134,7 @@
                 android:layout_marginTop="6dp"
                 android:layout_marginEnd="6dp"
                 android:layout_marginBottom="6dp"
+                android:textStyle="bold"
                 android:text="Roll Dice!"
                 android:textSize="30sp" />
 

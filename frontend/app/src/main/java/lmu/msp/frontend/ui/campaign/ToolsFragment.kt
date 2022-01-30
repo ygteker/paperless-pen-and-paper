@@ -32,22 +32,19 @@ class ToolsFragment : Fragment() {
         val floatingActionButton = binding.inviteFriendFAB
         val arrayList = ArrayList<String>()
         arrayList.add("Map")
-        arrayList.add("Roll Dice")
+        arrayList.add("Mass Roll Dice")
         arrayList.add("Chat")
-        arrayList.add("Roll Animated Dice")
+        arrayList.add("Roll Mixed Dice")
         arrayList.add("User List")
         val arrayAdapter =
             ArrayAdapter(view.context, android.R.layout.simple_list_item_1, arrayList)
         toolsList.adapter = arrayAdapter
         toolsList.setOnItemClickListener { _, view, position, id ->
             val fragmentManager = parentFragmentManager.beginTransaction()
-            val chatFragment = ChatFragment()
-            val bundle = this.arguments
-            chatFragment!!.arguments = bundle
             when (position) {
                 0 -> fragmentManager.replace(R.id.fragment, MapFragment()).addToBackStack(null)
                 1 -> fragmentManager.replace(R.id.fragment, DiceFragment()).addToBackStack(null)
-                2 -> fragmentManager.replace(R.id.fragment, chatFragment).addToBackStack(null)
+                2 -> fragmentManager.replace(R.id.fragment, ChatFragment()).addToBackStack(null)
                 3 -> fragmentManager.replace(R.id.fragment, DiceFragmentAnimated())
                     .addToBackStack(null)
                 4 -> fragmentManager.replace(R.id.fragment, UserFragment())

@@ -12,7 +12,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.jakewharton.retrofit2.adapter.rxjava2.HttpException
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import lmu.msp.frontend.R
@@ -23,8 +25,11 @@ import lmu.msp.frontend.helpers.TokenManager
 import lmu.msp.frontend.helpers.auth0.PAuthenticator
 import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
 
-class UserFragment : Fragment() {
 
+/**
+ * @author Valentin Scheibe
+ */
+class UserFragment : Fragment() {
 
     private lateinit var editText_CharacterName: EditText
     private lateinit var editText_DeleteUser: EditText
@@ -40,6 +45,7 @@ class UserFragment : Fragment() {
     private lateinit var campaignApi: PenAndPaperApiInterface.CampaignApi
     private lateinit var campaignMemberApi: PenAndPaperApiInterface.CampaignMemberApi
     private lateinit var auth: PAuthenticator
+    private val disposables = CompositeDisposable()
 
 
     override fun onCreateView(
@@ -48,8 +54,6 @@ class UserFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_user_list, container, false)
-
-        RxJavaPlugins.setErrorHandler { it.printStackTrace() }
 
         editText_CharacterName = view.findViewById(R.id.editText_CharacterName)
         editText_DeleteUser = view.findViewById(R.id.editText_DeleteUser)
@@ -86,16 +90,37 @@ class UserFragment : Fragment() {
             ).show()
             editText_DeleteUser.setError("Must not be empty!")
         } else {
-            campaignMemberApi.removeMember(campaignId, editText_DeleteUser.text.toString().toLong())
+            disposables.add(campaignMemberApi.removeMember(
+                campaignId,
+                editText_DeleteUser.text.toString().toLong()
+            )
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess {
-                    Toast.makeText(context, "Removed user from the campaign!", Toast.LENGTH_SHORT)
+                    Toast.makeText(
+                        context,
+                        "Removed user from the campaign!",
+                        Toast.LENGTH_SHORT
+                    )
                         .show()
                     userAdapter.notifyDataSetChanged()
+                    editText_DeleteUser.text.clear()
                 }
-                .subscribe()
-            //TODO ERROR HANDLING
+                .subscribe { reply, error ->
+                    if (error != null) {
+                        val httpException: HttpException = error as HttpException
+                        when (httpException.code()) {
+                            404 -> Toast.makeText(context, "404 Not Found", Toast.LENGTH_SHORT)
+                                .show()
+                            401 -> Toast.makeText(
+                                context,
+                                "401 Unauthorized",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } else {
+                    }
+                })
         }
     }
 
@@ -108,20 +133,32 @@ class UserFragment : Fragment() {
             ).show()
             editText_CharacterName.setError("Must not be empty!")
         } else {
-            campaignMemberApi.updateMember(campaignId, editText_CharacterName.text.toString())
+            disposables.add(campaignMemberApi.updateMember(
+                campaignId,
+                editText_CharacterName.text.toString()
+            )
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError {
-                    Log.e(ContentValues.TAG, "error ${it.message}")
-
-                }
                 .doOnSuccess {
                     Toast.makeText(context, "Changed Character Name ", Toast.LENGTH_SHORT).show()
+                    editText_CharacterName.text.clear()
                     userAdapter.notifyDataSetChanged()
                 }
-                .subscribe { campaignMemberList, error ->
-                    //TODO ERRORHANDLING
-                }.dispose()
+                .subscribe { campaignMembers, error ->
+                    if (error != null) {
+                        val httpException: HttpException = error as HttpException
+                        when (httpException.code()) {
+                            404 -> Toast.makeText(context, "404 Not Found", Toast.LENGTH_SHORT)
+                                .show()
+                            401 -> Toast.makeText(
+                                context,
+                                "401 Unauthorized",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } else {
+                    }
+                })
         }
     }
 
@@ -129,29 +166,45 @@ class UserFragment : Fragment() {
         var campaignMemberFromApi: List<CampaignMember>
         var campaignFromApi: Campaign
 
-        campaignApi.getCampaign(campaignId)
+        disposables.add(campaignApi.getCampaign(campaignId)
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSuccess {
                 campaignFromApi = it
                 fillDungeonMaster(campaignFromApi)
             }
-            .subscribe()
-        //TODO ERROR HANDLING
+            .subscribe { campaignMembers, error ->
+                if (error != null) {
+                    val httpException: HttpException = error as HttpException
+                    when (httpException.code()) {
+                        404 -> Toast.makeText(context, "404 Not Found", Toast.LENGTH_SHORT).show()
+                        401 -> Toast.makeText(context, "401 Unauthorized", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                } else {
+                }
+            })
 
-        campaignMemberApi.getMembers(campaignId)
+        disposables.add(campaignMemberApi.getMembers(campaignId)
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSuccess {
-
                 campaignMemberFromApi = it
                 if (campaignMemberFromApi.isNotEmpty()) {
                     fillUsers(campaignMemberFromApi)
                 }
-
             }
-            .subscribe()
-        //TODO ERROR HANDLING
+            .subscribe { campaignMembers, error ->
+                if (error != null) {
+                    val httpException: HttpException = error as HttpException
+                    when (httpException.code()) {
+                        404 -> Toast.makeText(context, "404 Not Found", Toast.LENGTH_SHORT).show()
+                        401 -> Toast.makeText(context, "401 Unauthorized", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                } else {
+                }
+            })
     }
 
     private fun fillDungeonMaster(campaignFromApi: Campaign?) {
@@ -175,4 +228,10 @@ class UserFragment : Fragment() {
         }
         userAdapter.notifyDataSetChanged()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        disposables.dispose()
+    }
+
 }

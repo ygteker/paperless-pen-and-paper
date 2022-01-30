@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import lmu.msp.frontend.R
 
-
+/**
+ * @author Valentin Scheibe
+ */
 class QRFragment : Fragment() {
 
     private lateinit var TextViewQRCampaignId: TextView

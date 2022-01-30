@@ -12,7 +12,9 @@ import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import kotlin.random.Random
 
-
+/**
+ * @author Valentin Scheibe
+ */
 class DiceFragment : Fragment() {
     private lateinit var rollButtonD20: Button
     private lateinit var resultTextD20: TextView
