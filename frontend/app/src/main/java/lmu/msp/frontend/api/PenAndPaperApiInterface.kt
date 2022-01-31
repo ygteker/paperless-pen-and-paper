@@ -57,7 +57,7 @@ interface PenAndPaperApiInterface {
         fun updateMember(
             @Query(PARAMETER_CAMPAIGN_ID) campaignId: Long,
             @Query(PARAMETER_NAME) name: String
-        ): Single<List<CampaignMember>>
+        ): Single<CampaignMember>
 
         @DELETE(PATH_MEMBER)
         fun removeMember(
