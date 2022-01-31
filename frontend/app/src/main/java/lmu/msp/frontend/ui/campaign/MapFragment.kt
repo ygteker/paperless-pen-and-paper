@@ -35,7 +35,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
         val view = binding.root
         val relativeLayout = binding.canvasLayout
