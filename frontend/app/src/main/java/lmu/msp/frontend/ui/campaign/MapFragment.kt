@@ -1,5 +1,6 @@
 package lmu.msp.frontend.ui.campaign
 
+import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Context
@@ -18,10 +19,13 @@ import lmu.msp.frontend.R
 import lmu.msp.frontend.databinding.FragmentMapBinding
 import lmu.msp.frontend.models.websocket.DrawMessage
 import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
-import permissions.dispatcher.*
 import java.io.ByteArrayOutputStream
 
-@RuntimePermissions
+
+/**
+ * Fragment which provides the functionality to draw on a synchronized canvas with a shared
+ * background image
+ */
 class MapFragment : Fragment(R.layout.fragment_map) {
 
     lateinit var viewModel: WebSocketDataViewModel
@@ -35,25 +39,24 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
         val view = binding.root
         val relativeLayout = binding.canvasLayout
-        val canvas_bg = binding.canvasBg
         val myCanvasView = MyCanvasView(view.context)
         relativeLayout.addView(myCanvasView)
         val delete = binding.delete
         val drawColor = binding.color
         val background = binding.background
+
+        //delete canvas button
         delete.setOnClickListener {
             myCanvasView.resetCanvasDrawing()
             viewModel.sendDrawMessageClear()
         }
 
+        //background image button
         background.setOnClickListener {
             pickBackgroundPicture()
-
         }
 
-        viewModel = ViewModelProvider(requireActivity()).get(WebSocketDataViewModel::class.java)
-
-
+        //color pick button
         drawColor.setOnClickListener(View.OnClickListener {
             val popupMenu = PopupMenu(view.context, drawColor)
 
@@ -92,13 +95,17 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             popupMenu.show()
         })
 
+        //logic to observe incoming draw messages
+        viewModel = ViewModelProvider(requireActivity()).get(WebSocketDataViewModel::class.java)
+
+        //receive message to clear canvas
         viewModel.getDrawCanvasClear().observe(viewLifecycleOwner, {
             if (it) {
                 myCanvasView.resetCanvasDrawing()
                 viewModel.getDrawCanvasClear().postValue(false)
             }
         })
-
+        //receive message to draw paths
         viewModel.getDrawMessages().value?.forEach {
             myCanvasView.drawFromServer(
                 DrawObject(
@@ -110,7 +117,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 )
             )
         }
-
+        //receive message to change background image
         viewModel.getDrawImage().observe(viewLifecycleOwner, {
             if (it.imageBase64.isNotEmpty()) {
                 val byteArray = it.getByteArray()
@@ -142,8 +149,10 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         return view
     }
 
-    @NeedsPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-    fun pickBackgroundPicture() {
+    /**
+     * Starts the ImagePicker for the background image
+     */
+    private fun pickBackgroundPicture() {
         ImagePicker.with(this)
             .crop()                    //Crop image(Optional), Check Customization for more option
             .compress(1024)            //Final image size will be less than 1 MB(Optional)
@@ -155,6 +164,10 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             .start()
     }
 
+    /**
+     * Executed after picking a background image, replaces the current image with the new one and
+     * sends it via websockets to synchronize the image
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
@@ -176,26 +189,25 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     }
 
 
-    private fun showRationaleDialog(@StringRes messageResId: Int, request: PermissionRequest) {
-        AlertDialog.Builder(context)
-            .setPositiveButton(R.string.button_allow) { _, _ -> request.proceed() }
-            .setNegativeButton(R.string.button_deny) { _, _ -> request.cancel() }
-            .setCancelable(false)
-            .setMessage(messageResId)
-            .show()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
+    /**
+     * The custom canvas to draw on and the logic behind sending and receiving draw data
+     */
     private inner class MyCanvasView(context: Context) : View(context) {
         private var extraCanvas: Canvas? = null
         private var path = Path()
         private var allStrokes = ArrayList<Stroke>()
         private var standardStrokeWidth = 12f
         private var currentColor = Color.BLACK
+        private var motionTouchEventX = 0f
+        private var motionTouchEventY = 0f
+        private var currentX = 0f
+        private var currentY = 0f
+        private val touchTolerance = 30
 
 
         private var paint = Paint().apply {
@@ -208,18 +220,14 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             color = currentColor
         }
 
-        private var motionTouchEventX = 0f
-        private var motionTouchEventY = 0f
-        private var currentX = 0f
-        private var currentY = 0f
-        private val touchTolerance = 30
-
         override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
             super.onSizeChanged(width, height, oldWidth, oldHeight)
             extraCanvas = Canvas()
-
         }
 
+        /**
+         * Redraws the canvas with all saved Strokes everytime invalidate() is used
+         */
         override fun onDraw(canvas: Canvas) {
             super.onDraw(canvas)
             for (s: Stroke in allStrokes) {
@@ -228,6 +236,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             canvas.drawPath(path, paint)
         }
 
+        /**
+         * Registers a touch event and executes a method based on the touch action
+         */
         override fun onTouchEvent(event: MotionEvent): Boolean {
             motionTouchEventX = event.x
             motionTouchEventY = event.y
@@ -240,6 +251,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             return true
         }
 
+        /**
+         * Resets the paths and variables when the user starts to touch the canvas
+         */
         private fun touchStart() {
             path.reset()
             path.moveTo(motionTouchEventX, motionTouchEventY)
@@ -249,6 +263,10 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             invalidate()
         }
 
+        /**
+         * Calculates the lines of the path and adds it to the current path, while the user is
+         * moving his finger on the canvas.
+         */
         private fun touchMove() {
             val dx = Math.abs(motionTouchEventX - currentX)
             val dy = Math.abs(motionTouchEventY - currentY)
@@ -266,6 +284,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             invalidate()
         }
 
+        /**
+         * Saves the path and the paint of the drawn lines when the user stops to touch the canvas
+         */
         private fun touchUp() {
             path.lineTo(currentX, currentY)
             allStrokes.add(Stroke(path, paint))
@@ -276,6 +297,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             invalidate()
         }
 
+        /**
+         * Transforms the the drawn lines into a drawObject and sends it to the websocket
+         */
         private fun emitToServer() {
             val drawObject = DrawObject(
                 paint.color,
@@ -284,8 +308,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 currentY / height,
                 motionTouchEventY / height
             )
-
-
             viewModel.sendDrawMessage(
                 DrawMessage(
                     drawObject.color,
@@ -297,6 +319,10 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             )
         }
 
+        /**
+         * Transforms a drawObject (which usually comes from the websocket) and add it to the
+         * allStrokes list
+         */
         fun drawFromServer(drawObject: DrawObject) {
             val mx = drawObject.currentX * width
             val x = drawObject.eventX * width
@@ -312,21 +338,33 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             invalidate()
         }
 
+        /**
+         * Resets all saved strokes
+         */
         fun resetCanvasDrawing() {
             path.reset()
             allStrokes.clear()
             invalidate()
         }
 
+        /**
+         * Changes the color of the paint
+         */
         fun changePaintColor(color: Int) {
             paint.color = color
         }
 
+        /**
+         * Changes the current color of the user
+         */
         fun changeCurrentColor(color: Int) {
             currentColor = color
             paint.color = color
         }
 
+        /**
+         * Creates a new Paint object with the current values of the user
+         */
         private fun createPaintObject(color: Int, strokeWidth: Float) {
             paint = Paint()
             paint.isAntiAlias = true
