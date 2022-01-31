@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import javax.persistence.*
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator::class, property = "id")
 class User(
     @Column(nullable = false, unique = true)
     @JsonIgnore //frontend doesn't need this value.

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
@@ -17,7 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
+import com.jakewharton.retrofit2.adapter.rxjava2.HttpException
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import lmu.msp.frontend.HomeActivity
 import lmu.msp.frontend.R
@@ -28,7 +31,9 @@ import lmu.msp.frontend.helpers.auth0.PAuthenticator
 import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
 import lmu.msp.frontend.viewmodels.UserViewModel
 
-
+/**
+ * @author Valentin Scheibe
+ */
 class CampaignFragment : Fragment() {
 
     private lateinit var newRecyclerView: RecyclerView
@@ -40,6 +45,8 @@ class CampaignFragment : Fragment() {
 
     private lateinit var userApi: PenAndPaperApiInterface.UserApi
     private lateinit var auth: PAuthenticator
+    private val disposables = CompositeDisposable()
+
 
     val sharedViewModel: UserViewModel by activityViewModels()
 
@@ -79,18 +86,24 @@ class CampaignFragment : Fragment() {
     }
 
     private fun fetchCampaigns() {
-        userApi.getUser()
+        disposables.add(userApi.getUser()
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnError {
-                Log.e(TAG, "error ${it.message}")
-                //TODO ERROR HANDLING
-            }
             .doOnSuccess {
                 sharedViewModel.setUser(it)
                 fillCampaignArray()
             }
-            .subscribe()
+            .subscribe { campaignMembers, error ->
+                if (error != null) {
+                    val httpException: HttpException = error as HttpException
+                    when (httpException.code()) {
+                        404 -> Toast.makeText(context, "404 Not Found", Toast.LENGTH_SHORT).show()
+                        401 -> Toast.makeText(context, "401 Unauthorized", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                } else {
+                }
+            })
     }
 
     private fun fillCampaignArray() {
@@ -99,14 +112,6 @@ class CampaignFragment : Fragment() {
             viewLifecycleOwner,
             { userData ->
                 userFromViewModel = userData
-                Log.d(
-                    TAG,
-                    "This is the campaignOwner: " + userFromViewModel.campaignOwner.toString()
-                )
-                Log.d(
-                    TAG,
-                    "This is the campaignMember: " + userFromViewModel.campaignMember.toString()
-                )
 
                 userFromViewModel.campaignOwner.forEach {
                     campaignIds.add(it.id.toString())
@@ -122,10 +127,17 @@ class CampaignFragment : Fragment() {
     }
 
     private fun fillCampaigns() {
+        newArrayList.clear()
         for (i in titleStrings.indices) {
             val data = campaigns(titleStrings[i], campaignIds[i])
             newArrayList.add(data)
         }
         campaignAdapter.notifyDataSetChanged()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        disposables.dispose()
+    }
+
 }

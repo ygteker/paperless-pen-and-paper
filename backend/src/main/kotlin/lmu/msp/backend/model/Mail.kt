@@ -9,7 +9,6 @@ import javax.persistence.*
 
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator::class, property = "id")
 class Mail(
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

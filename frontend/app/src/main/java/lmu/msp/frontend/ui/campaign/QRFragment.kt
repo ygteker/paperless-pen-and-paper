@@ -5,9 +5,30 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import lmu.msp.frontend.R
 
+/**
+ * @author Valentin Scheibe
+ */
+class QRFragment : Fragment() {
 
-class QRFragment : Fragment(R.layout.fragment_q_r) {
+    private lateinit var TextViewQRCampaignId: TextView
+    private var campaignId = 0L
 
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_q_r, container, false)
+
+        TextViewQRCampaignId = view.findViewById(R.id.TextViewQRCampaignId)
+        campaignId = (activity as CampaignActivity).getCampaignId()
+
+        TextViewQRCampaignId.text = campaignId.toString()
+
+        return view
+    }
 }

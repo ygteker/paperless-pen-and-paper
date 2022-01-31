@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import lmu.msp.frontend.R
 import kotlin.random.Random
-
+/**
+ * @author Valentin Scheibe
+ */
 class DiceFragmentAnimated : Fragment() {
 
     private lateinit var addButtonD4: Button
@@ -24,6 +26,7 @@ class DiceFragmentAnimated : Fragment() {
     private lateinit var addButtonD12: Button
     private lateinit var addButtonD20: Button
     private lateinit var rollAllDice: Button
+    private lateinit var removeAllDice: Button
 
     private lateinit var resultTextView: TextView
 
@@ -58,6 +61,14 @@ class DiceFragmentAnimated : Fragment() {
         addButtonD12.setOnClickListener { addDice(12) }
         addButtonD20.setOnClickListener { addDice(20) }
         rollAllDice.setOnClickListener { rollAllDiceFunction() }
+        removeAllDice.setOnClickListener { removeAllDiceFunction() }
+    }
+
+    private fun removeAllDiceFunction() {
+        diceArrayList.clear()
+        resultsArray.clear()
+        resultTextView.text = "Result: "
+        diceRollingAdapter.notifyDataSetChanged()
     }
 
     private fun animateDice() {
@@ -71,46 +82,50 @@ class DiceFragmentAnimated : Fragment() {
     }
 
     private fun rollAllDiceFunction() {
-        resultsArray = arrayListOf<Int>()
-        animateDice()
-        var i = 0
-        while (i < diceArrayList.size) {
-            when (diceArrayList[i].sides) {
-                4 -> {
-                    val random = Random.nextInt(4) + 1
-                    resultsArray.add(random)
-                    changePicture(4, random, i)
+        if(diceArrayList.size != 0) {
+            resultsArray.clear()
+            animateDice()
+            var i = 0
+            while (i < diceArrayList.size) {
+                when (diceArrayList[i].sides) {
+                    4 -> {
+                        val random = Random.nextInt(4) + 1
+                        resultsArray.add(random)
+                        changePicture(4, random, i)
+                    }
+                    6 -> {
+                        val random = Random.nextInt(6) + 1
+                        resultsArray.add(random)
+                        changePicture(6, random, i)
+                    }
+                    8 -> {
+                        val random = Random.nextInt(8) + 1
+                        resultsArray.add(random)
+                        changePicture(8, random, i)
+                    }
+                    10 -> {
+                        val random = Random.nextInt(10) + 1
+                        resultsArray.add(random)
+                        changePicture(10, random, i)
+                    }
+                    12 -> {
+                        val random = Random.nextInt(12) + 1
+                        resultsArray.add(random)
+                        changePicture(12, random, i)
+                    }
+                    20 -> {
+                        val random = Random.nextInt(20) + 1
+                        resultsArray.add(random)
+                        changePicture(20, random, i)
+                    }
                 }
-                6 -> {
-                    val random = Random.nextInt(6) + 1
-                    resultsArray.add(random)
-                    changePicture(6, random, i)
-                }
-                8 -> {
-                    val random = Random.nextInt(8) + 1
-                    resultsArray.add(random)
-                    changePicture(8, random, i)
-                }
-                10 -> {
-                    val random = Random.nextInt(10) + 1
-                    resultsArray.add(random)
-                    changePicture(10, random, i)
-                }
-                12 -> {
-                    val random = Random.nextInt(12) + 1
-                    resultsArray.add(random)
-                    changePicture(12, random, i)
-                }
-                20 -> {
-                    val random = Random.nextInt(20) + 1
-                    resultsArray.add(random)
-                    changePicture(20, random, i)
-                }
+                i++
             }
-            i++
+            displayResult()
+        }else{
+            Toast.makeText(context, "Please add dice before rolling first!", Toast.LENGTH_SHORT)
+                .show()
         }
-
-        displayResult()
     }
 
     private fun changePicture(sides: Int, random: Int, index: Int) {
@@ -262,12 +277,16 @@ class DiceFragmentAnimated : Fragment() {
         addButtonD12 = view.findViewById(R.id.addButtonD12)
         addButtonD20 = view.findViewById(R.id.addButtonD20)
         rollAllDice = view.findViewById(R.id.rollDiceButtonAll)
+        removeAllDice = view.findViewById(R.id.removeAllDiceButton)
+
+
 
 
         resultTextView = view.findViewById(R.id.resultTextView)
 
         rollDiceRecyclerView = view.findViewById(R.id.rollDiceRecyclerView)
         diceArrayList = arrayListOf<diceData>()
+        resultsArray = arrayListOf<Int>()
         diceRollingAdapter = DiceRollingAdapter(diceArrayList)
         rollDiceRecyclerView.adapter = diceRollingAdapter
     }

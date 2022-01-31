@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -11,7 +12,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.jakewharton.retrofit2.adapter.rxjava2.HttpException
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import lmu.msp.frontend.api.PenAndPaperApiInterface
 import lmu.msp.frontend.api.model.User
@@ -21,7 +24,9 @@ import lmu.msp.frontend.helpers.auth0.PAuthenticator
 import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
 import lmu.msp.frontend.viewmodels.UserViewModel
 
-
+/**
+ * @author Valentin Scheibe
+ */
 class HomeActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "HomeActivity"
@@ -29,11 +34,10 @@ class HomeActivity : AppCompatActivity() {
 
 
     private lateinit var userApi: PenAndPaperApiInterface.UserApi
-
-
     private lateinit var binding: ActivityHomeBinding
-
     private lateinit var auth: PAuthenticator
+    private val disposables = CompositeDisposable()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,18 +70,24 @@ class HomeActivity : AppCompatActivity() {
         binding.navView.visibility = GONE
         binding.container.visibility = GONE
 
-        userApi.getUser()
+        disposables.add(userApi.getUser()
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnError {
-                Log.e(TAG, "error ${it.message}")
-                //TODO ERROR HANDLING
-            }
             .doOnSuccess {
                 updateNavController(it)
                 loadingFinished()
             }
-            .subscribe()
+            .subscribe { user, error ->
+                if (error == null) {
+
+                } else {
+                    val httpException: HttpException = error as HttpException
+                    when (httpException.code()) {
+                        404 -> Toast.makeText(this, "404 Not Found", Toast.LENGTH_SHORT).show()
+                        401 -> Toast.makeText(this, "401 Unauthorized", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
     }
 
     private fun updateNavController(user: User) {
@@ -95,4 +105,10 @@ class HomeActivity : AppCompatActivity() {
     fun logout() {
         auth.logout()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        disposables.dispose()
+    }
+
 }

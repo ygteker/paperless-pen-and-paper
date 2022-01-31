@@ -1,13 +1,44 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!--@author Valentin Scheibe-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/independence"
+    android:padding="12dp"
     tools:context=".ui.campaign.QRFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello this is the QR fragment" />
+    <ImageView
+        android:id="@+id/imageViewLogo"
+        android:layout_width="215dp"
+        android:layout_height="325dp"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="12dp"
+        android:padding="6dp"
+        android:src="@drawable/logo" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/TextViewQR"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_below="@id/imageViewLogo"
+        android:layout_centerVertical="true"
+        android:text="Others need to enter this campaign ID to join:"
+        android:textAlignment="center"
+        android:textColor="@color/isabelline"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/TextViewQRCampaignId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TextViewQR"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:text="emtpy"
+        android:textAlignment="center"
+        android:textColor="@color/isabelline"
+        android:textSize="50sp"
+        android:textStyle="bold" />
+
+</RelativeLayout>

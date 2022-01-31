@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?><!--@author Valentin Scheibe-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/independence"
+    android:padding="12dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/userListRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/editText_CharacterName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="New Character Name"
+                android:inputType="textPersonName"
+                android:text=""
+                android:textColor="@color/isabelline"
+                android:textColorHint="@color/isabelline" />
+
+            <Button
+                android:id="@+id/changeCharacterNameButton"
+                style="@style/diceButtons"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="Change Your Character Name"
+                android:textColor="@color/isabelline"
+                android:textColorHint="@color/isabelline" />
+
+            <EditText
+                android:id="@+id/editText_DeleteUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="User Id To Delete"
+                android:inputType="number"
+                android:text=""
+                android:textColor="@color/isabelline"
+                android:textColorHint="@color/isabelline" />
+
+            <Button
+                android:id="@+id/deleterUserButton"
+                style="@style/diceButtons"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="Remove User"
+                android:textColor="@color/isabelline" />
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</RelativeLayout>
