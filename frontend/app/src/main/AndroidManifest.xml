@@ -40,9 +40,6 @@
             android:exported="true"
             android:screenOrientation="portrait"></activity>
         <activity
-            android:name=".RegisterActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ui.profile.MessagesActivity"
             android:screenOrientation="portrait"></activity>
     </application>
