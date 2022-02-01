@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/independence"
     tools:context=".ui.campaign.ToolsFragment">
 
     <RelativeLayout
@@ -22,6 +23,7 @@
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
             android:contentDescription="@string/invite_friend"
+            android:backgroundTint="@color/isabelline"
             android:src="@drawable/icon_invite_friend"
             android:id="@+id/inviteFriendFAB" />
     </RelativeLayout>
