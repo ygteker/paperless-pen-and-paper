@@ -4,6 +4,12 @@ import lmu.msp.backend.model.Mail
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.transaction.annotation.Transactional
 
+/**
+ * jpa repository
+ * used to generate queries to the DB
+ * jpa will generate queries from the functions
+ *
+ */
 interface MailRepository : JpaRepository<Mail, Long> {
 
     fun findBySender_IdOrReceiver_Id(sender: Long, receiver: Long = sender): List<Mail>

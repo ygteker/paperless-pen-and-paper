@@ -14,6 +14,11 @@ import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
 
+/**
+ * implementation of the websocket handler
+ * this class collect all need information for the Websocket Services
+ *
+ */
 class CampaignHandler() : TextWebSocketHandler() {
 
     @Autowired

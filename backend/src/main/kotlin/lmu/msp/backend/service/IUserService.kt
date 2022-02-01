@@ -5,6 +5,12 @@ import lmu.msp.backend.model.User
 
 interface IUserService {
 
+    /**
+     * find a user buy its id
+     *
+     * @param id
+     * @return null if the user doesn't exist in the DB
+     */
     fun getUserById(id: Long): User?
 
     /**

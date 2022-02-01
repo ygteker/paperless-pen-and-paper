@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.jwt.*
 
 
 /**
- * Configures our application with Spring Security to restrict access to our API endpoints.
+ * restrict access to our endpoints
  */
 @EnableWebSecurity
 class SecurityConfig : WebSecurityConfigurerAdapter() {
@@ -23,9 +23,6 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Throws(Exception::class)
     public override fun configure(http: HttpSecurity) {
-        /*
-        configure security for the endpoints
-        */
         http
             .authorizeRequests()
             .antMatchers(
@@ -34,9 +31,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 //allow swagger 3
                 "/api-docs",
                 "/v3/api-docs/**",
-                "/swagger-ui/**",
-                "/h2-console",
-                "/h2-console/**"
+                "/swagger-ui/**"
             ).permitAll()
             .anyRequest().authenticated()
             .and().cors()

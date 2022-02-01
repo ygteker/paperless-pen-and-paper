@@ -17,7 +17,11 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import org.springframework.web.socket.server.HandshakeInterceptor
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean
 
-
+/**
+ * configuration of the websocket
+ *
+ * @property campaignService
+ */
 @Configuration
 @EnableWebSocket
 class WebSocketConfig(@Autowired private val campaignService: ICampaignService) : WebSocketConfigurer {
@@ -33,11 +37,22 @@ class WebSocketConfig(@Autowired private val campaignService: ICampaignService) 
         )
     }
 
+    /**
+     * create the bean of the campaign handler
+     *
+     * @return
+     */
     @Bean
     fun campaignHandler(): WebSocketHandler {
         return CampaignHandler()
     }
 
+    /**
+     * this bean will be used by springboot. With it the max size of a message can be changed (needed for base64 encoded image upload).
+     * number can be changed as needed
+     *
+     * @return
+     */
     @Bean
     fun createServletServerContainerFactoryBean(): ServletServerContainerFactoryBean {
         val container = ServletServerContainerFactoryBean()
@@ -47,6 +62,7 @@ class WebSocketConfig(@Autowired private val campaignService: ICampaignService) 
     }
 
     /**
+     * interceptor for the  websocket handler.
      * used to write the campaigId and the auth0 id to the session attributes
      *
      * @return
@@ -73,6 +89,8 @@ class WebSocketConfig(@Autowired private val campaignService: ICampaignService) 
 
             /**
              * tries to convert the last part of the path var to a long.
+             * In {@link #registerWebSocketHandlers(WebSocketHandlerRegistry)} the path is defined to end with the campaign
+             *
              *
              * @param path
              * @return campaignId or null if conversion fails

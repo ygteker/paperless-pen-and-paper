@@ -8,6 +8,14 @@ import lmu.msp.backend.socket.model.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
+
+/**
+ * implementation of ISessionCampaignService
+ * contains the "business logic"
+ *
+ * @property sessionService
+ * @property userService
+ */
 @Service
 class SessionCampaignService(
     @Autowired private val sessionService: ISessionService.ISessionWorkerService,
@@ -82,17 +90,23 @@ class SessionCampaignService(
 
         when (baseMessage.messageType) {
             MessageType.CONNECT -> return //this message type is only send from the server to a newly connected client
-            MessageType.DISCONNECT -> TODO()
+            MessageType.DISCONNECT -> return //nothing at the moment
             MessageType.CHAT_MESSAGE -> handleChatMessage(auth0Id, campaignId, baseMessage.chatMessage)
             MessageType.DRAW_PATH -> handleDraw(auth0Id, campaignId, baseMessage.drawMessage)
             MessageType.DRAW_IMAGE -> handleDrawImage(auth0Id, campaignId, baseMessage.drawImage)
             MessageType.DRAW_RESET -> handleResetDraw(campaignId)
             MessageType.GROUP_MESSAGE -> handleGroupMessage(auth0Id, campaignId, baseMessage.groupMessage)
-            MessageType.INITIATIVE_ADD -> TODO()
-            MessageType.INITIATIVE_REST -> TODO()
+            MessageType.INITIATIVE_ADD -> return //nothing at the moment -> for future feature
+            MessageType.INITIATIVE_REST -> return //nothing at the moment -> for future feature
         }
     }
 
+    /**
+     * send all current session information to the user
+     *
+     * @param auth0Id
+     * @param campaignId
+     */
     override fun connected(auth0Id: String, campaignId: Long) {
         val user = userService.getUserByAuth0Id(auth0Id)
 
@@ -106,7 +120,13 @@ class SessionCampaignService(
         sessionService.sendTo(baseMessage, campaignId, auth0Id)
     }
 
+
+    /**
+     * nothing to do at the moment
+     *
+     * @param auth0Id
+     * @param campaignId
+     */
     override fun disconnected(auth0Id: String, campaignId: Long) {
-        TODO("Not yet implemented")
     }
 }
