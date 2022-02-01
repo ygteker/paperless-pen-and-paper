@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?><!--@author Valentin Scheibe-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/animatedDiceContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/independence"
-    android:id="@+id/animatedDiceContainer"
     android:padding="12dp">
 
 
@@ -19,7 +19,10 @@
             android:id="@+id/rollDiceRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="@drawable/background_messagebox"
+            android:clipToPadding="false"
+            android:paddingLeft="30dp">
 
         </androidx.recyclerview.widget.RecyclerView>
 
@@ -39,7 +42,6 @@
                 android:textColor="@color/isabelline"
                 android:textSize="20sp"
                 android:textStyle="bold" />
-
 
 
             <LinearLayout
@@ -122,8 +124,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
-                android:textSize="20sp"
-                android:text="Remove All Dice" />
+                android:text="Remove All Dice"
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/rollDiceButtonAll"
@@ -134,9 +136,9 @@
                 android:layout_marginTop="6dp"
                 android:layout_marginEnd="6dp"
                 android:layout_marginBottom="6dp"
-                android:textStyle="bold"
                 android:text="Roll Dice!"
-                android:textSize="30sp" />
+                android:textSize="30sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </LinearLayout>
