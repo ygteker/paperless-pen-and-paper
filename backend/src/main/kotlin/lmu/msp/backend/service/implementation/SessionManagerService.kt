@@ -12,6 +12,15 @@ import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 
+
+/**
+ * implementation of ISessionManagerService and ISessionWorkerService
+ * contains the "business logic"
+ *
+ * we use two services here to reduce the access the classes have which uses these interfaces
+ *
+ * @property campaignService
+ */
 @Service
 class SessionManagerService(@Autowired private val campaignService: ICampaignService) :
     ISessionService.ISessionManagerService,

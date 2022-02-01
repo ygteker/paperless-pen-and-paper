@@ -5,7 +5,14 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import javax.persistence.*
 
-
+/**
+ * CampaignMember jpa def
+ * from this the jpa will generate a storage (e.g. database, depends on the application.properties configuration)
+ *
+ * @property campaign
+ * @property user
+ * @property characterName
+ */
 @Entity
 class CampaignMember(
 

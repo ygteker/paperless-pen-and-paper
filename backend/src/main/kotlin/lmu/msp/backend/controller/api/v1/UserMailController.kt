@@ -14,6 +14,12 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 
+/**
+ * all rest calls which interacts with the user mails
+ * you need to ask the server if there are new messages (get) and send new messages with (post)
+ *
+ * @property mailService
+ */
 @RestController
 @RequestMapping("/api/v1/user/mail")
 @SecurityRequirement(name = "bearer-key")

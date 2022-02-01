@@ -16,6 +16,11 @@ import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
+/**
+ * all rest calls which interacts with the user data
+ *
+ * @property userService
+ */
 @RestController
 @RequestMapping("/api/v1/user")
 @SecurityRequirement(name = "bearer-key")

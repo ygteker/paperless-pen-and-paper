@@ -1,5 +1,9 @@
 package lmu.msp.frontend.models.websocket
 
+/**
+ * enumeration class for all websocket message types
+ *
+ */
 enum class MessageType {
     CONNECT,
     DISCONNECT,

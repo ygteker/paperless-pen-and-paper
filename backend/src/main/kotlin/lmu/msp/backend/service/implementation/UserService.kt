@@ -9,6 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
+/**
+ * implementation of IUserService
+ * contains the "business logic"
+ *
+ * @property userRepository
+ * @property memberRepository
+ */
 @Service
 class UserService(
     @Autowired private val userRepository: UserRepository,
