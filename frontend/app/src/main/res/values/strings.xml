@@ -41,7 +41,6 @@
 
     <string-array name="profile_list_items">
         <item>Messages</item>
-        <item>Test Item</item>
     </string-array>
 
 </resources>
