@@ -24,7 +24,7 @@ import org.springframework.web.socket.server.standard.ServletServerContainerFact
  */
 @Configuration
 @EnableWebSocket
-class WebSocketConfig(@Autowired private val campaignService: ICampaignService) : WebSocketConfigurer {
+class WebSocketConfiguration(@Autowired private val campaignService: ICampaignService) : WebSocketConfigurer {
 
     /**
      * register websocket. every campaign uses another endpoint ("/1" "/2"...)
