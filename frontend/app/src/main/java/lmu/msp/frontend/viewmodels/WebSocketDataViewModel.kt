@@ -16,6 +16,13 @@ import okhttp3.WebSocket
 import java.util.*
 import java.util.concurrent.Semaphore
 
+/**
+ *
+ * (demo) view model to show how an AndroidViewModel works and how the websocket sends recieved data
+ * to the view model
+ *
+ * @param application
+ */
 class WebSocketDataViewModel(application: Application) : AndroidViewModel(application) {
 
     private val drawSemaphore = Semaphore(1)
@@ -109,6 +116,10 @@ class WebSocketDataViewModel(application: Application) : AndroidViewModel(applic
 
     }
 
+    /**
+     * implementation of the websocket callback
+     *
+     */
     private inner class ImpWebSocketCallback : WebSocketCallback {
 
         override fun receiveChatMessages(chatMessages: List<ChatMessage>) {

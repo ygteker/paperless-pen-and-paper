@@ -10,7 +10,11 @@ import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import okhttp3.logging.HttpLoggingInterceptor
 
-
+/**
+ * provides a websocket
+ *
+ * @param context needed to get the jwt token (for authentication)
+ */
 class WebSocketProvider(context: Context) {
 
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder()

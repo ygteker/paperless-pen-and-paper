@@ -3,6 +3,13 @@ package lmu.msp.frontend.models.websocket
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
+/**
+ * messageType = DRAW_IMAGE
+ *
+ * stores a base64 encoded image
+ *
+ * @property imageBase64
+ */
 data class DrawImage(
     @SerializedName("imageBase64")
     val imageBase64: String = ""

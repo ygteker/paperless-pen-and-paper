@@ -1,6 +1,11 @@
 package lmu.msp.frontend
 
 
+/**
+ * all constant which cant be written to the strings.xml (e.g. Annotations)
+ * also constant like api endpoints => advantage no context needed (e.g. retrofit provider)
+ *
+ */
 class Constants {
     companion object {
         const val API_BASE_PATH = "https://msp-ws2122-5.mobile.ifi.lmu.de/api/v1/"

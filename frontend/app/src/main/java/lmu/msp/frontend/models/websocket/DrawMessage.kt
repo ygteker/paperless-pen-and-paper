@@ -2,6 +2,15 @@ package lmu.msp.frontend.models.websocket
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * messageType = DRAW_PATH
+ *
+ * @property color
+ * @property currentX
+ * @property eventX
+ * @property currentY
+ * @property eventY
+ */
 data class DrawMessage(
     @SerializedName("color")
     val color: Int,

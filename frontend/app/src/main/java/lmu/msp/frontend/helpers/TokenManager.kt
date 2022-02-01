@@ -11,6 +11,12 @@ import com.auth0.android.callback.Callback
 import com.auth0.android.result.Credentials
 
 
+/**
+ * store the jwt webtoken in the app data
+ * for storage the auth0 SecureCredentialsManager is used
+ *
+ * @param context needed to access storage
+ */
 class TokenManager(context: Context) {
 
     companion object {
