@@ -16,6 +16,13 @@ data class DrawImage(
 
 ) {
     companion object {
+        /**
+         * convert image data to a DrawImage message
+         * the byteArray will be base64 encoded as a string
+         *
+         * @param byteArray image data
+         * @return
+         */
         fun create(byteArray: ByteArray) = DrawImage(Base64.getEncoder().encodeToString(byteArray))
     }
 
