@@ -15,7 +15,6 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import org.springframework.web.socket.server.HandshakeInterceptor
-import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean
 
 /**
  * configuration of the websocket
@@ -45,20 +44,6 @@ class WebSocketConfiguration(@Autowired private val campaignService: ICampaignSe
     @Bean
     fun campaignHandler(): WebSocketHandler {
         return CampaignHandler()
-    }
-
-    /**
-     * this bean will be used by springboot. With it the max size of a message can be changed (needed for base64 encoded image upload).
-     * number can be changed as needed
-     *
-     * @return
-     */
-    @Bean
-    fun createServletServerContainerFactoryBean(): ServletServerContainerFactoryBean {
-        val container = ServletServerContainerFactoryBean()
-        container.setMaxTextMessageBufferSize(32768000)
-        container.setMaxBinaryMessageBufferSize(32768000)
-        return container
     }
 
     /**
