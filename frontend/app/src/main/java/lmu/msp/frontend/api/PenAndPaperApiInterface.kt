@@ -17,6 +17,13 @@ import lmu.msp.frontend.api.model.User
 import okhttp3.RequestBody
 import retrofit2.http.*
 
+/**
+ * interfaces for retrofit api calls
+ *
+ * an interface for every path/api module
+ * if wanted RxJava Calls (e.g. Single<T>) can be replaced with Call<T> for a default retrofit usage
+ *
+ */
 interface PenAndPaperApiInterface {
 
     interface UserApi {

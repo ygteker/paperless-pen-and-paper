@@ -11,6 +11,15 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
+
+/**
+ * implementation of ICampaignService
+ * contains the "business logic"
+ *
+ * @property campaignRepository
+ * @property memberRepository
+ * @property userService
+ */
 @Service
 class CampaignService(
     @Autowired private val campaignRepository: CampaignRepository,

@@ -6,6 +6,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import javax.persistence.*
 
+/**
+ * User jpa def
+ * from this the jpa will generate a storage (e.g. database, depends on the application.properties configuration)
+ *
+ *
+ * @property auth0Id
+ * @property campaignOwner
+ * @property campaignMember
+ * @property sendMails
+ * @property receivedMails
+ * @property image
+ */
 @Entity
 class User(
     @Column(nullable = false, unique = true)

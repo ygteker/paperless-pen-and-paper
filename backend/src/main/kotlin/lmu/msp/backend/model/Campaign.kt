@@ -5,8 +5,15 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import javax.persistence.*
 
+/**
+ * campaign jpa def
+ * from this the jpa will generate a storage (e.g. database, depends on the application.properties configuration)
+ *
+ * @property owner
+ * @property title
+ * @property campaignMember
+ */
 @Entity
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator::class, property = "id")
 final class Campaign(
     @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.EAGER)

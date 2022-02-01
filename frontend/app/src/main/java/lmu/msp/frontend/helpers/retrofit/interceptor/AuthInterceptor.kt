@@ -6,7 +6,8 @@ import okhttp3.Interceptor
 import okhttp3.Response
 
 /**
- * intercepts retrofit http call and tries to add a bearer token
+ * intercepts retrofit http call
+ * add a bearer token to every call (we need authentication in every call)
  *
  * @property tokenManager
  */

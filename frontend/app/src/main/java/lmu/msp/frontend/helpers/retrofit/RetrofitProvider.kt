@@ -14,6 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 /**
  * provides retrofit apis
  *
+ * @param context needed to get the jwt token (for authentication)
  */
 class RetrofitProvider(context: Context) {
 
