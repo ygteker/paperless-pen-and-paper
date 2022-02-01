@@ -116,16 +116,22 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
         val  regex = "^@\\w+".toRegex()
         if (regex.containsMatchIn(message)) {
             val charName = message.split(" ")[0].removePrefix("@")
+            Log.i("CHARNAME", charName)
             for (user in members) {
-                if (user.characterName == charName) {
-                    viewModel.sendChatMessage(ChatMessage(message, user.id.toInt(), loggedInUser.id.toInt()))
-                } else {
-                    Toast.makeText(requireContext(), "USER NOT FOUND", Toast.LENGTH_LONG).show()
+                if (user.characterName.equals(charName)) {
+                    viewModel.sendChatMessage(
+                        ChatMessage(
+                            message,
+                            user.id.toInt(),
+                            loggedInUser.id.toInt()
+                        )
+                    )
+                    Log.i("ORGCHARNAME", user.characterName)
+                    break
                 }
             }
-
         } else {
-           viewModel.sendGroupMessage(GroupMessage(loggedInUser.id.toLong(), message))
+           viewModel.sendGroupMessage(GroupMessage(loggedInUser.id, message))
         }
 
     }

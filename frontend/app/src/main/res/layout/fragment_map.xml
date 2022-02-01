@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/independence"
     tools:context=".ui.campaign.MapFragment">
 
     <RelativeLayout
@@ -20,18 +21,24 @@
                 android:id="@+id/delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/delete" />
+                android:text="@string/delete"
+                android:layout_margin="6dp"
+                style="@style/darkButtonTheme"/>
 
             <Button
                 android:id="@+id/color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                style="@style/darkButtonTheme"
+                android:layout_margin="6dp"
                 android:text="@string/color" />
 
             <Button
                 android:id="@+id/background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                style="@style/darkButtonTheme"
+                android:layout_margin="6dp"
                 android:text="@string/image" />
         </LinearLayout>
 
