@@ -26,40 +26,43 @@
 
             <EditText
                 android:id="@+id/editText_CharacterName"
+                style="@style/editTextTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="6dp"
                 android:ems="10"
                 android:hint="New Character Name"
                 android:inputType="textPersonName"
-                android:text=""
-                android:textColor="@color/isabelline"
-                android:textColorHint="@color/isabelline" />
+                android:text="" />
 
             <Button
                 android:id="@+id/changeCharacterNameButton"
                 style="@style/diceButtons"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
+                android:layout_marginBottom="6dp"
                 android:text="Change Your Character Name"
                 android:textColor="@color/isabelline"
                 android:textColorHint="@color/isabelline" />
 
             <EditText
                 android:id="@+id/editText_DeleteUser"
+                style="@style/editTextTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
                 android:ems="10"
                 android:hint="User Id To Delete"
                 android:inputType="number"
-                android:text=""
-                android:textColor="@color/isabelline"
-                android:textColorHint="@color/isabelline" />
+                android:text="" />
 
             <Button
                 android:id="@+id/deleterUserButton"
                 style="@style/diceButtons"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
+                android:layout_marginBottom="6dp"
                 android:text="Remove User"
                 android:textColor="@color/isabelline" />
 
