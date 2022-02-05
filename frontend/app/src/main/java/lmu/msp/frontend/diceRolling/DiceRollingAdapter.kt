@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import lmu.msp.frontend.R
 import lmu.msp.frontend.ui.campaign.campaigns
 /**
+ * This class contains the adapter for the recycler view used in the diceRollingFragmentAnimated
  * @author Valentin Scheibe
  */
 class DiceRollingAdapter(private val diceList: ArrayList<diceData>) :
@@ -28,6 +29,11 @@ class DiceRollingAdapter(private val diceList: ArrayList<diceData>) :
 
     }
 
+    /**
+     * when called removes an item from the diceList
+     * enables removal of an item in the recycler view when touched
+     * @param position indicates position in the diceList that should get removed
+     */
     private fun removeAt(position: Int) {
         diceList.removeAt(position)
         notifyDataSetChanged()

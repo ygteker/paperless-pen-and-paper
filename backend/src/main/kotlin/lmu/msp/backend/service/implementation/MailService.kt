@@ -7,6 +7,13 @@ import lmu.msp.backend.service.IUserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
+/**
+ * implementation of IMailService
+ * contains the "business logic"
+ *
+ * @property userService
+ * @property mailRepository
+ */
 @Service
 class MailService(
     @Autowired private val userService: IUserService,

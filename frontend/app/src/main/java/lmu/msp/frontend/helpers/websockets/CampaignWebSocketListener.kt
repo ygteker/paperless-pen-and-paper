@@ -8,13 +8,19 @@ import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 
+/**
+ * Websocket listener
+ *
+ * @property webSocketCallback if a message is received the callback will be called  to send the new data back to the viewmodel
+ *
+ */
 class CampaignWebSocketListener(private val webSocketCallback: WebSocketCallback) :
     WebSocketListener() {
     companion object {
         private const val TAG = "CampaignWebSocketListener"
     }
 
-    val gson = Gson()
+    private val gson = Gson()
 
     override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
         super.onClosed(webSocket, code, reason)
@@ -38,14 +44,14 @@ class CampaignWebSocketListener(private val webSocketCallback: WebSocketCallback
                 webSocketCallback.receivedDrawImage(basicMessage.drawImage!!)
                 webSocketCallback.receiveGroupMessages(basicMessage.groupMessage!!)
             }
-            MessageType.DISCONNECT -> TODO()
+            MessageType.DISCONNECT -> {;}//nothing to do at the moment
             MessageType.CHAT_MESSAGE -> webSocketCallback.receiveChatMessages(basicMessage.chatMessage!!)
             MessageType.DRAW_PATH -> webSocketCallback.receiveDrawMessages(basicMessage.drawMessage!!)
             MessageType.DRAW_IMAGE -> webSocketCallback.receivedDrawImage(basicMessage.drawImage!!)
             MessageType.DRAW_RESET -> webSocketCallback.receiveDrawMessageReset()
             MessageType.GROUP_MESSAGE -> webSocketCallback.receiveGroupMessages(basicMessage.groupMessage!!)
-            MessageType.INITIATIVE_ADD -> TODO()
-            MessageType.INITIATIVE_REST -> TODO()
+            MessageType.INITIATIVE_ADD -> {;}//nothing to do at the moment
+            MessageType.INITIATIVE_REST -> {;}//nothing to do at the moment
         }
 
         Log.i(TAG, text)

@@ -15,12 +15,15 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import org.springframework.web.socket.server.HandshakeInterceptor
-import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean
 
-
+/**
+ * configuration of the websocket
+ *
+ * @property campaignService
+ */
 @Configuration
 @EnableWebSocket
-class WebSocketConfig(@Autowired private val campaignService: ICampaignService) : WebSocketConfigurer {
+class WebSocketConfiguration(@Autowired private val campaignService: ICampaignService) : WebSocketConfigurer {
 
     /**
      * register websocket. every campaign uses another endpoint ("/1" "/2"...)
@@ -33,20 +36,18 @@ class WebSocketConfig(@Autowired private val campaignService: ICampaignService) 
         )
     }
 
+    /**
+     * create the bean of the campaign handler
+     *
+     * @return
+     */
     @Bean
     fun campaignHandler(): WebSocketHandler {
         return CampaignHandler()
     }
 
-    @Bean
-    fun createServletServerContainerFactoryBean(): ServletServerContainerFactoryBean {
-        val container = ServletServerContainerFactoryBean()
-        container.setMaxTextMessageBufferSize(32768000)
-        container.setMaxBinaryMessageBufferSize(32768000)
-        return container
-    }
-
     /**
+     * interceptor for the  websocket handler.
      * used to write the campaigId and the auth0 id to the session attributes
      *
      * @return
@@ -73,6 +74,8 @@ class WebSocketConfig(@Autowired private val campaignService: ICampaignService) 
 
             /**
              * tries to convert the last part of the path var to a long.
+             * In {@link #registerWebSocketHandlers(WebSocketHandlerRegistry)} the path is defined to end with the campaign
+             *
              *
              * @param path
              * @return campaignId or null if conversion fails

@@ -1,4 +1,4 @@
-package lmu.msp.backend.security
+package lmu.msp.backend.configuration
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -6,15 +6,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator
+import org.springframework.security.oauth2.core.OAuth2Error
 import org.springframework.security.oauth2.core.OAuth2TokenValidator
+import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult
 import org.springframework.security.oauth2.jwt.*
 
 
 /**
- * Configures our application with Spring Security to restrict access to our API endpoints.
+ * restrict access to our endpoints
  */
 @EnableWebSecurity
-class SecurityConfig : WebSecurityConfigurerAdapter() {
+class SecurityConfiguration : WebSecurityConfigurerAdapter() {
     @Value("\${auth0.audience}")
     private val audience: String? = null
 
@@ -23,9 +25,6 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Throws(Exception::class)
     public override fun configure(http: HttpSecurity) {
-        /*
-        configure security for the endpoints
-        */
         http
             .authorizeRequests()
             .antMatchers(
@@ -34,9 +33,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 //allow swagger 3
                 "/api-docs",
                 "/v3/api-docs/**",
-                "/swagger-ui/**",
-                "/h2-console",
-                "/h2-console/**"
+                "/swagger-ui/**"
             ).permitAll()
             .anyRequest().authenticated()
             .and().cors()
@@ -57,5 +54,21 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         val withAudience: OAuth2TokenValidator<Jwt> = DelegatingOAuth2TokenValidator(withIssuer, audienceValidator)
         jwtDecoder.setJwtValidator(withAudience)
         return jwtDecoder
+    }
+
+    /**
+     * Validates that the JWT token contains the intended audience in its claims.
+     * implementation similar to the auth0 example https://auth0.com/docs/quickstart/backend/java-spring-security5
+     */
+    internal class AudienceValidator(private val audience: String) : OAuth2TokenValidator<Jwt> {
+
+        override fun validate(jwt: Jwt): OAuth2TokenValidatorResult {
+            return if (jwt.audience.contains(audience)) {
+                OAuth2TokenValidatorResult.success()
+            } else {
+                val error = OAuth2Error("invalid_token", "The required audience is missing", null)
+                OAuth2TokenValidatorResult.failure(error)
+            }
+        }
     }
 }

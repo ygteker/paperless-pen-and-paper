@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 /**
  * this is a demo controller.
  * it creates a REST endpoint for get "/hello-world"
+ * you can use this endpoint to check if the backend is online and that the backend accepts your JWT token (/hello-world/authentication)
  */
 @RestController
 @RequestMapping("/hello-world")

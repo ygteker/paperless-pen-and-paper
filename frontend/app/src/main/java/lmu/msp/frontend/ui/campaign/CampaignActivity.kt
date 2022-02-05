@@ -23,6 +23,7 @@ import lmu.msp.frontend.ui.home.HomeFragment
 import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
 
 /**
+ * Campaign Activity that handles selecting the right fragment and initializes the webSocket
  * @author Valentin Scheibe & Kenny-Minh Nguyen
  */
 
@@ -67,6 +68,9 @@ class CampaignActivity : AppCompatActivity() {
         viewModel.startWebSocket(campaignId)
     }
 
+    /**
+     * Fetches all campaignMembers from the Backend
+     */
     private fun fetchMembers() {
         disposables.add(campaignMemberApi.getMembers(campaignId)
             .subscribeOn(Schedulers.newThread())
@@ -87,6 +91,9 @@ class CampaignActivity : AppCompatActivity() {
             })
     }
 
+    /**
+     * Fetches the active user from the backend
+     */
     private fun fetchUser() {
         disposables.add(userApi.getUser()
             .subscribeOn(Schedulers.newThread())
@@ -119,6 +126,11 @@ class CampaignActivity : AppCompatActivity() {
         return campaignMembersFromApi
     }
 
+    /**
+     * handles opening the right fragment
+     * @param item the menuItem that was clicked to select the right Fragment to load
+     * @author Kenny-Minh Nguyen
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {

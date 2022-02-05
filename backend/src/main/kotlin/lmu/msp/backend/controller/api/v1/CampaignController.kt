@@ -15,6 +15,11 @@ import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import javax.validation.constraints.Size
 
+/**
+ * all rest calls which interacts with the campaigns (except members)
+ *
+ * @property campaignService
+ */
 @RestController
 @RequestMapping("/api/v1/campaign")
 @SecurityRequirement(name = "bearer-key")

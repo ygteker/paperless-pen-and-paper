@@ -9,12 +9,20 @@ import lmu.msp.backend.socket.model.BaseMessage
 import lmu.msp.backend.utility.getAuth0IdFromAttributes
 import lmu.msp.backend.utility.getCampaignIdFromAttributes
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
 
+/**
+ * implementation of the websocket handler
+ * this class collect all need information for the Websocket Services
+ *
+ */
 class CampaignHandler() : TextWebSocketHandler() {
+    @Value("\${lmu.msp.backend.maxTextMessageBytes}")
+    private val maxTextMessageSize: Int? = null
 
     @Autowired
     private lateinit var sessionService: ISessionService.ISessionManagerService
@@ -49,6 +57,9 @@ class CampaignHandler() : TextWebSocketHandler() {
             //reason to not accept the session. Therefore, we can't say that the session will always be added
             session.close(CloseStatus.POLICY_VIOLATION)
         }
+        //increase text message size (in Bytes) from config file. If nothing is found in the config use 1MB
+        session.textMessageSizeLimit = maxTextMessageSize ?: (1000000)
+
         val auth0Id = getAuth0IdFromAttributes(session.attributes)
         val campaignId = getCampaignIdFromAttributes(session.attributes)
 

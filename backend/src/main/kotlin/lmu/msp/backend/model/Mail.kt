@@ -7,7 +7,14 @@ import org.hibernate.annotations.CreationTimestamp
 import java.sql.Timestamp
 import javax.persistence.*
 
-
+/**
+ * Mail jpa def
+ * from this the jpa will generate a storage (e.g. database, depends on the application.properties configuration)
+ *
+ * @property sender
+ * @property receiver
+ * @property message
+ */
 @Entity
 class Mail(
 
