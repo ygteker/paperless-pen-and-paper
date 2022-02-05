@@ -1,0 +1,36 @@
+# Here we specify variables which may be used later
+# These variables will be available via the CLI as $VARIABLE_NAME
+variables:
+  MAVEN_CLI_OPTS: " --batch-mode"
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+
+# Here we are indicating which paths on the filesystem we would like to cache
+# i.e. keep for later. This gives us the option to have faster builds.
+# In this specific instance we are caching the maven repo directory which means
+# maven will not have download packages from the internet next time it runs
+cache:
+  paths:
+    - .m2/repository/
+
+image: maven:3.6-jdk-11
+
+test:
+  stage: backend-test
+  script:
+    - mvn verify
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
+        - target/failsafe-reports/TEST-*.xml
+build:
+  stage: backend-build
+  script:
+    # short sha value
+    - mvn $MAVEN_CLI_OPTS package -DskipTests -Drevision=${CI_COMMIT_SHORT_SHA}
+  only:
+    - master
+  artifacts:
+    paths:
+      - target/*.jar
