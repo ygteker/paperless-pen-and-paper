@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import lmu.msp.frontend.R
 import kotlin.random.Random
+
 /**
+ * In this Fragment all dice rolling logic is implemented for animated dice rolling
  * @author Valentin Scheibe
  */
 class DiceFragmentAnimated : Fragment() {
@@ -53,6 +55,7 @@ class DiceFragmentAnimated : Fragment() {
         return view
     }
 
+
     private fun setOnclickListeners() {
         addButtonD4.setOnClickListener { addDice(4) }
         addButtonD6.setOnClickListener { addDice(6) }
@@ -64,6 +67,9 @@ class DiceFragmentAnimated : Fragment() {
         removeAllDice.setOnClickListener { removeAllDiceFunction() }
     }
 
+    /**
+     * Clears all dice from the recyclerView, and the corresponding fields
+     */
     private fun removeAllDiceFunction() {
         diceArrayList.clear()
         resultsArray.clear()
@@ -71,8 +77,10 @@ class DiceFragmentAnimated : Fragment() {
         diceRollingAdapter.notifyDataSetChanged()
     }
 
+    /**
+     * plays an animation on all view items in the recycler view
+     */
     private fun animateDice() {
-
         val shake = AnimationUtils.loadAnimation(context, R.anim.shake3)
         var i = 0
         while (i <= diceArrayList.size) {
@@ -81,8 +89,11 @@ class DiceFragmentAnimated : Fragment() {
         }
     }
 
+    /**
+     * Handles the all dice rolling functions such as animation, random number generation and image switching
+     */
     private fun rollAllDiceFunction() {
-        if(diceArrayList.size != 0) {
+        if (diceArrayList.size != 0) {
             resultsArray.clear()
             animateDice()
             var i = 0
@@ -122,12 +133,18 @@ class DiceFragmentAnimated : Fragment() {
                 i++
             }
             displayResult()
-        }else{
+        } else {
             Toast.makeText(context, "Please add dice before rolling first!", Toast.LENGTH_SHORT)
                 .show()
         }
     }
 
+    /**
+     * Changes the image asset of an item in the recyclerView according to the random number rolled and the amount of sides the item has
+     * @param sides amount of sides the displayed item(a dice) has
+     * @param random the random number that determines the new side of the dice to be displayed
+     * @param index the index of the item that is getting changed in the recycler view
+     */
     private fun changePicture(sides: Int, random: Int, index: Int) {
         when (sides) {
             4 -> {
@@ -219,6 +236,9 @@ class DiceFragmentAnimated : Fragment() {
         diceRollingAdapter.notifyItemChanged(index)
     }
 
+    /**
+     * displays the result of a roll in the resultTextView
+     */
     private fun displayResult() {
         val output: String = resultsArray.joinToString(separator = ", ")
         var added = 0
@@ -232,6 +252,10 @@ class DiceFragmentAnimated : Fragment() {
         resultTextView.text = output2
     }
 
+    /**
+     * adds an item(dice) to the recyclerView that contains dice.
+     * @param sides indicates how many sides a dice should have that gets added to the view to be able to be rolled
+     */
     @SuppressLint("NotifyDataSetChanged")
     private fun addDice(sides: Int) {
         if (diceArrayList.size >= 40) {
@@ -278,9 +302,6 @@ class DiceFragmentAnimated : Fragment() {
         addButtonD20 = view.findViewById(R.id.addButtonD20)
         rollAllDice = view.findViewById(R.id.rollDiceButtonAll)
         removeAllDice = view.findViewById(R.id.removeAllDiceButton)
-
-
-
 
         resultTextView = view.findViewById(R.id.resultTextView)
 

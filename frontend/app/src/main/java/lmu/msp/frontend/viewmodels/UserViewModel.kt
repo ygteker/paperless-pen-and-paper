@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import lmu.msp.frontend.api.model.User
 /**
+ * This defines a viewModel that contains a user object that can be used as a SharedViewModel
  * @author Valentin Scheibe
  */
 class UserViewModel : ViewModel() {
