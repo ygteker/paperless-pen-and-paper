@@ -12,6 +12,7 @@ import lmu.msp.frontend.api.PenAndPaperApiInterface
 import lmu.msp.frontend.databinding.ActivityInfoBinding
 import lmu.msp.frontend.helpers.InfoViewAdapter
 import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
+import okhttp3.internal.notify
 
 class InfoActivity: AppCompatActivity() {
 
@@ -43,5 +44,6 @@ class InfoActivity: AppCompatActivity() {
     private fun initInfoView(infos: List<InfoElement>) {
         infoViewAdapter = InfoViewAdapter(infos)
         binding.infoView.adapter = infoViewAdapter
+        binding.infoView.notify()
     }
 }
