@@ -48,7 +48,10 @@ class ProfileFragment : Fragment() {
                 }
 
             } else if (position == 1) {
-                //TODO start
+                activity?.let {
+                    val intent = Intent(it, InfoActivity::class.java)
+                    it.startActivity(intent)
+                }
             } else {
 
             }
