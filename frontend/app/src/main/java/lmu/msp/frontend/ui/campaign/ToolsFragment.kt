@@ -13,15 +13,14 @@ import lmu.msp.frontend.databinding.FragmentToolsBinding
 import lmu.msp.frontend.diceRolling.DiceFragmentAnimated
 import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
 
-
+/**
+ * Lists the fragments which the user can navigate to
+ */
 class ToolsFragment : Fragment() {
-
-    companion object {
-        private const val TAG = "ToolsFragment"
-    }
 
     private var _binding: FragmentToolsBinding? = null
     private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
