@@ -21,7 +21,11 @@ import lmu.msp.frontend.models.websocket.DrawMessage
 import lmu.msp.frontend.viewmodels.WebSocketDataViewModel
 import java.io.ByteArrayOutputStream
 
-
+const val DRAW_BLACK = "#000000"
+const val DRAW_BLUE = "#1976d2"
+const val DRAW_GREEN = "#388e3c"
+const val DRAW_RED = "#e53935"
+const val DRAW_YELLOW = "#ffeb3b"
 /**
  * Fragment which provides the functionality to draw on a synchronized canvas with a shared
  * background image
@@ -84,11 +88,11 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             popupMenu.menuInflater.inflate(R.menu.popup_color_picker, popupMenu.menu)
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
-                    R.id.ibBlack -> myCanvasView.changeCurrentColor(Color.BLACK)
-                    R.id.ibBlue -> myCanvasView.changeCurrentColor(Color.BLUE)
-                    R.id.ibGreen -> myCanvasView.changeCurrentColor(Color.GREEN)
-                    R.id.ibRed -> myCanvasView.changeCurrentColor(Color.RED)
-                    R.id.ibYellow -> myCanvasView.changeCurrentColor(Color.YELLOW)
+                    R.id.ibBlack -> myCanvasView.changeCurrentColor(DRAW_BLACK)
+                    R.id.ibBlue -> myCanvasView.changeCurrentColor(DRAW_BLUE)
+                    R.id.ibGreen -> myCanvasView.changeCurrentColor(DRAW_GREEN)
+                    R.id.ibRed -> myCanvasView.changeCurrentColor(DRAW_RED)
+                    R.id.ibYellow -> myCanvasView.changeCurrentColor(DRAW_YELLOW)
                 }
                 true
             }
@@ -357,9 +361,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         /**
          * Changes the current color of the user
          */
-        fun changeCurrentColor(color: Int) {
-            currentColor = color
-            paint.color = color
+        fun changeCurrentColor(color: String) {
+            currentColor = Color.parseColor(color)
+            paint.color = Color.parseColor(color)
         }
 
         /**
