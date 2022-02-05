@@ -22,20 +22,20 @@
 
             <EditText
                 android:id="@+id/joinCampaignEditText"
+                style="@style/editTextTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/isabelline"
-                android:textColorHint="@color/isabelline"
+                android:layout_marginBottom="6dp"
                 android:ems="10"
                 android:hint="CampaignID"
                 android:inputType="number" />
 
             <EditText
                 android:id="@+id/joinCampaignCharacterText"
+                style="@style/editTextTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/isabelline"
-                android:textColorHint="@color/isabelline"
+                android:layout_marginBottom="6dp"
                 android:ems="10"
                 android:hint="Character Name"
                 android:inputType="text" />
@@ -45,14 +45,15 @@
                 style="@style/diceButtons"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
+                android:layout_marginBottom="6dp"
                 android:text="Join Campaign" />
 
             <EditText
                 android:id="@+id/createCampaignEditText"
+                style="@style/editTextTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/isabelline"
-                android:textColorHint="@color/isabelline"
+                android:layout_marginBottom="6dp"
                 android:ems="10"
                 android:hint="Campaign Name"
                 android:inputType="text"
@@ -63,14 +64,15 @@
                 style="@style/diceButtons"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
+                android:layout_marginBottom="6dp"
                 android:text="Create Campaign" />
 
             <EditText
                 android:id="@+id/deleteCampaignEditText"
+                style="@style/editTextTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/isabelline"
-                android:textColorHint="@color/isabelline"
+                android:layout_marginBottom="6dp"
                 android:ems="10"
                 android:hint="CampaignID"
                 android:inputType="number" />
@@ -80,10 +82,11 @@
                 style="@style/diceButtons"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
+                android:layout_marginBottom="6dp"
                 android:text="Delete Campaign" />
 
 
-        </LinearLayout>
+        </LinearLayout>◙
     </ScrollView>
 
     <LinearLayout
@@ -109,9 +112,9 @@
             android:layout_gravity="center"
             android:layout_margin="12dp"
             android:layout_weight="1"
-            android:textStyle="bold"
+            android:text="Roll Dice"
             android:textSize="40sp"
-            android:text="Roll Dice" />
+            android:textStyle="bold" />
     </LinearLayout>
 
 

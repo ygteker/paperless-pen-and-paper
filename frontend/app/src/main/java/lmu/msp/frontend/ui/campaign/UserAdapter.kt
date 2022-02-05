@@ -9,9 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import lmu.msp.frontend.R
 
 /**
+ * This class contains the adapter for the recycler view used in the userFragment
+ * currently does not handle avatar implementation
  * @author Valentin Scheibe
  */
-//TODO Avatar implementieren
 class UserAdapter(private val userList: ArrayList<campaignUsers>) :
     RecyclerView.Adapter<UserAdapter.ViewHolder>() {
 

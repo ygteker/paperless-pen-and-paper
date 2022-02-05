@@ -32,6 +32,7 @@ import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
 import lmu.msp.frontend.viewmodels.UserViewModel
 
 /**
+ * Handles the recycler view that displays campaigns the active user has joined
  * @author Valentin Scheibe
  */
 class CampaignFragment : Fragment() {
@@ -85,6 +86,9 @@ class CampaignFragment : Fragment() {
         return view
     }
 
+    /**
+     * Fetches all campaigns the active user is part of from the backend
+     */
     private fun fetchCampaigns() {
         disposables.add(userApi.getUser()
             .subscribeOn(Schedulers.newThread())
@@ -106,6 +110,10 @@ class CampaignFragment : Fragment() {
             })
     }
 
+    /**
+     * Fills the campaignIds and titleStrings lists view with the campaigns the active user is part of
+     * for each campaign that the user owns and is a member of
+     */
     private fun fillCampaignArray() {
         var userFromViewModel: User
         sharedViewModel.userData.observe(
@@ -126,6 +134,10 @@ class CampaignFragment : Fragment() {
             })
     }
 
+    /**
+     * fills the recycler view with the information from the titleStrings and campaignIds lists
+     * and updates the recyclerView
+     */
     private fun fillCampaigns() {
         newArrayList.clear()
         for (i in titleStrings.indices) {

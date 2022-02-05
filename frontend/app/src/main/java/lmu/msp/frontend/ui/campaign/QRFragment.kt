@@ -9,6 +9,7 @@ import android.widget.TextView
 import lmu.msp.frontend.R
 
 /**
+ * Displays the id that a user needs to join a campaign
  * @author Valentin Scheibe
  */
 class QRFragment : Fragment() {

@@ -12,6 +12,7 @@ import com.google.android.material.imageview.ShapeableImageView
 import lmu.msp.frontend.R
 
 /**
+ * This class contains the adapter for the recycler view used in the campaignFragment
  * @author Valentin Scheibe
  */
 class CampaignAdapter(private val campaignList: ArrayList<campaigns>) :
@@ -34,6 +35,9 @@ class CampaignAdapter(private val campaignList: ArrayList<campaigns>) :
         return campaignList.size
     }
 
+    /**
+     * This class contains the view holder for the adapter defined above
+     */
     class CampaignViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleString: TextView = itemView.findViewById(R.id.title_campaign)
         val campaignId: TextView = itemView.findViewById(R.id.id_campaign)
@@ -51,6 +55,12 @@ class CampaignAdapter(private val campaignList: ArrayList<campaigns>) :
             }
         }
 
+        /**
+         * This handles the "start" button click on a card in the campaignFragment recycler view.
+         * opens the campaignActivity
+         * @param campaignId campaign id of the campaign that gets started
+         * @param titleString this is the title of the campaign that is started
+         */
         private fun campaignButtonClick(v: View, campaignId: String, titleString: String) {
             val intent = Intent(v.context, CampaignActivity::class.java)
             intent.putExtra("campaignId", campaignId)

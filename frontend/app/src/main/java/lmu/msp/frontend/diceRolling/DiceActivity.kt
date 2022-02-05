@@ -6,6 +6,7 @@ import lmu.msp.frontend.R
 
 /**
  * @author Valentin Scheibe
+ * A new activity that holds the animated dice fragment which is accessed from the homeFragment
  */
 class DiceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

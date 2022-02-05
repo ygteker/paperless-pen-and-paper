@@ -32,6 +32,7 @@ import lmu.msp.frontend.ui.campaign.CampaignActivity
 
 
 /**
+ * This fragment handles joining, creating and deleting a campaign with an active user
  * @author Valentin Scheibe
  */
 class HomeFragment : Fragment() {
@@ -42,7 +43,7 @@ class HomeFragment : Fragment() {
     private lateinit var joinCampaignButton: Button
     private lateinit var createCampaignButton: Button
     private lateinit var deleteCampaignButton: Button
-    private lateinit var navigateToRollDiceButton:Button
+    private lateinit var navigateToRollDiceButton: Button
     private lateinit var joinCampaignEditText: EditText
     private lateinit var joinCampaignCharacterText: EditText
     private lateinit var createCampaignEditText: EditText
@@ -75,6 +76,9 @@ class HomeFragment : Fragment() {
         return view
     }
 
+    /**
+     * this loads the animated dice rolling fragment by opening up a new activity which loads the fragment
+     */
     private fun loadDiceFragment(view: View) {
         val intent = Intent(view.context, DiceActivity::class.java)
         view.context.startActivity(intent)
@@ -91,6 +95,9 @@ class HomeFragment : Fragment() {
         deleteCampaignEditText = view.findViewById(R.id.deleteCampaignEditText)
     }
 
+    /**
+     * deletes a campaign from the backend that the active user is an owner of according to the id specified in the deleteCampaignEditText
+     */
     private fun deleteCampaign() {
         if (deleteCampaignEditText.text.isNullOrBlank()) {
             Toast.makeText(
@@ -127,6 +134,10 @@ class HomeFragment : Fragment() {
         }
     }
 
+    /**
+     * Creates a campaign on the server with the active user as the owner
+     * campaign name according to createCampaignEditText
+     */
     private fun createCampaign() {
         if (createCampaignEditText.text.isNullOrBlank()) {
             Toast.makeText(
@@ -164,6 +175,10 @@ class HomeFragment : Fragment() {
         }
     }
 
+    /**
+     * Handles the active user joining a campaign according to the input in joinCampaignEditText and
+     * sets the user character name according to joinCampaignCharacterText
+     */
     private fun joinCampaign() {
         if (joinCampaignEditText.text.isNullOrBlank() || joinCampaignCharacterText.text.isNullOrBlank()) {
 
