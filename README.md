@@ -76,10 +76,12 @@ Note: journalctl uses **vi**. You can exit **vi** by typing `:q` + enter.
 
 ## Frontend
 ### Login credentials for examiners:
+```
 Email:	prüfer1@msp.de
 PW: 	20Kotlin22
 Email:	prüfer2@msp.de
 PW: 	20Kotlin22
+```
 ### Known Bugs:
 - App crashes without internet
 - App crashed when you send message to wrong userId
