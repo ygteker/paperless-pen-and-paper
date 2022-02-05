@@ -75,3 +75,17 @@ To access the logs use `journalctl`. E.g. access the `springboot-backend` logs o
 Note: journalctl uses **vi**. You can exit **vi** by typing `:q` + enter.
 
 ## Frontend
+### Login credentials for examiners:
+Email:	prüfer1@msp.de
+PW: 	20Kotlin22
+Email:	prüfer2@msp.de
+PW: 	20Kotlin22
+### Known Bugs:
+- App crashes without internet
+- App crashed when you send message to wrong userId
+- Websocket disconnect or crash isn't noticable nor does the websocket reconnect automatically
+- cached data isn't shown in the UI (chat and paint strokes)
+- can not delete received messages
+- User List doesn't refresh on name change or user delete
+- minimum API version 26 required
+- UI doesn't work with darktheme 
