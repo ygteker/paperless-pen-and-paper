@@ -25,6 +25,7 @@ import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
 import lmu.msp.frontend.viewmodels.UserViewModel
 
 /**
+ * This is the home activity it handles its bottom navigation bar and fetches the logged in user
  * @author Valentin Scheibe
  */
 class HomeActivity : AppCompatActivity() {
@@ -65,6 +66,10 @@ class HomeActivity : AppCompatActivity() {
         loadUserData()
     }
 
+    /**
+     * This loads the user data from the backend and calls updateNavController on success
+     * @author LLewellyn Hochhauser & Valentin Scheibe
+     */
     private fun loadUserData() {
         binding.pbHomeActivity.visibility = VISIBLE
         binding.navView.visibility = GONE
@@ -90,6 +95,10 @@ class HomeActivity : AppCompatActivity() {
             })
     }
 
+    /**
+     * Saves the fetched user object into a viewModel
+     * @param user the user object that gets saved to the viewModel
+     */
     private fun updateNavController(user: User) {
         val viewModel: UserViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
         viewModel.setUser(user)
@@ -99,9 +108,11 @@ class HomeActivity : AppCompatActivity() {
         binding.pbHomeActivity.visibility = GONE
         binding.navView.visibility = VISIBLE
         binding.container.visibility = VISIBLE
-
     }
 
+    /**
+     * Logs out the user
+     */
     fun logout() {
         auth.logout()
     }

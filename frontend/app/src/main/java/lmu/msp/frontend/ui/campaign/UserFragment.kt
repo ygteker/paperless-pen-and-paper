@@ -27,6 +27,7 @@ import lmu.msp.frontend.helpers.retrofit.RetrofitProvider
 
 
 /**
+ * This Fragments displays all members of a campaign in a recycler view
  * @author Valentin Scheibe
  */
 class UserFragment : Fragment() {
@@ -81,6 +82,10 @@ class UserFragment : Fragment() {
         return view
     }
 
+    /**
+     * Deletes a user from a campaign in the backend using the userId from an EditText
+     * Prevents deletion if the EditText is empty
+     */
     private fun deleteUserFromCampaign() {
         if (editText_DeleteUser.text.isNullOrBlank()) {
             Toast.makeText(
@@ -124,6 +129,9 @@ class UserFragment : Fragment() {
         }
     }
 
+    /**
+     * Changes the active users' character name in the backend according to input from an EditText
+     */
     private fun changeCharacterName() {
         if (editText_CharacterName.text.isNullOrBlank()) {
             Toast.makeText(
@@ -162,6 +170,10 @@ class UserFragment : Fragment() {
         }
     }
 
+    /**
+     * Fetches all members of the active campaign from the backend
+     * as well as the active campaign from the campaignId and saves them to class fields
+     */
     private fun fetchMembers() {
         var campaignMemberFromApi: List<CampaignMember>
         var campaignFromApi: Campaign
@@ -207,6 +219,10 @@ class UserFragment : Fragment() {
             })
     }
 
+    /**
+     * defines special data in the userList for the gameMaster as he does not have a character name
+     * @param campaignFromApi campaign object from the backend
+     */
     private fun fillDungeonMaster(campaignFromApi: Campaign?) {
         val dmData =
             campaignUsers(campaignFromApi?.owner.toString(), "Game Master")
@@ -214,6 +230,10 @@ class UserFragment : Fragment() {
         userAdapter.notifyDataSetChanged()
     }
 
+    /**
+     * Fills the recyclerView with the user/member information
+     * @param campaignMemberFromApi campaign member list object from the backend
+     */
     private fun fillUsers(campaignMemberFromApi: List<CampaignMember>) {
         var characterNames = arrayListOf<String>()
         var userIds = arrayListOf<String>()
