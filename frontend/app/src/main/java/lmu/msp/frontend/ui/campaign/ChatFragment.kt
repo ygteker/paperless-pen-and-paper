@@ -83,8 +83,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
             if (it.size > 0) {
                 Log.i("Group message", "Group message: ${it[it.size - 1].message}")
                 val newMessage = it[it.size - 1]
-//                Log.i("loggedInUser", loggedInUser.toString())
-                val messageToSubmit = GeneralChatMessage(newMessage.senderId.toString(), newMessage.message, ChatType.GROUP, false)
+
+                val messageToSubmit = GeneralChatMessage(getCharName(newMessage.senderId), newMessage.message, ChatType.GROUP, false)
                 if (newMessage.senderId.toInt() == loggedInUser.id.toInt()) {
                     messageToSubmit.self = true
                 }
@@ -98,7 +98,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
                 Log.i("Personal message", "Personal message: ${it[it.size - 1].message}")
                 val newMessage = it[it.size - 1]
                 val messageToSubmit = newMessage.message?.let { it1 ->
-                    GeneralChatMessage(newMessage.senderId.toString(),
+                    GeneralChatMessage(getCharName(newMessage.senderId!!.toLong()),
                         it1, ChatType.PERSONAL, false)
                 }
                 if (newMessage.senderId?.equals(loggedInUser.id) == true) {
@@ -122,7 +122,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
                     viewModel.sendChatMessage(
                         ChatMessage(
                             message,
-                            user.id.toInt(),
+                            user.user.toInt(),
                             loggedInUser.id.toInt()
                         )
                     )
@@ -134,6 +134,16 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
            viewModel.sendGroupMessage(GroupMessage(loggedInUser.id, message))
         }
 
+    }
+
+    fun getCharName(id: Long): String {
+        var charName: String = "GM"
+        for (member in members) {
+            if (id == member.user) {
+                charName = member.characterName
+            }
+        }
+        return charName
     }
 
 }
